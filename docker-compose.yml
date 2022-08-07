@@ -55,6 +55,7 @@ services:
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     ports:
+    # Redirigido el puerto de kibana para acceder desde el navegador con https://localhost:80 siendo localhost la ip dada por Google Cloud Platform
       - "80:5601"
     networks:
       - elk
