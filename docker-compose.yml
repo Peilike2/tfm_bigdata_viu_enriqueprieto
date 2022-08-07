@@ -29,24 +29,6 @@ services:
     networks:
       - elk
 
-  # Heartbeat container
-  heartbeat:
-    container_name: heartbeat
-    hostname: heartbeat
-    user: root # To read the docker socket
-    image: "docker.elastic.co/beats/heartbeat:${ELK_VERSION}"
-    volumes:
-      # Mount heartbeat configuration so we can edit
-      - ./heartbeat/config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
-      # Allows us to report on docker from the hosts information.
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      elasticsearch: { condition: service_healthy }
-      kibana: { condition: service_healthy }
-    command: heartbeat -e -strict.perms=false
-    networks: ['elk']
-    restart: on-failure
-  
   
   # Filebeat container
   filebeat:
