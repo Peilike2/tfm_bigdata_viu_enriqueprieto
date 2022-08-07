@@ -2,7 +2,7 @@
 # Título de nuestro documento
  
 ## Índice de contenidos
-* [Contenido 1](#item1)
+* [Instalación del Stack Elastic](#item1)
 * [Contenido 2](#item2)
 * [Modelado Simple de Logs](#item3)
 * [Contenido 4](#item4)
@@ -10,18 +10,143 @@
 Lorem ipsum dolor
  
 <a name="item1"></a>
-1. ### Contenido 1
+1. ### Instalación del Stack Elastic
  
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
- 
-[Subir](#top)
+**Nota**.  Para iniciar el stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
+
+En este apartado vamos a arrancar el stack elastic definido en [docker-compose.yml](../../docker-compose.yml).
+
+![Elastic Stack](./img/elastic-stack.png)
+
+El objetivo consiste en:
+xxx
+xxx
+xxx
+
+Probar explorando Kibana [^DiscoverKibana]. 
+
+Para ello, ejecutaremos desde el raíz del proyecto:
+
+```shell
+docker-compose up -d
+```
+
+Ejecutaremos `docker ps` para comprobar que tenemos 3 contenedores en estado healthy (filebeat, kibana, elasticsearch).
+
+Podemos también comprobar en los logs si han arrancado correctamente.
+
+```shell
+docker logs -f elasticsearch
+docker logs -f kibana
+docker logs -f filebeat
+```
+
+A continuación, abriremos la URL de Kibana en un navegador (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
+
+- http://localhost:5601/
+- Usuario: elastic
+- Password: changeme
+
+
+
+
  
 <a name="item2"></a>
-2. *### Contenido 2
+2. ### Contenido 2
  
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
- 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+El proceso buscado es el siguiente:
+![Elastic Stack](./img/elastic-stack.png)
+
+Cremos una carpeta test en el raíz del proyecto:
+
+```shell
+mkdir test
+```
+
+Y ejecutaremos el siguiente comando para empezar a generar logs dentro de la carpeta test.
+
+```shell
+docker run -it --name flog_json --rm immavalls/flog:1.0 -l -f rfc5424 -y json -d 1 -s 1 > ./test/sample-json-logs.log
+```
+
+Si queremos parar la generación de logs, bastará con ejecutar `Ctrl-C` y parar el contenedor docker que está generando logs.
+
+Por ahora, sin parar el contenedor, abriendo otro terminal comprobemos que se estan generando logs cada segundo.
+
+```
+tail -f ./test/sample-json-logs.log
+```
+
+Paramos este tail con `Ctrl-C`, y arrancamos filebeat.
+
+```shell
+docker-compose up -d
+```
+
+Comprobamos que filebeat arranca bien:
+
+```shell
+docker logs -f filebeat
+```
+
+## Visualización vía Logs UI
+
+Volvemos a Kibana, y selecionamos en el menú de la izquierda `Logs`.
+
+![Logs Menu](./img/logs-icon.png)
+
+Veremos logs logs que están entrando en el sistema generados por Flog.
+
+![Logs View](./img/logs-view.png)
+
+Si pulsamos en la esquina superior derecha, `Stream Live`, se irán actualizando los logs a medida que llegan a elasticsearch.
+
+También podemos modificar el tamaño de letra de los logs, si queremos hacer wrapping, etc. con la opción del menú `Customize`.
+
+![Logs Customization](./img/logs-view-custom.png)
+
+Pulsando en `Configuration`, se puede modificar que [índices](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/_basic_concepts.html#_index) de elasticsearch kibana nos va a mostrar, el campo a usar como `timestamp`, etc. Interesante en la configuración, ir a la segunda pestaña, `Log Columns`, donde podemos indicar qué campos queremos mostrar en la pantalla.
+
+Dado que no tenemos el campo `event.dataset`...
+
+![Logs Configuration](./img/logs-view-config-1.png)
+
+lo podemos eliminar y guardar con `Update source`.
+
+![Logs Configuration](./img/logs-view-config-2.png)
+
+A partir de aquí la vista de los logs presentará el siguiente aspecto.
+
+![Logs View](./img/logs-view-2.png)
+
+Podemos igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, buscamos el texto `override the driver` o `calculate`.
+
+![Logs Search](./img/logs-view-search-1.png)
+![Logs Search](./img/logs-view-search-2.png)
+
+Finalmente, paramos el contenedor que nos está generando logs, con `Ctrl-C` en el terminal dónde lo arrancamos con `docker run ...`. O directamente ejecutando:
+
+```shell
+docker stop flog_json
+```
+
+Para pasar al siguiente apartado, pararemos también filebeat ejecutando:
+
+```shell
+docker-compose stop filebeat
+```
+
+Y en Kibana borraremos el índice generado para los logs de Filebeat. Para ello, selecciona en el menú izquierdo `Management`.
+
+![Kibana Management](./img/management-icon.png)
+
+Selecciona `Index Management` en el grupo Elasticsearch.
+
+![Index Management](./img/index-management.png)
+
+Y borra el índice o índices `filebeat`.
+
+![Delete Index](./img/delete-filebeat.png)
  
 [Subir](#top)
  
@@ -315,94 +440,19 @@ Pulsaremos el botón `Save` en la barra superior y guardaremos la búsqueda con 
 
 ![Save Search](./img/save-search.png)
 
-## Creación de Dashboard en Kibana
 
-Vamos a crear un simple dashboard en Kibana para analizar nuestros datos. Para ello, crearemos primero diversas visualizaciones.
-
-En Kibana, selecciona el menú `Visualize`.
-
-![Visualize](./img/visualize-icon.png)
-
-Clic en el botón `Create new visualization`, y seleccionar el tipo `Pie`.
-
-![Visualize](./img/visualize-select-pie.png)
-
-En el siguiente paso, `Choose a source`, seleccionar la búsqueda guardada como `[Filebeat] Host/Process`.
-
-![Source](./img/visualize-select-source-pie.png)
-
-En la visualización, pulsar el enlace `+Add` bajo Buckets, y seleccionar `Split slices`.
-
-![Source](./img/visualize-pie-add-bucket.png)
-
-Seleccionar una `Terms` aggregation, sobre el campo `host_name` y pulsar la flecha azul para aplicar los cambios.
-
-![Aggs host_name](./img/visualize-pie-host_name-terms.png)
-
-Añadir una segunda agregación en buckets, de tipo `Terms`, sobre el campo `process_name`. Y aplicar el cambio.
-
-![Aggs process_name](./img/visualize-pie-process_name-terms.png)
-
-Aplicar y comprobar el resultado.
-
-![Pie](./img/visualize-pie.png)
-
-Pulsar el enlace `Save` en la barra superior y guardar la visualización con el nombre `[Filebeat] Process/Host pie`.
-
-Pulsar en el enlace `Visualize` en la barra superior de navegación y crear una segunda visualización, de tipo `Tag Cloud`.  
-
-![Tag cloud](./img/visualize-tag-cloud-select.png)
-
-Seleccionar la misma fuente de datos, la búsqueda guardada como `[Filebeat] Host/Process`. Y bajo `Buckets` en la visualización, añadir `Tags`.
-
-![Tag cloud](./img/visualize-tag-cloud-bucket-add.png)
-
-Y añadir una agregación de nuevo de tipo `Terms`, sobre el campo `process_name`, modificando el tamaño por defecto de 5 a 20.
-
-![Tag cloud](./img/visualize-tag-cloud-process_name-aggs.png)
-
-Cambiar de la pestaña `Data` a `Options` y modificar `Orientations` a `multiple`. 
-
-![Tag cloud](./img/visualize-tag-cloud-process_name-options.png)
-
-Aplicar los cambios.
-
-![Tag cloud](./img/visualize-tag-cloud.png)
-
-Guardar esta visualización con el nombre `[Filebeat] Process/Host cloud tag`.
-
-Pasaremos finalmente a crear un dashboard que incluya estas visualizaciones.
-
-Seleccionamos en el menú de la izquierda `Dashboard`. Y creamos un nuevo dashboard pulsando el botón `Create new dashboard`. 
-
-Si estamos visualizando otro dashboard, volveremos antes al menú inicial haciendo click en el enlace `Dashboard` en el menú superior.
-
-![Dashboard Menu](./img/menu-dashboard.png)
-
-Ya podemos pulsar `Create new dashboard`.
-
-![Dashboard Create](./img/create-dashboard.png)
-
-Clicar en el enlace `Add` en el menú superior.
-
-![Dashboard Add](./img/dashboard-add.png)
-
-Y añadir las dos visualizaciones guardadas `[Filebeat] Process/Host cloud tag`, `[Filebeat] Process/Host pie`, y la búsqueda `[Filebeat] Host/Process`.
-
-Guardar con el nombre `[Filebeat] Dashboard` pulsando la opción `Save`.
-
-![Dashboard](./img/dashboard-filebeat.png)
-
-Adicionalmente, podemos comprobar que al pulsar por ejemplo en un host_name concreto sobre el `pie chart`, se aplica un filtro a todo el dashboard. En el ejemplo, estamos filtrando por `host_name: districtholistic.net`.
-
-![Dashboard](./img/dashboard-filebeat-filtered.png)
 
 ## Finalizamos
 
 4. ### Siguientes pasos
 
+[Subir](#top)
 
 
-[^nota1]: Every new line should be prefixed with 2 spaces.  
-  This allows you to have a footnote with multiple lines.
+
+
+[^nota1]: Cada línea extrade estas notas empicezan con doble espacio.  
+  Esta línea empezó con doble espacio.
+[^nota2]: vista de [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana
+[^nota3]: Prueba
 [Subir](#top)
