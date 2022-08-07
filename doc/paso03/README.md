@@ -2,17 +2,14 @@
 # Título de nuestro documento
  
 ## Índice de contenidos
-* [Instalación del Stack Elastic](#item1)
-* [Contenido 2](#item2)
-* [Modelado Simple de Logs](#item3)
-* [Contenido 4](#item4)
+* 1. [Instalación del Stack Elastic](#item1)
+* 2. [Contenido 2](#item2)
+* 3. [Modelado Simple de Logs](#item3)
+* 4. [Contenido 4](#item4)
  
-Lorem ipsum dolor
+ ### 1. Instalación del Stack Elastic
  
 <a name="item1"></a>
-1. ### Instalación del Stack Elastic
- 
-**Nota**.  Para iniciar el stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
 
 En este apartado vamos a arrancar el stack elastic definido en [docker-compose.yml](../../docker-compose.yml).
 
