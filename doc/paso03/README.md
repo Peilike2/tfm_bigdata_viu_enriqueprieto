@@ -2,7 +2,7 @@
 # Título de nuestro documento
  
 ## Índice de contenidos
-*[1. Instalación del Stack Elastic](#item1)
+* [1. Instalación del Stack Elastic](#item1)
 * 2. [Contenido 2](#item2)
 * 3. [Modelado Simple de Logs](#item3)
 * 4. [Contenido 4](#item4)
