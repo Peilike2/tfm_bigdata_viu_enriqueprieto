@@ -4,20 +4,20 @@
 ## Índice de contenidos
 * [Contenido 1](#item1)
 * [Contenido 2](#item2)
-* [Contenido 3](#item3)
+* [Modelado Simple de Logs](#item3)
 * [Contenido 4](#item4)
  
 Lorem ipsum dolor
  
 <a name="item1"></a>
-### Contenido 1
+1. ### Contenido 1
  
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
  
 [Subir](#top)
  
 <a name="item2"></a>
-### Contenido 2
+2. *### Contenido 2
  
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
  
@@ -26,7 +26,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 [Subir](#top)
  
 <a name="item3"></a>
-### Modelado Simple de Logs
+3. ### Modelado Simple de Logs
 
 Hemos ingestado en elastic nuestros logs sin modelar, sin estructura. Es decir, dado un log con el formato:
 
@@ -53,16 +53,17 @@ Es decir, queremos aplicarle las siguientes operaciones:
 4. - Eliminar filas duplicadas
 
 En lenguaje Bash, se podría expresar así, ejecutando cada línea de forma independiente:
+```
 cat 01_srm-grid002Domain.log | grep unavailable > 02a_perdidos_conysinpool.txt
 cat 02a_perdidos_conysinpool.txt | grep pool.root > 02b_perdidos.txt
 cut -d ' ' -f 12 02b_perdidos.txt > 03_nombres_.txt
 nombres=$(cat 03_nombres.txt)
 for f in $nombres; do echo "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=$f" >> "04_preparados.txt"; done
 cat 04_preparados.txt | sort | uniq > "05_listos.txt"
-
+```
 <!-- Esto es un comentario de prueba de Enrique -->
 
-Ejemplo de referencia multilínea [^ReferenciaMultilínea].  
+Ejemplo de referencia multilínea [^ReferenciaMultilinea].  
 
 
 
@@ -118,6 +119,6 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
 
 
 
-[^ReferenciaMultilínea]: Every new line should be prefixed with 2 spaces.  
+[^ReferenciaMultilinea]: Every new line should be prefixed with 2 spaces.  
   This allows you to have a footnote with multiple lines.
 [Subir](#top)
