@@ -1,17 +1,32 @@
 PUT _ingest/pipeline/logs-pipeline
 {
-  "description": "Pipeline para ingesta de logs",
+  "description": "Pipeline para TFM",
   "processors": [
-    {
-      "set": {
-        "field": "ingest.timestamp",
-        "value": "{{_ingest.timestamp}}"
-      }
-    },
     {
       "dissect": {
         "field": "message",
-        "pattern": "%{@timestamp} %{host_name} %{process_name} %{process_id} %{message_id} %{event_data} %{message_content}"
+        "pattern": "%{@timestamp} %{enri_campo02} %{enri_campo03} %{enri_campo04} %{enri_campo05} %{enri_campo06} %{enri_campo07} %{enri_campo08} %{enri_campo09} %{enri_campo10} %{enri_campo11} %{enri_campo12}"
+      }
+    },
+    {
+      "set": {
+        "field": "enri_prefijo",
+        "value": "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN="
+      }
+    },
+   {
+      "append": {
+        "field": "enri_prefijo_mas_ruta",
+        "value": [
+          "{{enri_prefijo}}",
+          "{{enri_campo12}}"
+        ]
+      }
+    },
+   {
+      "join": {
+        "field": "enri_prefijo_mas_ruta",
+        "separator": ""
       }
     },
     {
