@@ -93,12 +93,6 @@ A continuación, abriremos la URL de Kibana en un navegador (ver [supported brow
 - Usuario: elastic
 - Password: changeme
 
-
-
-
- 
-<a name="item2"></a> [Volver a Índice](#indice)
-2. ### Contenido 2
  
 El proceso buscado es el siguiente:
 ![Elastic Stack](./img/elastic-stack.png)
@@ -197,7 +191,7 @@ Y borra el índice o índices `filebeat`.
 [Subir](#top)
  
 <a name="item3"></a> [Volver a Índice](#indice)
-3. ### Modelado Simple de Logs
+### 3. Modelado Simple de Logs
 
 Hemos ingestado en elastic nuestros logs sin modelar, sin estructura. Es decir, dado un log con el formato:
 
@@ -275,9 +269,8 @@ Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)*
  
 [Subir](#top)
  
-<a name="item4"></a>
-# Modelado Simple de Logs con Filebeat
-
+<a name="item4"></a> [Volver a Índice](#indice)
+### 4. Modelado Simple de Logs con Filebeat
 En este punto, el documento que llega a elastic tiene este aspecto:
 
 ```json
@@ -480,8 +473,9 @@ Pulsaremos el botón `Save` en la barra superior y guardaremos la búsqueda con 
 
 ## Finalizamos
 
-<a name="item5"></a>
-5. ### Siguientes pasos
+
+<a name="item5"></a> [Volver a Índice](#indice)
+### 5.  Siguientes pasos 
 
 [Subir](#top)
 
