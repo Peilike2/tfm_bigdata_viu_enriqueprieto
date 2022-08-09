@@ -8,7 +8,7 @@ El objetivo es la prueba de concepto de la instalación de la aplicación para O
 
 - /doc [Instrucciones de instalación y uso](./doc/README.md)
 - /elasticsearch [configuración de elasticsearch](/elasticsearch/config/elasticsearch.yml)
-- /elasticsearch Procesos encadenados [(Pipeline)](/elasticsearch/ingest/logs-pipeline)
+- /elasticsearch [Procesos encadenados (Pipeline)](/elasticsearch/ingest/logs-pipeline)
 - /filebeat/config [Configuración de filebeat](filebeat.yml)
 - /kibana [Ficheros de configuración de kibana](/config/kibana.yml)
 - /test [Carpeta con logs a analizar](test/sample-json-logs.log)
