@@ -53,7 +53,7 @@ sysctl -w vm.max_map_count=262144
 
 En este apartado vamos a arrancar el stack elastic definido en [docker-compose.yml](../../docker-compose.yml).
 
-![Elastic Stack](./img/elastic-stack.png)
+![Elastic Stack](./img/enri_elastic-stack.png)
 
 El objetivo consiste en:
 xxx
