@@ -4,25 +4,25 @@
 ## Masterando: Enrique Prieto Catalán
 
 _Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
-El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
+El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores._
 
-_En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic para ingesta de logs que permitan la observabilidad de un grupo de servidores.
+_En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic para ingesta de logs que permitan la observabilidad de un grupo de servidores._
  
 <a name="indice"></a>
 ## Índice de contenidos
 * 1.[ Requisitos y asunciones](#item1)
 * 2.[ Instalación del Stack Elastic](#item2)
- - En este apartado, se instala y arranca un stack elastic con un clúster de un nodo de [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) y una instancia de [Kibana](https://www.elastic.co/guide/en/kibana/7.3/index.html).
+   - En este apartado, se instala y arranca un stack elastic con un clúster de un nodo de [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) y una instancia de [Kibana](https://www.elastic.co/guide/en/kibana/7.3/index.html).
 * 3.[ Modelado Simple de Logs](#item3)
- - Modelamos los campos y creamos una pipeline
+   - Modelamos los campos y creamos una pipeline
 * 4.[ Modelado Simple de Logs con Filebeat](#item4)
- - Modelamos los campos y creamos una pipeline de procesos
+   - Modelamos los campos y creamos una pipeline de procesos
 * 5 [ Activación de acción](#item5) 
- - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
+   - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
 * 6 [ Siguientes pasos](#item6)
-
+  
 <a name="item1"></a> [Volver a Índice](#indice)
- ### 1. Requisitos
+ ### 1. Requisitos y asunciones
 - Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](.env).
 - Docker y Docker Compose. Se ha probado con docker versión 19.03.2 y docker-compose 1.24.1.
   - Usuarios de Windows y Mac users tendrán Compose instalado automáticamente con Docker para [Windows](https://docs.docker.com/docker-for-windows/install/)/[Mac](https://docs.docker.com/docker-for-mac/install/).
