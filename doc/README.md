@@ -17,7 +17,7 @@ Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](.env).
 
 - Un mínimo de 4GB de RAM para contenedores. Los usuarios de Mac y Windows deben configurar su máquina virtual Docker para disponer de ese mínimo.
 
-    ![Docker VM memory settings](doc/img/docker-vm-memory-settings.png)
+    ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
 
 - Debido a que que por defecto la [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) no es suficiente, los usuarios de Linux deben ejecutar el siguiente comando como `root`:
 
