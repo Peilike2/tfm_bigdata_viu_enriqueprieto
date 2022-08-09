@@ -66,7 +66,7 @@ gcloud compute instances create enriqueprieto-instancia10 --project=tfm-elastic-
 - SE ABRE EN EL MISMO GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
 (AQUÍ IMAGEN)
 Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos en función del uso, para minimizar su coste:
-  ```shell
+ ```shell
  NAME: enriqueprieto-centos8-2
  ZONE: europe-southwest1-a
  MACHINE_TYPE: e2-medium
@@ -78,6 +78,7 @@ Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos e
   ```
 Creo una regla de firewall que permita salida de puerto 80
 Commando REST equivalente:
+
  ```shell
 POST https://www.googleapis.com/compute/v1/projects/tfm-elastic-cern-uam/global/firewalls
 {
@@ -98,6 +99,7 @@ POST https://www.googleapis.com/compute/v1/projects/tfm-elastic-cern-uam/global/
   ]
 }
   ```
+
 Esta es la respuesta REST:
 
   ```shell
@@ -126,9 +128,11 @@ Esta es la respuesta REST:
   "selfLink": "projects/tfm-elastic-cern-uam/global/firewalls/enri-abrir-puerto80-salida"
 }
   ```
+  
 ## CONEXIÓN POR SSH
 Para transferir las claves ssh a la máquina virtual y conectarse:
 7. En la instancia, columna “Conectar” pinchar
+
  ```shell 
 SSH => abrir en otra ventana del navegador 
   ```
