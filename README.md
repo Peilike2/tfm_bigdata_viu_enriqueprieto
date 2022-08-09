@@ -7,4 +7,10 @@ El objetivo es la prueba de concepto de la instalación de la aplicación para O
 ## Estructura de la información
 
 -/doc [Instrucciones de instalación y uso](./doc/README.md)
--
+-/elasticsearch Ficheros de configuración de elasticsearch
+-/filebeat/config Ficheros de configuración de filebeat
+-/kibana Ficheros de configuración de kibana
+-/test Carpeta con logs a analizar
+- .env [Variables de entorno](/.env) 
+- README.md Este mismo fichero
+- docker-compose.yml Configuración de la composición de contenedores docker-compose(docker-compose.yml) 
