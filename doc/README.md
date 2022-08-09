@@ -460,16 +460,17 @@ Pulsaremos el botón `Save` en la barra superior y guardaremos la búsqueda con 
 ## Finalizamos
 
 <a name="item5"></a> [Volver a Índice](#indice)
-* 5 [ Activación de acción](#item5) 
- - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
+ ### 5. [ Activación de acción](#item5) 
+   - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
 
 <a name="item6"></a> [Volver a Índice](#indice)
-### 6.  Siguientes pasos 
+ ### 6.  Siguientes pasos 
 
 [Subir](#top)
 
 
-
+<a name="item1"></a> [Volver a Índice](#indice)
+ ### 1. Requisitos y asunciones
 
 [^nota1]: Cada línea extrade estas notas empicezan con doble espacio.  
   Esta línea empezó con doble espacio.
