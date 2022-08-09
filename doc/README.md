@@ -28,13 +28,14 @@ Los pasos a seguir son los siguientes:
  - Daremos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador.
  
 ## Índice de contenidos
-* 1. [Presrrequisitos](#item1)
+* 1.[Requisitos y asunciones](#1)
 * 2.[ Instalación del Stack Elastic](#item2)
 * 3.[ Modelado Simple de Logs](#item3)
 * 4.[ Modelado Simple de Logs con Filebeat](#item4)
 * 5 [ Siguientes pasos](#item5)
- 
- ### 1. Pre-requisitos
+
+<a name="item1"></a>
+ ### 1. Requisitos
 - Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](.env).
 - Docker y Docker Compose. Se ha probado con docker versión 19.03.2 y docker-compose 1.24.1.
   - Usuarios de Windows y Mac users tendrán Compose instalado automáticamente con Docker para [Windows](https://docs.docker.com/docker-for-windows/install/)/[Mac](https://docs.docker.com/docker-for-mac/install/).
@@ -53,10 +54,10 @@ Los pasos a seguir son los siguientes:
 ```
 sysctl -w vm.max_map_count=262144
 ```
- 
+ <a name="item2"></a>
  ### 2. Instalación del Stack Elastic
  
-<a name="item1"></a>
+
 
 En este apartado vamos a arrancar el stack elastic definido en [docker-compose.yml](../../docker-compose.yml).
 
@@ -273,17 +274,7 @@ Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)*
  
 [Subir](#top)
  
-<a name="item5"></a>
-### Contenido 5
- 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
- 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
- 
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
- 
-[Subir](#top)
-
+<a name="item4"></a>
 # Modelado Simple de Logs con Filebeat
 
 En este punto, el documento que llega a elastic tiene este aspecto:
@@ -488,8 +479,8 @@ Pulsaremos el botón `Save` en la barra superior y guardaremos la búsqueda con 
 
 ## Finalizamos
 
-<a name="item6"></a>
-6. ### Siguientes pasos
+<a name="item5"></a>
+5. ### Siguientes pasos
 
 [Subir](#top)
 
