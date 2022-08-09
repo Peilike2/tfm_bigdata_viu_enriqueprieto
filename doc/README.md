@@ -13,8 +13,8 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 1. [ Requisitos y asunciones](#item1)
 2. [ Instalación del Stack Elastic](#item2)
    - En este apartado, se instala y arranca un stack elastic con un clúster de un nodo de [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) y una instancia de [Kibana](https://www.elastic.co/guide/en/kibana/7.3/index.html).
-3. [ Modelado Simple de Logs](#item3)
-   - Modelamos los campos y creamos una pipeline
+3. [ Política de Logs](#item3)
+   - Establecemos las directrices de los que queremos hacer con los datos en función de las necesidades.
 4. [ Modelado Simple de Logs con Filebeat](#item4)
    - Modelamos los campos y creamos una pipeline de procesos
 5. [ Activación de acción](#item5) 
@@ -44,6 +44,137 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 sysctl -w vm.max_map_count=262144
 ```
 - Para iniciar el stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
+- Asumimos la instalación del entorno de desarrollo ELK en la plataforma Google Cloud Platform (GCP)
+
+## Entorno Desarrollo ELK en GCP 
+La plataforma permite actualmente utilizarla gratuitamente 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se puede utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud que tengamos acceso, o con máquina virtual en local como VirtualBox, que descarto por la excesiva capacidad de memoria que requiere.
+
+1.	https://console.cloud.google.com/
+2.	Crear Proyecto Compute engine + Instancias de VM + Habilitar Engine API +
+3.	Creo una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB parecen suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
+4.	Seleccionamos Centos 8. Disco de arranque cambiar=> cambio de Debian a CENTOS 8. Disco persistente equilibrado, y subo memoria a 100GB. 
+(AQUÍ IMAGEN)
+(AQUÍ IMAGEN)
+
+```
+
+gcloud compute instances create enriqueprieto-instancia10 --project=tfm-elastic-cern-uam --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=58105659734-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=enriqueprieto-instancia10,image=projects/centos-cloud/global/images/centos-stream-8-v20220719,mode=rw,size=100,type=projects/tfm-elastic-cern-uam/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --labels=proyecto=tfm,autor=enrique_prieto --reservation-affinity=any
+```
+Esto luego se puede ejecutar aquí mismo y pulsando en “ejecutar en cloud shell” en vez de “copiar en portapapeles” (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
+SE ABRE EN EL MISM GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
+(AQUÍ IMAGEN)
+Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos en función del uso, para minimizar su coste:
+    ```shell
+NAME: enriqueprieto-centos8-2
+ZONE: europe-southwest1-a
+MACHINE_TYPE: e2-medium
+PREEMPTIBLE:
+INTERNAL_IP: 10.204.0.2
+EXTERNAL_IP: 34.175.205.191
+STATUS: RUNNING
+enrique@cloudshell:~ (tfm-elastic-cern-uam)$
+    ```
+
+##CONEXIÓN POR SSH
+Para transferir las claves ssh a la máquina virtual y conectarse:
+- En la instancia, columna “Conectar” pinchar
+ ```shell 
+SSH => abrir en otra ventana del navegador 
+  ```
+(Esto puede ser guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina:
+    ```shell
+gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --project "tfm-elastic-cern-uam"
+    ```
+
+Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de l ade Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejo en blanco.
+- Probar:
+ ```shell
+Ls
+pwd
+whoami
+  ```
+##INSTALACIÓN DE DOCKER  
+A continuación instalamos Docker como super usuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
+6.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
+ ```shell
+sudo yum install git
+  ```
+(yum es para que encuentre la última versión). Responder a la pregunta con Y(es)
+ Comprobamos:
+ ```shell
+git --version 
+  ```
+Devuelve si está todo correcto:
+ ```shell
+git version 2.31.1
+  ```
+Una vez instalado el GIT, clonamos nuestro Git de github:
+ ```shell
+git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
+  ```
+9.	Asegurar el cumplimiento de requisitos de memoria máxima de linux antes de lanzar docker-compose:
+ ```shell
+ sudo sysctl -w vm.max_map_count=262144
+  ```
+(¡ESTO HABRÁ QUE EJECUTARLO CADA VEZ QUE SE REINICIE LA INSTANCIA!)
+
+Usaremos los comandos docker basicos https://dockerlabs.collabnix.com/docker/cheatsheet/ y docker-compose https://devhints.io/docker-compose
+Como editor de texto usamos vim.
+
+10. Instalamos Docker pero con “SUDO” delante:
+ ```shell
+ sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+   ```
+Instalamos el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
+ ```shell
+ sudo dnf install docker-ce docker-ce-cli containerd.io
+   ```
+
+Arrancamos el servicio Docker y lo añadimos al autorun:
+ ```shell
+ sudo systemctl enable --now docker
+   ```
+CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, necesitamos añadir una regla de enmascaramiento a él.
+ ```shell
+ sudo firewall-cmd --zone=public --add-masquerade --permanent
+   ```
+ ```shell
+ sudo firewall-cmd --reload
+   ```
+
+##INSTALACIÓN DE DOCKER-COMPOSE
+Ahora instalamos  Docker compose, utilidad que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
+ ```shell
+ sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   ```
+   Ahora lo hacemos ejecutable:
+ ```shell
+ sudo chmod +x /usr/local/bin/docker-compose
+   ```
+   Lo comprobamos:
+ ```shell
+ docker-compose -v
+   ```
+   y nos responde:
+ ```shell
+ docker-compose version 1.27.4, build 40524192
+   ```
+   Que indica que funciona correctamente
+A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
+Cambiamos el permiso: 
+sudo chmod 666 /var/run/docker.sock
+¡ESTO TENDREMOS QUE EJECUTARLO CADA VEZ QUE ARRAMQUEMOS DE NUEVO LA INSTANCIA DE LA MÁQUINA VIRTUAL!
+Ahora volvemos a probar docker run hello-world y ya funciona:
+docker run hello-world
+Recibiremos como confirmación la siguiente respuesta:
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+2db29710123e: Pull complete
+Digest: sha256:53f1bbee2f52c39e41682ee1d388285290c5c8a76cc92b42687eecf38e0af3f0
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
 
 
 ---
@@ -56,12 +187,18 @@ Trataremos de instalar los servicios necesarios para lograr la siguiente estruct
 Para ello este apartado efectuaremos lo siguente:
  - Instalar un conjunto de contenedores en los que se encuentra elasticsearch, kibana y filebeat
  - Arrancar dichos servicios, comprobando que funcionan correctamente
- - Probar explorando Kibana [^DiscoverKibana]
+ - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana.
 
 ## INSTALACIÓN DEL STACK
-Comenzamos ejecutando desde el raíz del proyecto:
+Vamos a /filebeat/config y allí aeguramos los permisos correspondientes:
+```shell
+cd /filebeat/config/
+chmod go-w filebeat.yml
+```
+después regresamos a la raíz del proyecto y ejecutamos:
 
 ```shell
+cd PWD
 docker-compose up -d
 ```
 Con ello instalamos el stack elastic definido en [docker-compose.yml](../../docker-compose.yml).
@@ -80,7 +217,7 @@ docker logs -f filebeat
 ## Visualización vía Logs UI
 A continuación, abriremos la URL de Kibana en un navegador (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 
-- http://localhost:5601/
+- http://localhost:80/
 - Usuario: elastic
 - Password: changeme
 
@@ -141,9 +278,9 @@ Y borra el índice o índices `filebeat`.
 ---
 
 <a name="item3"></a> [Volver a Índice](#indice)
-### 3. Modelado Simple de Logs
+### 3. Política de Logs
 
-Hemos ingestado en elastic nuestros logs sin modelar, sin estructura. Es decir, dado un log con el formato:
+Ingestamos en elastic nuestros logs sin modelar, sin estructura. Es decir, dado un log con el formato:
 
 ```json
 {"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /pnfs/ft.uam.es/data/atlas/atlasdatadisk/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
@@ -181,13 +318,9 @@ cat 04_preparados.txt | sort | uniq > "05_listos.txt"
 
 Ejemplo de referencia multilínea [^nota1].  
 
-
-
-
-
 Así podremos agrupar valores similares, visualizarlos, y explotar toda la potencia de nuestros logs. Nos permitirá contestar preguntas como ¿Cuáles son los errores más habituales?¿cuánta es su repetición? ¿En qué momentosa se producen? (`campo 01`, `campo02`, ...).
 
-Para ello, necesitaremos conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
+Para ello necesitaremos modelar, es decir conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
 
 [Subir](#top)
 
