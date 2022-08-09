@@ -6,12 +6,12 @@ El objetivo es la prueba de concepto de la instalación de la aplicación para O
 
 ## Estructura de la información
 
--/doc [Instrucciones de instalación y uso](./doc/README.md)
--/elasticsearch [configuración de elasticsearch](/elasticsearch/config/elasticsearch.yml)
+- /doc [Instrucciones de instalación y uso](./doc/README.md)
+- /elasticsearch [configuración de elasticsearch](/elasticsearch/config/elasticsearch.yml)
 - /elasticsearch Procesos encadenados [(Pipeline)](/elasticsearch/ingest/logs-pipeline)
--/filebeat/config [Configuración de filebeat](filebeat.yml)
--/kibana [Ficheros de configuración de kibana](/config/kibana.yml)
--/test [Carpeta con logs a analizar](test/sample-json-logs.log)
+- /filebeat/config [Configuración de filebeat](filebeat.yml)
+- /kibana [Ficheros de configuración de kibana](/config/kibana.yml)
+- /test [Carpeta con logs a analizar](test/sample-json-logs.log)
 - .env [Fichero de Variables de entorno](/.env) 
 - README.md Este mismo fichero
 - docker-compose.yml [Configuración de la composición de contenedores docker-compose](docker-compose.yml) 
