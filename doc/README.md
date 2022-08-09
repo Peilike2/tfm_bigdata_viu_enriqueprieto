@@ -1,25 +1,17 @@
  <a name="top"></a>
 # TFM VIU 2022
-# Tutora Inmaculada del Valls
-# Masterando Enrique Prieto
-# TFM VIU Enrique Prieto Catalán 2022
+## Tutora Inmaculada del Valls
+## Masterando Enrique Prieto Catalán
 
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
 El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
-
-
-
-
-
-
-## Contenido del repositorio
 
 En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic para ingesta de logs que permitan la observabilidad de un grupo de servidores.
 Los pasos a seguir son los siguientes:
 
 
 1. [Instalación Stack Elastic](./xx/xx/README.md)
- - En este apartado, se instalará y arrancará un stack elastic con un cluster de un nodo de [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) y una instancia de [Kibana](https://www.elastic.co/guide/en/kibana/7.3/index.html).
+
 2. [Ingesta de logs](./xx/xx/README.md)
  - Usaremos [Filebeat](https://www.elastic.co/guide/en/beats/filebeat/7.3/index.html) para la ingesta de logs en Elasticsearch y los visualizaremos con Kibana [Logs UI](https://www.elastic.co/guide/en/kibana/7.3/xpack-logs.html).
 3. [Modelado simple de logs](./doc/paso03/README.md)
@@ -31,9 +23,14 @@ Los pasos a seguir son los siguientes:
 ## Índice de contenidos
 * 1.[ Requisitos y asunciones](#item1)
 * 2.[ Instalación del Stack Elastic](#item2)
+ - En este apartado, se instala y arranca un stack elastic con un clúster de un nodo de [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) y una instancia de [Kibana](https://www.elastic.co/guide/en/kibana/7.3/index.html).
 * 3.[ Modelado Simple de Logs](#item3)
+ - Modelamos los campos y creamos una pipeline
 * 4.[ Modelado Simple de Logs con Filebeat](#item4)
-* 5 [ Siguientes pasos](#item5)
+ - Modelamos los campos y creamos una pipeline de procesos
+* 5 [ Activación de acción](#item5) 
+ - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
+* 6 [ Siguientes pasos](#item6)
 
 <a name="item1"></a> [Volver a Índice](#indice)
  ### 1. Requisitos
@@ -473,9 +470,12 @@ Pulsaremos el botón `Save` en la barra superior y guardaremos la búsqueda con 
 
 ## Finalizamos
 
-
 <a name="item5"></a> [Volver a Índice](#indice)
-### 5.  Siguientes pasos 
+* 5 [ Activación de acción](#item5) 
+ - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
+
+<a name="item6"></a> [Volver a Índice](#indice)
+### 6.  Siguientes pasos 
 
 [Subir](#top)
 
