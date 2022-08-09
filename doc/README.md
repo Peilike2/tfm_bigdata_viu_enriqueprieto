@@ -55,7 +55,7 @@ Los pasos a seguir son los siguientes:
 ```
 sysctl -w vm.max_map_count=262144
 ```
- <a name="item2"></a>
+ <a name="item2"></a> [Volver a Índice](#indice)
  ### 2. Instalación del Stack Elastic
  
 
@@ -196,7 +196,7 @@ Y borra el índice o índices `filebeat`.
  
 [Subir](#top)
  
-<a name="item3"></a>
+<a name="item3"></a> [Volver a Índice](#indice)
 3. ### Modelado Simple de Logs
 
 Hemos ingestado en elastic nuestros logs sin modelar, sin estructura. Es decir, dado un log con el formato:
