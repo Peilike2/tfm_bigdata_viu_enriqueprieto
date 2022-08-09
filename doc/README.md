@@ -1,23 +1,12 @@
  <a name="top"></a>
 # TFM VIU 2022
-## _Tutora_: Inmaculada del Valls
-## _Masterando_: Enrique Prieto Catalán
+## Tutora: Inmaculada del Valls
+## Masterando: Enrique Prieto Catalán
 
-Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
+_Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
 El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
 
-En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic para ingesta de logs que permitan la observabilidad de un grupo de servidores.
-Los pasos a seguir son los siguientes:
-
-
-1. [Instalación Stack Elastic](./xx/xx/README.md)
-
-2. [Ingesta de logs](./xx/xx/README.md)
- - Usaremos [Filebeat](https://www.elastic.co/guide/en/beats/filebeat/7.3/index.html) para la ingesta de logs en Elasticsearch y los visualizaremos con Kibana [Logs UI](https://www.elastic.co/guide/en/kibana/7.3/xpack-logs.html).
-3. [Modelado simple de logs](./doc/paso03/README.md)
- - Modelamos los campos y creamos una pipeline.
-4. [Activación de acción](./xxx/xxx/README.md)
- - Daremos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador.
+_En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic para ingesta de logs que permitan la observabilidad de un grupo de servidores.
  
 <a name="indice"></a>
 ## Índice de contenidos
