@@ -27,7 +27,7 @@ sysctl -w vm.max_map_count=262144
 
 ## Contenido del repositorio
 
-En este TFM se demostrarán las capacidades básicas del Stack Elastic para ingesta de logs que permitan la observabilidad de un grupo de servidores.
+En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic para ingesta de logs que permitan la observabilidad de un grupo de servidores.
 Los pasos a seguir son los siguientes:
 
 1. [Instalación Stack Elastic](./xx/xx/README.md)
