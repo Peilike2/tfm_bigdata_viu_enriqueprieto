@@ -50,18 +50,20 @@ sysctl -w vm.max_map_count=262144
 La plataforma permite actualmente utilizarla gratuitamente 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se puede utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud que tengamos acceso, o con máquina virtual en local como VirtualBox, que descarto por la excesiva capacidad de memoria que requiere.
 
 1.	https://console.cloud.google.com/
-2.	Crear Proyecto Compute engine + Instancias de VM + Habilitar Engine API +
+2.	Pinchamos en "Crear Proyecto" => ·Compute engine· + ·Instancias de VM· + ·Habilitar Engine API" 
 3.	Creo una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB parecen suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
-4.	Seleccionamos Centos 8. Disco de arranque cambiar=> cambio de Debian a CENTOS 8. Disco persistente equilibrado, y subo memoria a 100GB. 
+4.	Seleccionamos "Centos 8".
+5.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 por comodidad de uso.
+6.	elegimos "Disco persistente equilibrado" y subimos memoria a 100GB. 
+7.	Permitir http y https
 (AQUÍ IMAGEN)
 (AQUÍ IMAGEN)
-
+- Esto luego se puede ejecutar aquí mismo con este comando:
 ```
-
 gcloud compute instances create enriqueprieto-instancia10 --project=tfm-elastic-cern-uam --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=58105659734-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=enriqueprieto-instancia10,image=projects/centos-cloud/global/images/centos-stream-8-v20220719,mode=rw,size=100,type=projects/tfm-elastic-cern-uam/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --labels=proyecto=tfm,autor=enrique_prieto --reservation-affinity=any
 ```
-Esto luego se puede ejecutar aquí mismo y pulsando en “ejecutar en cloud shell” en vez de “copiar en portapapeles” (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
-SE ABRE EN EL MISM GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
+ y pulsando en “ejecutar en cloud shell” en vez de “copiar en portapapeles” (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
+- SE ABRE EN EL MISMO GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
 (AQUÍ IMAGEN)
 Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos en función del uso, para minimizar su coste:
     ```shell
@@ -74,10 +76,59 @@ EXTERNAL_IP: 34.175.205.191
 STATUS: RUNNING
 enrique@cloudshell:~ (tfm-elastic-cern-uam)$
     ```
+Creo una regla de firewall que permita salida de puerto 80
+Commando REST equivalente:
+ ```shell
+POST https://www.googleapis.com/compute/v1/projects/tfm-elastic-cern-uam/global/firewalls
+{
+  "kind": "compute#firewall",
+  "name": "enri-abrir-puerto80-salida",
+  "selfLink": "projects/tfm-elastic-cern-uam/global/firewalls/enri-abrir-puerto80-salida",
+  "network": "projects/tfm-elastic-cern-uam/global/networks/default",
+  "direction": "EGRESS",
+  "priority": 1000,
+  "description": "enri-abrir-puerto80",
+  "allowed": [
+    {
+      "IPProtocol": "all"
+    }
+  ],
+  "destinationRanges": [
+    "34.175.205.191"
+  ]
+}
+  ```
+Esta es la respuesta REST:
 
-##CONEXIÓN POR SSH
+  ```shell
+{
+  "allowed": [
+    {
+      "IPProtocol": "all"
+    }
+  ],
+  "creationTimestamp": "2022-07-17T12:26:39.194-07:00",
+  "description": "enri-abrir-puerto80",
+  "destinationRanges": [
+    "34.175.205.191"
+  ],
+  "direction": "EGRESS",
+  "disabled": false,
+  "enableLogging": false,
+  "id": "2176967777015422080",
+  "kind": "compute#firewall",
+  "logConfig": {
+    "enable": false
+  },
+  "name": "enri-abrir-puerto80-salida",
+  "network": "projects/tfm-elastic-cern-uam/global/networks/default",
+  "priority": 1000,
+  "selfLink": "projects/tfm-elastic-cern-uam/global/firewalls/enri-abrir-puerto80-salida"
+}
+  ```
+## CONEXIÓN POR SSH
 Para transferir las claves ssh a la máquina virtual y conectarse:
-- En la instancia, columna “Conectar” pinchar
+7. En la instancia, columna “Conectar” pinchar
  ```shell 
 SSH => abrir en otra ventana del navegador 
   ```
@@ -86,21 +137,22 @@ SSH => abrir en otra ventana del navegador
 gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --project "tfm-elastic-cern-uam"
     ```
 
-Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de l ade Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejo en blanco.
-- Probar:
+Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de la de Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejo en blanco.
+8. Probar su correcto funcionamiento:
  ```shell
-Ls
+ls
 pwd
 whoami
   ```
-##INSTALACIÓN DE DOCKER  
+## INSTALACIÓN DE DOCKER  
 A continuación instalamos Docker como super usuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
-6.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
+
+9.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
  ```shell
 sudo yum install git
   ```
 (yum es para que encuentre la última versión). Responder a la pregunta con Y(es)
- Comprobamos:
+10. Comprobamos:
  ```shell
 git --version 
   ```
@@ -108,11 +160,11 @@ Devuelve si está todo correcto:
  ```shell
 git version 2.31.1
   ```
-Una vez instalado el GIT, clonamos nuestro Git de github:
+11. Una vez instalado el GIT, clonamos nuestro Git de github:
  ```shell
 git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
   ```
-9.	Asegurar el cumplimiento de requisitos de memoria máxima de linux antes de lanzar docker-compose:
+12.	Aseguramos el cumplimiento de requisitos de memoria máxima de linux antes de lanzar docker-compose:
  ```shell
  sudo sysctl -w vm.max_map_count=262144
   ```
@@ -121,20 +173,20 @@ git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
 Usaremos los comandos docker basicos https://dockerlabs.collabnix.com/docker/cheatsheet/ y docker-compose https://devhints.io/docker-compose
 Como editor de texto usamos vim.
 
-10. Instalamos Docker pero con “SUDO” delante:
+13. Instalamos Docker pero con “SUDO” delante:
  ```shell
  sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
    ```
-Instalamos el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
+14. Instalamos el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
  ```shell
  sudo dnf install docker-ce docker-ce-cli containerd.io
    ```
 
-Arrancamos el servicio Docker y lo añadimos al autorun:
+15. Arrancamos el servicio Docker y lo añadimos al autorun:
  ```shell
  sudo systemctl enable --now docker
    ```
-CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, necesitamos añadir una regla de enmascaramiento a él.
+16. CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, necesitamos añadir una regla de enmascaramiento a él.
  ```shell
  sudo firewall-cmd --zone=public --add-masquerade --permanent
    ```
@@ -142,16 +194,16 @@ CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener fire
  sudo firewall-cmd --reload
    ```
 
-##INSTALACIÓN DE DOCKER-COMPOSE
-Ahora instalamos  Docker compose, utilidad que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
+## INSTALACIÓN DE DOCKER-COMPOSE
+17. Ahora instalamos  Docker compose, utilidad que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
  ```shell
  sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
    ```
-   Ahora lo hacemos ejecutable:
+ 18.  Ahora lo hacemos ejecutable:
  ```shell
  sudo chmod +x /usr/local/bin/docker-compose
    ```
-   Lo comprobamos:
+ 19.  Lo comprobamos:
  ```shell
  docker-compose -v
    ```
@@ -160,14 +212,18 @@ Ahora instalamos  Docker compose, utilidad que permite desplegar el proyecto en 
  docker-compose version 1.27.4, build 40524192
    ```
    Que indica que funciona correctamente
-A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
+20. A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
 Cambiamos el permiso: 
-sudo chmod 666 /var/run/docker.sock
+ ```shell
+ sudo chmod 666 /var/run/docker.sock
+  ```
 ¡ESTO TENDREMOS QUE EJECUTARLO CADA VEZ QUE ARRAMQUEMOS DE NUEVO LA INSTANCIA DE LA MÁQUINA VIRTUAL!
-Ahora volvemos a probar docker run hello-world y ya funciona:
-docker run hello-world
+21. Ahora volvemos a probar docker run hello-world y comprobamos que funciona:
+ ```shell
+ docker run hello-world
+   ```
 Recibiremos como confirmación la siguiente respuesta:
-Unable to find image 'hello-world:latest' locally
+ ```shellUnable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 2db29710123e: Pull complete
 Digest: sha256:53f1bbee2f52c39e41682ee1d388285290c5c8a76cc92b42687eecf38e0af3f0
@@ -175,7 +231,7 @@ Status: Downloaded newer image for hello-world:latest
 
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
-
+   ```
 
 ---
 
@@ -222,7 +278,7 @@ A continuación, abriremos la URL de Kibana en un navegador (ver [supported brow
 - Password: changeme
 
 
-Volvemos a Kibana, y selecionamos en el menú de la izquierda `Logs`.
+Vamos a Kibana (http://localhost:80/), y selecionamos en el menú de la izquierda `Logs`.
 
 ![Logs Menu](./img/logs-icon.png)
 
@@ -302,7 +358,7 @@ srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=/pnfs/ft.uam.es/data/atlas/atlasd
 Es decir, queremos aplicarle las siguientes operaciones:
 1. Seleccionar las líneas que contengan "unavailable"
 2. Seleccionar las líneas que contengan "root" en la dirección url del mensaje
-3. Extraer diche url de cada mensaje, aladirle el prefijo xxx y que dicha concatenación esa el valor de un nuevo campo
+3. Extraer diche url de cada mensaje, aladirle el prefijo "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
 4. Eliminar filas duplicadas
 
 En lenguaje Bash, se podría expresar así, ejecutando cada línea desde un fichero independiente:
@@ -469,7 +525,7 @@ Creando la pipeline de ingesta **logs-pipeline**, que usaremos en el próximo ap
 
 ## Configuracion de Filebeat
 
-Ahora tenemos que indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, editaremos el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` descomentaremos la línea `pipeline: logs-pipeline`.
+Ahora tenemos que indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, hemos editado el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` hemos descomentado la línea `pipeline: logs-pipeline`.
 
 ```yaml
 output.elasticsearch:
@@ -481,7 +537,7 @@ output.elasticsearch:
 
 ## Ingesta de logs estructurados
 
-Y arrancar de nuevo `filebeat`.
+Arrancamos de nuevo `filebeat`.
 
 ```shell
 docker-compose up -d
