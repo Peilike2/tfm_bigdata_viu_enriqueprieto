@@ -586,25 +586,16 @@ Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
 
 ![Discover Filebeat](./img/discover-filebeat.png)
 
-Es posible usar la barra de búsqueda para filtrar nuestros datos. Por ejemplo, seleccionar `event_data:` y nos proporcionará sugerencias para filtrar la búsqueda. En el ejemplo, podemos filtrar por `event_data: "ID222" or event_data: "ID638"`
-
+Usamos la barra de búsqueda para filtrar nuestros datos. filtramos por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
+(CAMBIAR IMAGEN)
 ![Discover KQL](./img/discover-kql.png)
-
+(CAMBIAR IMAGEN)
 ![Discover KQL](./img/discover-kql-2.png)
 
 El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/7.3/kuery-query.html).
 
-**Eliminamos** el filtro de las búsquedas para recuperar todos los datos.
 
-Finalmente, vamos a crear una tabla para utilizarla en la construcción del Dashboard en el siguiente apartado. Queremos una vista que nos muestre `host_name` y `process_name`. En la lista de campos disponibles, localizamos esos campos y pulsamos el botón azul `add` para ambos.
-
-![Search Add](./img/search-add.png)
-
-El resultado será una tabla como la siguiente.
-
-![Search Table](./img/search-table.png)
-
-Pulsaremos el botón `Save` en la barra superior y guardaremos la búsqueda con el nombre `[Filebeat] Host/Process`
+Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el nombre `[Filebeat] Host/Process`
 
 ![Save Search](./img/save-search.png)
 
