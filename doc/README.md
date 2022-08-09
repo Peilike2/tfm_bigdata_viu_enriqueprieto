@@ -25,7 +25,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 
 <a name="item1"></a> [Volver a Índice](#indice)
  ### 1. Requisitos y asunciones
-- Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](./.env).
+- Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](../.env).
 - Docker y Docker Compose. Se ha probado con docker versión 19.03.2 y docker-compose 1.24.1.
   - Usuarios de Windows y Mac users tendrán Compose instalado automáticamente con Docker para [Windows](https://docs.docker.com/docker-for-windows/install/)/[Mac](https://docs.docker.com/docker-for-mac/install/).
   - Los usuarios de Linux puede leer las [instrucciones de instalación](https://docs.docker.com/compose/install/#install-compose) o pueden instalar vía `pip`:
