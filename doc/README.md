@@ -43,34 +43,33 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 ```
 sysctl -w vm.max_map_count=262144
 ```
+- Para iniciar el stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
+
 
 ---
 
 <a name="item2"></a> [Volver a Índice](#indice)
  ### 2. Instalación del Stack Elastic
- 
-
-
-En este apartado vamos a arrancar el stack elastic definido en [docker-compose.yml](../../docker-compose.yml).
-
+Trataremos de instalar los servicios necesarios para lograr la siguiente estructura de ejecución: 
 ![Elastic Stack](./img/enri_elastic-stack.png)
 
-El objetivo consiste en:
-xxx
-xxx
-xxx
+Para ello este apartado efectuaremos lo siguente:
+ - Instalar un conjunto de contenedores en los que se encuentra elasticsearch, kibana y filebeat
+ - Arrancar dichos servicios, comprobando que funcionan correctamente
+ - Probar explorando Kibana [^DiscoverKibana]
 
-Probar explorando Kibana [^DiscoverKibana]. 
-
-Para ello, ejecutaremos desde el raíz del proyecto:
+## INSTALACIÓN DEL STACK
+Comenzamos ejecutando desde el raíz del proyecto:
 
 ```shell
 docker-compose up -d
 ```
+Con ello instalamos el stack elastic definido en [docker-compose.yml](../../docker-compose.yml).
 
+## COMPROBACIONES
 Ejecutaremos `docker ps` para comprobar que tenemos 3 contenedores en estado healthy (filebeat, kibana, elasticsearch).
 
-Podemos también comprobar en los logs si han arrancado correctamente.
+Podemos también comprobar, en los logs de los respectivos servicios, si han arrancado correctamente.
 
 ```shell
 docker logs -f elasticsearch
@@ -78,49 +77,13 @@ docker logs -f kibana
 docker logs -f filebeat
 ```
 
+## Visualización vía Logs UI
 A continuación, abriremos la URL de Kibana en un navegador (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 
 - http://localhost:5601/
 - Usuario: elastic
 - Password: changeme
 
- 
-El proceso buscado es el siguiente:
-![Elastic Stack](./img/elastic-stack.png)
-
-Cremos una carpeta test en el raíz del proyecto:
-
-```shell
-mkdir test
-```
-
-Y ejecutaremos el siguiente comando para empezar a generar logs dentro de la carpeta test.
-
-```shell
-docker run -it --name flog_json --rm immavalls/flog:1.0 -l -f rfc5424 -y json -d 1 -s 1 > ./test/sample-json-logs.log
-```
-
-Si queremos parar la generación de logs, bastará con ejecutar `Ctrl-C` y parar el contenedor docker que está generando logs.
-
-Por ahora, sin parar el contenedor, abriendo otro terminal comprobemos que se estan generando logs cada segundo.
-
-```
-tail -f ./test/sample-json-logs.log
-```
-
-Paramos este tail con `Ctrl-C`, y arrancamos filebeat.
-
-```shell
-docker-compose up -d
-```
-
-Comprobamos que filebeat arranca bien:
-
-```shell
-docker logs -f filebeat
-```
-
-## Visualización vía Logs UI
 
 Volvemos a Kibana, y selecionamos en el menú de la izquierda `Logs`.
 
@@ -155,13 +118,7 @@ Podemos igualmente usar la barra de búsqueda superior para filtrar los logs. En
 ![Logs Search](./img/logs-view-search-1.png)
 ![Logs Search](./img/logs-view-search-2.png)
 
-Finalmente, paramos el contenedor que nos está generando logs, con `Ctrl-C` en el terminal dónde lo arrancamos con `docker run ...`. O directamente ejecutando:
-
-```shell
-docker stop flog_json
-```
-
-Para pasar al siguiente apartado, pararemos también filebeat ejecutando:
+Para pasar al siguiente apartado, pararemos filebeat ejecutando:
 
 ```shell
 docker-compose stop filebeat
@@ -200,17 +157,18 @@ o:
 
 El documento que hemos acabado guardando en Elasticsearch tiene un campo `timestamp` con la fecha de ingesta, y un segundo campo `message` con el mensaje completo del log.
 
-Ahora queremos separar el contenido de este campo `message`, de forma que podamos explotar obtener el `nombre del proceso`, el `nombre del host`, etc. Es decir, darle estructura a los datos que nos llegan.
-El mensaje de ejemplo antrior debería transformarse en el siguiente:
+Ahora queremos separar el contenido de este campo `message`, de forma que podamos explotar obtener el `campo01`, el `campo02`, etc. Es decir, darle estructura a los datos que nos llegan.
+El mensaje de ejemplo anterior debería transformarse en el siguiente:
+```
 srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=/pnfs/ft.uam.es/data/atlas/atlasdatadisk/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
-
+```
 Es decir, queremos aplicarle las siguientes operaciones:
-1. - Seleccionar las líneas que contengan "unavailable"
-2. - Seleccionar las líneas que contengan "root" en la dirección url del mensaje
-3. - Extraer diche url de cada mensaje, aladirle el prefijo xxx y que dicha concatenación esa el valor de un nuevo campo
-4. - Eliminar filas duplicadas
+1. Seleccionar las líneas que contengan "unavailable"
+2. Seleccionar las líneas que contengan "root" en la dirección url del mensaje
+3. Extraer diche url de cada mensaje, aladirle el prefijo xxx y que dicha concatenación esa el valor de un nuevo campo
+4. Eliminar filas duplicadas
 
-En lenguaje Bash, se podría expresar así, ejecutando cada línea de forma independiente:
+En lenguaje Bash, se podría expresar así, ejecutando cada línea desde un fichero independiente:
 ```
 cat 01_srm-grid002Domain.log | grep unavailable > 02a_perdidos_conysinpool.txt
 cat 02a_perdidos_conysinpool.txt | grep pool.root > 02b_perdidos.txt
@@ -227,39 +185,10 @@ Ejemplo de referencia multilínea [^nota1].
 
 
 
-Así podremos agrupar valores similares, visualizarlos, y explotar toda la potencia de nuestros logs. Nos permitirá contestar preguntas como ¿Cuáles son los nombre de host más habituales (`customere-services.org`, `nationalviral.io`?)? ¿Y los ids de proceso?
+Así podremos agrupar valores similares, visualizarlos, y explotar toda la potencia de nuestros logs. Nos permitirá contestar preguntas como ¿Cuáles son los errores más habituales?¿cuánta es su repetición? ¿En qué momentosa se producen? (`campo 01`, `campo02`, ...).
 
 Para ello, necesitaremos conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
 
-En función de qué aventura has elegido, selecciona el siguiente paso:
-
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
-Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
- 
 [Subir](#top)
 
 ---
@@ -270,20 +199,28 @@ En este punto, el documento que llega a elastic tiene este aspecto:
 
 ```json
 {"timestamp" : 1569846065739,
-"message" : "2019-09-30T12:21:04.702Z leadengage.info omnis 7009 ID418 - Connecting the microchip won't do anything, we need to override the auxiliary PNG protocol!"}
+"message" : "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=/pnfs/ft.uam.es/data/atlas/atlasdatadisk/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"}
 ```
 
 Y nos gustaría que en elastic se guardara como:
 
 ```json
 {
-          "process_id" : "7009",
-          "message_content" : "Connecting the microchip won't do anything, we need to override the auxiliary PNG protocol!",
-          "@timestamp" : "2019-09-30T12:21:04.702Z",
-          "process_name" : "omnis",
-          "message_id" : "ID418",
-          "event_data" : "-",
-          "host_name" : "leadengage.info",
+          "@timestamp" : "30 Dec 2020 01:56:30",
+          "enri_campo02" : "()",
+          "enri_campo03" : "[3Bs:6871:srm2:prepareToGet:-1093078942:-1093078941 3Bs:6871:srm2:prepareToGet",
+          "enri_campo04" : "[3Bs:6871:srm2:prepareToGet",
+          "enri_campo05" : "SRM-grid002]",
+          "enri_campo06" : "Pinning",
+          "enri_campo07" : "failed",
+          "enri_campo08" : "for",
+          "enri_campo09" : "/pnfs/ft.uam.es/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input",
+          "enri_campo010" : "(File",
+          "enri_campo011" : "is ",
+          "enri_campo012" : "unavailable.)",
+          "enri_campo013" : "",
+          "enri_prefifo" : "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=",
+          "enri_prefijo_mas_ruta" : "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=",
           "timestamp" : 1569846065739
 }
 ```
@@ -292,15 +229,14 @@ Para realizar esta transformación, recurriremos a las [pipelines](https://www.e
 
 Dado que tenemos un cluster elasticsearch con un sólo nodo, este nodo realizará todos los roles (master, data, ingest, etc.). Más información sobre roles de los nodos en la [documentación](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/modules-node.html).
 
-Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para pre-procesar los documentos antes de almacenarlos. Con una pipeline, podemos parsear, transformar y enriquecer los datos de entrada. Se trata de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
+Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, podemos analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
 
 ![Ingest pipeline](./img/ingest-pipeline.png)
 
 En este apartado realizaremos:
 
-1. Ingesta de logs estruturados usando una pipeline de ingesta en elasticsearch.
+1. Ingesta de logs estruturados usando la pipeline de ingesta de elasticsearch.
 2. Visualización de logs en Kibana Discover.
-3. Creación de un Dashboard simple en Kibana.
 
 ## Creación de la pipeline de ingesta
 
@@ -356,12 +292,33 @@ Una vez comprobamos que la pipeline de ingesta funciona según deseamos, la dare
 ```json
 PUT _ingest/pipeline/logs-pipeline
 {
-  "description": "Pipeline para ingesta de logs",
+  "description": "Pipeline para TFM",
   "processors": [
     {
       "dissect": {
         "field": "message",
-        "pattern": "%{@timestamp} %{host_name} %{process_name} %{process_id} %{message_id} %{event_data} %{message_content}"
+        "pattern": "%{@timestamp} %{enri_campo02} %{enri_campo03} %{enri_campo04} %{enri_campo05} %{enri_campo06} %{enri_campo07} %{enri_campo08} %{enri_campo09} %{enri_campo10} %{enri_campo11} %{enri_campo12}"
+      }
+    },
+    {
+      "set": {
+        "field": "enri_prefijo",
+        "value": "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN="
+      }
+    },
+   {
+      "append": {
+        "field": "enri_prefijo_mas_ruta",
+        "value": [
+          "{{enri_prefijo}}",
+          "{{enri_campo12}}"
+        ]
+      }
+    },
+   {
+      "join": {
+        "field": "enri_prefijo_mas_ruta",
+        "separator": ""
       }
     },
     {
@@ -390,12 +347,6 @@ output.elasticsearch:
 ```
 
 ## Ingesta de logs estructurados
-
-Ya estamos listos para arrancar de nuevo nuestro generador de logs:
-
-```shell
-docker run -it --name flog_json --rm immavalls/flog:1.0 -l -f rfc5424 -y json -d 1 -s 1 > ./test/sample-json-logs.log
-```
 
 Y arrancar de nuevo `filebeat`.
 
