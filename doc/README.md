@@ -7,6 +7,7 @@ _Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en
 El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores._
 
 _En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic para ingesta de logs que permitan la observabilidad de un grupo de servidores._
+ ---
  
 <a name="indice"></a>
 ## Índice de contenidos
@@ -20,7 +21,9 @@ _En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacid
 * 5 [ Activación de acción](#item5) 
    - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
 * 6 [ Siguientes pasos](#item6)
-  
+
+---
+
 <a name="item1"></a> [Volver a Índice](#indice)
  ### 1. Requisitos y asunciones
 - Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](.env).
@@ -41,7 +44,10 @@ _En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacid
 ```
 sysctl -w vm.max_map_count=262144
 ```
- <a name="item2"></a> [Volver a Índice](#indice)
+
+---
+
+<a name="item2"></a> [Volver a Índice](#indice)
  ### 2. Instalación del Stack Elastic
  
 
@@ -176,6 +182,8 @@ Y borra el índice o índices `filebeat`.
  
 [Subir](#top)
  
+---
+
 <a name="item3"></a> [Volver a Índice](#indice)
 ### 3. Modelado Simple de Logs
 
@@ -254,7 +262,9 @@ Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)*
 Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**Creación de Pipeline sobre ingestión de datos con **[Filebeat](./filebeat.md)**
  
 [Subir](#top)
- 
+
+---
+
 <a name="item4"></a> [Volver a Índice](#indice)
 ### 4. Modelado Simple de Logs con Filebeat
 En este punto, el documento que llega a elastic tiene este aspecto:
@@ -459,22 +469,37 @@ Pulsaremos el botón `Save` en la barra superior y guardaremos la búsqueda con 
 
 ## Finalizamos
 
+---
+
 <a name="item5"></a> [Volver a Índice](#indice)
  ### 5. [ Activación de acción](#item5) 
    - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
+   - 
+   - 
+   - 
+   - 
+
+---
 
 <a name="item6"></a> [Volver a Índice](#indice)
  ### 6.  Siguientes pasos 
+   - 
+   - 
+   - 
+   - 
+   - 
+   - 
+   - 
+   -
+   -   
+   -   
 
-[Subir](#top)
 
-
-<a name="item1"></a> [Volver a Índice](#indice)
- ### 1. Requisitos y asunciones
-
+---
 [^nota1]: Cada línea extrade estas notas empicezan con doble espacio.  
   Esta línea empezó con doble espacio.
 [^nota2]: vista de [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana
 [^nota3]: Prueba
+
 [Subir](#top)
 
