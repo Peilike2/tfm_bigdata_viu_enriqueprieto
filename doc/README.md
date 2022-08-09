@@ -66,16 +66,16 @@ gcloud compute instances create enriqueprieto-instancia10 --project=tfm-elastic-
 - SE ABRE EN EL MISMO GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
 (AQUÍ IMAGEN)
 Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos en función del uso, para minimizar su coste:
-    ```shell
-NAME: enriqueprieto-centos8-2
-ZONE: europe-southwest1-a
-MACHINE_TYPE: e2-medium
-PREEMPTIBLE:
-INTERNAL_IP: 10.204.0.2
-EXTERNAL_IP: 34.175.205.191
-STATUS: RUNNING
-enrique@cloudshell:~ (tfm-elastic-cern-uam)$
-    ```
+  ```shell
+ NAME: enriqueprieto-centos8-2
+ ZONE: europe-southwest1-a
+ MACHINE_TYPE: e2-medium
+ PREEMPTIBLE:
+ INTERNAL_IP: 10.204.0.2
+ EXTERNAL_IP: 34.175.205.191
+ STATUS: RUNNING
+ enrique@cloudshell:~ (tfm-elastic-cern-uam)$
+  ```
 Creo una regla de firewall que permita salida de puerto 80
 Commando REST equivalente:
  ```shell
