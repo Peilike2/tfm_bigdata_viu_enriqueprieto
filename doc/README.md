@@ -343,13 +343,13 @@ Y borra el índice o índices `filebeat`.
 Ingestamos en elastic nuestros logs sin modelar, sin estructura. Es decir, dado un log con el formato:
 
 ```json
-{"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /pnfs/ft.uam.es/data/atlas/atlasdatadisk/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
+{"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
 ```
 
 o:
 
 ```
-27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /pnfs/ft.uam.es/data/atlas/atlasdatadisk/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)
+27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)
 ```
 
 El documento que hemos acabado guardando en Elasticsearch tiene un campo `timestamp` con la fecha de ingesta, y un segundo campo `message` con el mensaje completo del log.
@@ -357,12 +357,12 @@ El documento que hemos acabado guardando en Elasticsearch tiene un campo `timest
 Ahora queremos separar el contenido de este campo `message`, de forma que podamos explotar obtener el `campo01`, el `campo02`, etc. Es decir, darle estructura a los datos que nos llegan.
 El mensaje de ejemplo anterior debería transformarse en el siguiente:
 ```
-srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=/pnfs/ft.uam.es/data/atlas/atlasdatadisk/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
+srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
 ```
 Es decir, queremos aplicarle las siguientes operaciones:
 1. Seleccionar las líneas que contengan "unavailable"
 2. Seleccionar las líneas que contengan "root" en la dirección url del mensaje
-3. Extraer diche url de cada mensaje, aladirle el prefijo "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
+3. Extraer diche url de cada mensaje, aladirle el prefijo "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
 4. Eliminar filas duplicadas
 
 En lenguaje Bash, se podría expresar así, ejecutando cada línea desde un fichero independiente:
@@ -392,7 +392,7 @@ En este punto, el documento que llega a elastic tiene este aspecto:
 
 ```json
 {"timestamp" : 1569846065739,
-"message" : "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=/pnfs/ft.uam.es/data/atlas/atlasdatadisk/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"}
+"message" : "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"}
 ```
 
 Y nos gustaría que en elastic se guardara como:
@@ -407,13 +407,13 @@ Y nos gustaría que en elastic se guardara como:
           "enri_campo06" : "Pinning",
           "enri_campo07" : "failed",
           "enri_campo08" : "for",
-          "enri_campo09" : "/pnfs/ft.uam.es/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input",
+          "enri_campo09" : "/xxxx/xx.xxx.xx/data/ops/nagios-argo-mon.xxx.xxx-xxx.hr/arcce/srm-input",
           "enri_campo010" : "(File",
           "enri_campo011" : "is ",
           "enri_campo012" : "unavailable.)",
           "enri_campo013" : "",
-          "enri_prefifo" : "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=",
-          "enri_prefijo_mas_ruta" : "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=",
+          "enri_prefifo" : "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=",
+          "enri_prefijo_mas_ruta" : "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=",
           "timestamp" : 1569846065739
 }
 ```
