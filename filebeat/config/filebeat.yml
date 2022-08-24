@@ -12,7 +12,7 @@ output.elasticsearch:
   username: '${ES_USERNAME:elastic}'
   password: '${ES_PASSWORD:changeme}'
   #Siguiente línea descomentada para que ejecute la pipeline
-  pipeline: logs-pipeline
+  #pipeline: logs-pipeline
 
 xpack.monitoring.enabled: true
 logging.to_files: false
