@@ -76,7 +76,7 @@ Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos e
  STATUS: RUNNING
  enrique@cloudshell:~ (tfm-elastic-cern-uam)$
   ```
-Creo una regla de firewall que permita salida de puerto 80
+8. Creo una regla de firewall que permita salida de puerto 80
 Commando REST equivalente:
 
  ```shell
@@ -131,7 +131,7 @@ Esta es la respuesta REST:
   
 ## CONEXIÓN POR SSH
 Para transferir las claves ssh a la máquina virtual y conectarse:
-7. En la instancia, columna “Conectar” pinchar
+9. En la instancia, columna “Conectar” pinchar
 
  ```shell 
 SSH => abrir en otra ventana del navegador 
@@ -141,22 +141,22 @@ SSH => abrir en otra ventana del navegador
 gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --project "tfm-elastic-cern-uam"
     ```
 
-Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de la de Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejo en blanco.
-8. Probar su correcto funcionamiento:
+Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de la de Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejamos en blanco.
+Probamos su correcto funcionamiento:
  ```shell
 ls
 pwd
 whoami
   ```
-## INSTALACIÓN DE DOCKER  
-A continuación instalamos Docker como super usuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
+## INSTALACIÓN DE GIT Y DOCKER  
+A continuación instalamos Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
 
-9.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
+10.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
  ```shell
 sudo yum install git
   ```
 (yum es para que encuentre la última versión). Responder a la pregunta con Y(es)
-10. Comprobamos:
+11. Comprobamos:
  ```shell
 git --version 
   ```
@@ -164,11 +164,11 @@ Devuelve si está todo correcto:
  ```shell
 git version 2.31.1
   ```
-11. Una vez instalado el GIT, clonamos nuestro Git de github:
+12. Una vez instalado el GIT, clonamos nuestro Git de github:
  ```shell
 git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
   ```
-12.	Aseguramos el cumplimiento de requisitos de memoria máxima de linux antes de lanzar docker-compose:
+13.	Aseguramos el cumplimiento de requisitos de memoria máxima de linux antes de lanzar docker-compose:
  ```shell
  sudo sysctl -w vm.max_map_count=262144
   ```
@@ -177,20 +177,20 @@ git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
 Usaremos los comandos docker basicos https://dockerlabs.collabnix.com/docker/cheatsheet/ y docker-compose https://devhints.io/docker-compose
 Como editor de texto usamos vim.
 
-13. Instalamos Docker pero con “SUDO” delante:
+14. Instalamos Docker pero con “SUDO” delante:
  ```shell
  sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
    ```
-14. Instalamos el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
+15. Instalamos el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
  ```shell
  sudo dnf install docker-ce docker-ce-cli containerd.io
    ```
 
-15. Arrancamos el servicio Docker y lo añadimos al autorun:
+16. Arrancamos el servicio Docker y lo añadimos al autorun:
  ```shell
  sudo systemctl enable --now docker
    ```
-16. CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, necesitamos añadir una regla de enmascaramiento a él.
+17. CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, necesitamos añadir una regla de enmascaramiento a él.
  ```shell
  sudo firewall-cmd --zone=public --add-masquerade --permanent
    ```
@@ -203,11 +203,11 @@ Como editor de texto usamos vim.
  ```shell
  sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
    ```
- 18.  Ahora lo hacemos ejecutable:
+ 19.  Ahora lo hacemos ejecutable:
  ```shell
  sudo chmod +x /usr/local/bin/docker-compose
    ```
- 19.  Lo comprobamos:
+ 20.  Lo comprobamos:
  ```shell
  docker-compose -v
    ```
@@ -216,13 +216,13 @@ Como editor de texto usamos vim.
  docker-compose version 1.27.4, build 40524192
    ```
    Que indica que funciona correctamente
-20. A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
+21. A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
 Cambiamos el permiso: 
  ```shell
  sudo chmod 666 /var/run/docker.sock
   ```
 ¡ESTO TENDREMOS QUE EJECUTARLO CADA VEZ QUE ARRAMQUEMOS DE NUEVO LA INSTANCIA DE LA MÁQUINA VIRTUAL!
-21. Ahora volvemos a probar docker run hello-world y comprobamos que funciona:
+22. Ahora volvemos a probar docker run hello-world y comprobamos que funciona:
  ```shell
  docker run hello-world
    ```
@@ -250,23 +250,37 @@ Para ello este apartado efectuaremos lo siguente:
  - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana.
 
 ## INSTALACIÓN DEL STACK
-Vamos a /filebeat/config y allí aeguramos los permisos correspondientes:
+23. Vamos a /filebeat/config y allí aseguramos los permisos correspondientes:
 ```shell
 cd /filebeat/config/
 chmod go-w filebeat.yml
 ```
-después regresamos a la raíz del proyecto y ejecutamos:
-
+24. Después nos aseguramos del borrado de datos anteriores en caso de no ser la primera prueba y arrancamos los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello regresamos a la raíz del proyecto y ejecutamos:
 ```shell
 cd PWD
+docker-compose down -v
 docker-compose up -d
 ```
-Con ello instalamos el stack elastic definido en [docker-compose.yml](../../docker-compose.yml).
+A título informativo, se indican las distintas formas de detener y eliminar:
+```shell
+# Solamente detener los servicios:
+docker-compose stop
 
+# Detener y eliminar contenedores, redes,...:
+docker-compose down 
+
+# Parar y eliminar volúmenes (directorios donde se indica el guardado persistente de datos):
+docker-compose down --volumes 
+# Otra forma:
+docker-compose down -v
+
+# Parar y eliminar imágenes:
+docker-compose down --rmi <all|local> 
+```
 ## COMPROBACIONES
-Ejecutaremos `docker ps` para comprobar que tenemos 3 contenedores en estado healthy (filebeat, kibana, elasticsearch).
+25. Ejecutaremos `docker ps` para comprobar que tenemos 3 contenedores en estado healthy (filebeat, kibana, elasticsearch).
 
-Podemos también comprobar, en los logs de los respectivos servicios, si han arrancado correctamente.
+26. Podemos también comprobar si han arrancado correctamente, visualizando los respectivos logs de los distintos servicios:
 
 ```shell
 docker logs -f elasticsearch
@@ -275,61 +289,59 @@ docker logs -f filebeat
 ```
 
 ## Visualización vía Logs UI
-A continuación, abriremos la URL de Kibana en un navegador (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
+27. A continuación, abrimos en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 
 - http://localhost:80/
 - Usuario: elastic
 - Password: changeme
 
 
-Vamos a Kibana (http://localhost:80/), y selecionamos en el menú de la izquierda `Logs`.
+28. Selecionamos en el menú de la izquierda `Logs`.
+(AQUÍ IMAGEN)
 
 ![Logs Menu](./img/logs-icon.png)
 
-Veremos logs logs que están entrando en el sistema generados por Flog.
+29. Si pulsamos en la esquina superior derecha, `Stream Live`, se actualizarán los logs que llegaron a elasticsearch. En este caso no devería variar, al tratarse de la ingesta de un único fichero y no de una fuente continua de datos (stream)
 
-![Logs View](./img/logs-view.png)
-
-Si pulsamos en la esquina superior derecha, `Stream Live`, se irán actualizando los logs a medida que llegan a elasticsearch.
-
-También podemos modificar el tamaño de letra de los logs, si queremos hacer wrapping, etc. con la opción del menú `Customize`.
+30. También podemos modificar el tamaño de letra de los logs, si queremos hacer wrapping, etc. con la opción del menú `Customize`.
+(COMPROBAR ESTA IMAGEN)
 
 ![Logs Customization](./img/logs-view-custom.png)
 
-Pulsando en `Configuration`, se puede modificar que [índices](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/_basic_concepts.html#_index) de elasticsearch kibana nos va a mostrar, el campo a usar como `timestamp`, etc. Interesante en la configuración, ir a la segunda pestaña, `Log Columns`, donde podemos indicar qué campos queremos mostrar en la pantalla.
+31. Pulsando en `Configuration`, se puede modificar qué [índices](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/_basic_concepts.html#_index) de elasticsearch kibana nos va a mostrar, el campo a usar como `timestamp`, etc. Interesante en la configuración, ir a la segunda pestaña, `Log Columns`, donde podemos indicar qué campos queremos mostrar en la pantalla.
 
-Dado que no tenemos el campo `event.dataset`...
+32. Dado que no tenemos el campo `event.dataset`...
 
 ![Logs Configuration](./img/logs-view-config-1.png)
 
-lo podemos eliminar y guardar con `Update source`.
+33. ...lo podemos eliminar y guardar con `Update source`.
 
 ![Logs Configuration](./img/logs-view-config-2.png)
 
-A partir de aquí la vista de los logs presentará el siguiente aspecto.
+34. A partir de aquí la vista de los logs presentará el siguiente aspecto.
 
 ![Logs View](./img/logs-view-2.png)
 
-Podemos igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, buscamos el texto `override the driver` o `calculate`.
+35. Podemos igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, buscamos el texto `override the driver` o `calculate`.
 
 ![Logs Search](./img/logs-view-search-1.png)
 ![Logs Search](./img/logs-view-search-2.png)
 
-Para pasar al siguiente apartado, pararemos filebeat ejecutando:
+36. Para pasar al siguiente apartado, pararemos filebeat ejecutando:
 
 ```shell
 docker-compose stop filebeat
 ```
 
-Y en Kibana borraremos el índice generado para los logs de Filebeat. Para ello, selecciona en el menú izquierdo `Management`.
+37. Y en Kibana borraremos el índice generado para los logs de Filebeat. Para ello, selecciona en el menú izquierdo `Management`.
 
 ![Kibana Management](./img/management-icon.png)
 
-Selecciona `Index Management` en el grupo Elasticsearch.
+38. Seleccionamos `Index Management` en el grupo Elasticsearch.
 
 ![Index Management](./img/index-management.png)
 
-Y borra el índice o índices `filebeat`.
+39. Y borramos el índice o índices `filebeat`.
 
 ![Delete Index](./img/delete-filebeat.png)
  
@@ -341,13 +353,6 @@ Y borra el índice o índices `filebeat`.
 ### 3. Política de Logs
 
 Ingestamos en elastic nuestros logs sin modelar, sin estructura. Es decir, dado un log con el formato:
-
-```json
-{"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
-```
-
-o:
-
 ```
 27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)
 ```
@@ -356,24 +361,20 @@ El documento que hemos acabado guardando en Elasticsearch tiene un campo `timest
 
 Ahora queremos separar el contenido de este campo `message`, de forma que podamos explotar obtener el `campo01`, el `campo02`, etc. Es decir, darle estructura a los datos que nos llegan.
 El mensaje de ejemplo anterior debería transformarse en el siguiente:
+```json
+{"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
 ```
-srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
-```
+Es decir, aplicarle un valor de fecha a la línea completa, y esta dejarla entera en un único campo llamado "messagge"
+
 Es decir, queremos aplicarle las siguientes operaciones:
 1. Seleccionar las líneas que contengan "unavailable"
 2. Seleccionar las líneas que contengan "root" en la dirección url del mensaje
-3. Extraer diche url de cada mensaje, aladirle el prefijo "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
+3. Extraer dicha url de cada mensaje, aladirle el prefijo "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
+```
+srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
+```
 4. Eliminar filas duplicadas
 
-En lenguaje Bash, se podría expresar así, ejecutando cada línea desde un fichero independiente:
-```
-cat 01_srm-grid002Domain.log | grep unavailable > 02a_perdidos_conysinpool.txt
-cat 02a_perdidos_conysinpool.txt | grep pool.root > 02b_perdidos.txt
-cut -d ' ' -f 12 02b_perdidos.txt > 03_nombres_.txt
-nombres=$(cat 03_nombres.txt)
-for f in $nombres; do echo "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN=$f" >> "04_preparados.txt"; done
-cat 04_preparados.txt | sort | uniq > "05_listos.txt"
-```
 <!-- Esto es un comentario de prueba de Enrique -->
 
 Ejemplo de referencia multilínea [^nota1].  
@@ -389,7 +390,6 @@ Para ello necesitaremos modelar, es decir conocer la **estructura** de nuestros 
 <a name="item4"></a> [Volver a Índice](#indice)
 ### 4. Modelado Simple de Logs con Filebeat
 En este punto, el documento que llega a elastic tiene este aspecto:
-
 ```json
 {"timestamp" : 1569846065739,
 "message" : "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"}
@@ -420,7 +420,8 @@ Y nos gustaría que en elastic se guardara como:
 
 Para realizar esta transformación, recurriremos a las [pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/pipeline.html) de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest.html).
 
-Dado que tenemos un cluster elasticsearch con un sólo nodo, este nodo realizará todos los roles (master, data, ingest, etc.). Más información sobre roles de los nodos en la [documentación](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/modules-node.html).
+Dado que tenemos un cluster elasticsearch con un solo nodo, este nodo realizará todos los roles (master, data, ingest, etc.).
+(Más información sobre roles de los nodos en la [documentación](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/modules-node.html).
 
 Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, podemos analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
 
