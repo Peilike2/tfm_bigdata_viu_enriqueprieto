@@ -154,7 +154,7 @@ gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --pro
 
 Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de la de Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejamos en blanco.
 
-    ![AbrirSSH](./img/04_AbrirSSH.png)
+![AbrirSSH](./img/04_AbrirSSH.png)
 Probamos su correcto funcionamiento:
  ```shell
 ls
