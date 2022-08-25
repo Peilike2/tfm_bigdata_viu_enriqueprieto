@@ -86,7 +86,8 @@ Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos e
  enrique@cloudshell:~ (tfm-elastic-cern-uam)$
   ```
 
-    ![Instancia creada](./img/03_ArrancarInstancia.png)
+   ![Instancia creada](./img/03_ArrancarInstancia.png)
+   
 8. Creo una regla de firewall que permita salida de puerto 80
 Commando REST equivalente:
 
@@ -155,6 +156,7 @@ gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --pro
 Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de la de Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejamos en blanco.
 
 ![AbrirSSH](./img/04_AbrirSSH.png)
+
 Probamos su correcto funcionamiento:
  ```shell
 ls
@@ -257,6 +259,7 @@ This message shows that your installation appears to be working correctly.
 <a name="item2"></a> [Volver a Índice](#indice)
  ### 2. Instalación del Stack Elastic
 Trataremos de instalar los servicios necesarios para lograr la siguiente estructura de ejecución: 
+
 ![Elastic Stack](./img/enri_elastic-stack.png)
 
 Para ello este apartado efectuaremos lo siguente:
