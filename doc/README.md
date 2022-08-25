@@ -214,15 +214,15 @@ Como editor de texto usamos vim.
    ```
 
 ## INSTALACIÓN DE DOCKER-COMPOSE
-17. Ahora instalamos  Docker compose, utilidad que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
+18. Ahora instalamos  Docker compose, utilidad que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
  ```shell
  sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
    ```
- 19.  Ahora lo hacemos ejecutable:
+19.  Ahora lo hacemos ejecutable:
  ```shell
  sudo chmod +x /usr/local/bin/docker-compose
    ```
- 20.  Lo comprobamos:
+20.  Lo comprobamos:
  ```shell
  docker-compose -v
    ```
@@ -231,13 +231,16 @@ Como editor de texto usamos vim.
  docker-compose version 1.27.4, build 40524192
    ```
    Que indica que funciona correctamente
- 21. A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
+   
+21. A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en 
+https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
 Cambiamos el permiso: 
  ```shell
  sudo chmod 666 /var/run/docker.sock
   ```
 ¡ESTO TENDREMOS QUE EJECUTARLO CADA VEZ QUE ARRAMQUEMOS DE NUEVO LA INSTANCIA DE LA MÁQUINA VIRTUAL!
- 22. Ahora volvemos a probar docker run hello-world y comprobamos que funciona:
+
+22. Ahora volvemos a probar docker run hello-world y comprobamos que funciona:
  ```shell
  docker run hello-world
    ```
@@ -251,7 +254,7 @@ Status: Downloaded newer image for hello-world:latest
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
    ```
- 23. Personalización de docker-comose.yml
+23. Personalización de docker-comose.yml
  - Se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
  - En el apartado kibana se ha redirigido el puerto al 80 con "80:5601"
 ---
@@ -268,12 +271,12 @@ Para ello este apartado efectuaremos lo siguente:
  - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana.
 
 ## INSTALACIÓN DEL STACK
- 24. Vamos a /filebeat/config y allí aseguramos los permisos correspondientes:
+24. Vamos a /filebeat/config y allí aseguramos los permisos correspondientes:
 ```shell
 cd /filebeat/config/
 chmod go-w filebeat.yml
 ```
-24. Después nos aseguramos del borrado de datos anteriores en caso de no ser la primera prueba y arrancamos los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello regresamos a la raíz del proyecto y ejecutamos:
+25. Después nos aseguramos del borrado de datos anteriores en caso de no ser la primera prueba y arrancamos los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello regresamos a la raíz del proyecto y ejecutamos:
 ```shell
 cd PWD
 docker-compose down -v
@@ -298,16 +301,16 @@ docker-compose down --rmi <all|local>
 # Con "--remove-orphans" eliminamos contenedores creados anteriormente que ya no estén registrados en docker-compose.yml
 ```
 ## COMPROBACIONES
-25. Ejecutaremos `docker ps` para comprobar que tenemos 3 contenedores en estado healthy (filebeat, kibana, elasticsearch).
+26. Ejecutaremos `docker ps` para comprobar que tenemos 3 contenedores en estado healthy (filebeat, kibana, elasticsearch).
 
-26. Podemos también comprobar si han arrancado correctamente, visualizando los respectivos logs de los distintos servicios:
+27. Podemos también comprobar si han arrancado correctamente, visualizando los respectivos logs de los distintos servicios:
 
 ```shell
 docker logs -f elasticsearch
 docker logs -f kibana
 docker logs -f filebeat
 ```
-27. Por otro lado se puede comprobar la integridad de los yml con herramientas como esta: http://www.yamllint.com/
+28. Por otro lado se puede comprobar la integridad de los yml con herramientas como esta: http://www.yamllint.com/
 
 28. En caso de modificar el fichero de testeo, deberá asegurarse de que el sistema operativo Windows no le ha añadido caracteres ilegibles en UNIX, usando la siguiente instrucción:
 ```shell
@@ -316,59 +319,59 @@ dos2unix test/ficherolog.log
 Como alternativa se puede usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
 
 ## Visualización vía Logs UI
-27. A continuación, abrimos en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
+29. A continuación, abrimos en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 
 - http://localhost:80/
 - Usuario: elastic
 - Password: changeme
 
 
-28. Selecionamos en el menú de la izquierda `Logs`.
+30. Selecionamos en el menú de la izquierda `Logs`.
 (AQUÍ IMAGEN)
 
 ![Logs Menu](./img/logs-icon.png)
 
-29. Si pulsamos en la esquina superior derecha, `Stream Live`, se actualizarán los logs que llegaron a elasticsearch. En este caso no devería variar, al tratarse de la ingesta de un único fichero y no de una fuente continua de datos (stream)
+31. Si pulsamos en la esquina superior derecha, `Stream Live`, se actualizarán los logs que llegaron a elasticsearch. En este caso no devería variar, al tratarse de la ingesta de un único fichero y no de una fuente continua de datos (stream)
 
 30. También podemos modificar el tamaño de letra de los logs, si queremos hacer wrapping, etc. con la opción del menú `Customize`.
 (COMPROBAR ESTA IMAGEN)
 
 ![Logs Customization](./img/logs-view-custom.png)
 
-31. Pulsando en `Configuration`, se puede modificar qué [índices](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/_basic_concepts.html#_index) de elasticsearch kibana nos va a mostrar, el campo a usar como `timestamp`, etc. Interesante en la configuración, ir a la segunda pestaña, `Log Columns`, donde podemos indicar qué campos queremos mostrar en la pantalla.
+32. Pulsando en `Configuration`, se puede modificar qué [índices](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/_basic_concepts.html#_index) de elasticsearch kibana nos va a mostrar, el campo a usar como `timestamp`, etc. Interesante en la configuración, ir a la segunda pestaña, `Log Columns`, donde podemos indicar qué campos queremos mostrar en la pantalla.
 
-32. Dado que no tenemos el campo `event.dataset`...
+33. Dado que no tenemos el campo `event.dataset`...
 
 ![Logs Configuration](./img/logs-view-config-1.png)
 
-33. ...lo podemos eliminar y guardar con `Update source`.
+34. ...lo podemos eliminar y guardar con `Update source`.
 
 ![Logs Configuration](./img/logs-view-config-2.png)
 
-34. A partir de aquí la vista de los logs presentará el siguiente aspecto.
+35. A partir de aquí la vista de los logs presentará el siguiente aspecto.
 
 ![Logs View](./img/logs-view-2.png)
 
-35. Podemos igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, buscamos el texto `override the driver` o `calculate`.
+36. Podemos igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, buscamos el texto `override the driver` o `calculate`.
 
 ![Logs Search](./img/logs-view-search-1.png)
 ![Logs Search](./img/logs-view-search-2.png)
 
-36. Para pasar al siguiente apartado, pararemos filebeat ejecutando:
+37. Para pasar al siguiente apartado, pararemos filebeat ejecutando:
 
 ```shell
 docker-compose stop filebeat
 ```
 
-37. Y en Kibana borraremos el índice generado para los logs de Filebeat. Para ello, selecciona en el menú izquierdo `Management`.
+38. Y en Kibana borraremos el índice generado para los logs de Filebeat. Para ello, selecciona en el menú izquierdo `Management`.
 
 ![Kibana Management](./img/management-icon.png)
 
-38. Seleccionamos `Index Management` en el grupo Elasticsearch.
+39. Seleccionamos `Index Management` en el grupo Elasticsearch.
 
 ![Index Management](./img/index-management.png)
 
-39. Y borramos el índice o índices `filebeat`.
+40. Y borramos el índice o índices `filebeat`.
 
 ![Delete Index](./img/delete-filebeat.png)
  
