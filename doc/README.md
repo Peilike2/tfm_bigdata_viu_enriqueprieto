@@ -26,8 +26,10 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 <a name="item1"></a> [Volver a Índice](#indice)
  ### 1. Requisitos y asunciones
 - Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](../.env) para cambiar a la última versión 7:
-  ```shellvim .env
+  ```shell
+  vim .env
   ELK_VERSION=7.17.5
+  Ctrl+c
   !qw
   ```
 - Docker y Docker Compose. Se ha probado con docker versión 19.03.2 y docker-compose 1.24.1.
