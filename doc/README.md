@@ -25,43 +25,47 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 
 <a name="item1"></a> [Volver a Índice](#indice)
  ### 1. Requisitos y asunciones
-- Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](../.env) para cambiar a la última versión 7:
+- Se asume la instalación del entorno de desarrollo ELK en la plataforma Google Cloud Platform (GCP)
+- Se basa en la versión 7.17.5 del Stack Elastic (ELK). Configurada en el fichero [.env](../.env) para funcionar con la última versión 7:
   ```shell
   vim .env
   ELK_VERSION=7.17.5
   Ctrl+c
   !qw
   ```
-- Docker y Docker Compose. Se ha probado con docker versión 19.03.2 y docker-compose 1.24.1.
+- Instalación de Docker Compose. Se ha probado con  docker-compose 1.27.4
+  En el caso que se describe, desde Google Cloud Platform, se indica más adelante cómo se realiza. En cambio, para el caso de instalación local directa sería de la siguiente forma:
   - Usuarios de Windows y Mac users tendrán Compose instalado automáticamente con Docker para [Windows](https://docs.docker.com/docker-for-windows/install/)/[Mac](https://docs.docker.com/docker-for-mac/install/).
-  - Los usuarios de Linux puede leer las [instrucciones de instalación](https://docs.docker.com/compose/install/#install-compose) o pueden instalar vía `pip`:
+  - Los usuarios de Linux ejecutarán la siguiente instrucción para instalar vía `pip`, pudiendo seguir las [instrucciones de instalación](https://docs.docker.com/compose/install/#install-compose):
     ```shell
     pip install docker-compose
     ```
 
-- Un mínimo de 4GB de RAM para contenedores. Los usuarios de Mac y Windows deben configurar su máquina virtual Docker para disponer de ese mínimo.
+- Un mínimo de 4GB de RAM [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su máquina virtual Docker para disponer de ese mínimo de la siguiente manera:
 
     ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
 
-- Debido a que que por defecto la [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) no es suficiente, los usuarios de Linux deben ejecutar el siguiente comando como `root`:
+ Y los usuarios de Linux, en ese caso, deberían ejecutar el siguiente comando como `root`:
 
 ```
 sysctl -w vm.max_map_count=262144
 ```
-- Para iniciar el stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
-- Asumimos la instalación del entorno de desarrollo ELK en la plataforma Google Cloud Platform (GCP)
+Sin embargo se indica más adelante cómo proceder para el caso que nos ocupa, desde GCP.
+- Sistema operatovo probado CentOS 8
+- Por último, para iniciar el stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
+
 
 ## Entorno Desarrollo ELK en GCP 
-La plataforma permite actualmente utilizarla gratuitamente 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se puede utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud que tengamos acceso, o con máquina virtual en local como VirtualBox, que descarto por la excesiva capacidad de memoria que requiere.
+La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se pueden utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud de los que se disponga acceso, o con máquina virtual en local como VirtualBox, que se ha descartsdo por la excesiva capacidad de memoria que requiere.
 
 1.	https://console.cloud.google.com/
-2.	Pinchamos en "Crear Proyecto" => ·Compute engine· + ·Instancias de VM· + ·Habilitar Engine API" 
-3.	Creo una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB parecen suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
+2.	Click en "Crear Proyecto" => ·Compute engine· + ·Instancias de VM· + ·Habilitar Engine API" 
+3.	Se crea una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB son suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
 
     ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
-5.	Seleccionamos "Centos 8".
-6.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 por comodidad de uso.
-7.	elegimos "Disco persistente equilibrado" y subimos memoria a 100GB. 
+5.	Se selecciona "Centos 8".
+6.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 (por mayor conveniencia de uso).
+7.	Elección de "Disco persistente equilibrado" y fijado de memoria a 100GB. 
 
     ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
 9.	Permitir http y https
@@ -74,7 +78,7 @@ gcloud compute instances create enriqueprieto-instancia10 --project=tfm-elastic-
  y pulsando en “ejecutar en cloud shell” en vez de “copiar en portapapeles” (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
 - SE ABRE EN EL MISMO GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
 (AQUÍ IMAGEN)
-Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos en función del uso, para minimizar su coste:
+Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o detener en función del uso, procurando minimizar su coste:
  ```shell
  NAME: enriqueprieto-centos8-2
  ZONE: europe-southwest1-a
@@ -88,7 +92,7 @@ Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos e
 
    ![Instancia creada](./img/03_ArrancarInstancia.png)
    
-8. Creo una regla de firewall que permita salida de puerto 80
+8. A continuación se crea una regla de firewall que permita salida de puerto 80
 Commando REST equivalente:
 
  ```shell
