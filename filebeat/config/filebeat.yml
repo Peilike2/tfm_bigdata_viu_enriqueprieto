@@ -2,7 +2,7 @@ filebeat.inputs:
 - type: log
   enabled: true
   paths:
-    - /var/log/sample-json-logs.log
+    - /var/log/srm-grid002Domain_original_extracto_unix.log
   json.keys_under_root: true
   json.add_error_key: true
   json.message_key: message
