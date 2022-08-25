@@ -60,7 +60,9 @@ La plataforma permite actualmente utilizarla gratuitamente 300$ durante 90 dias,
 5.	Seleccionamos "Centos 8".
 6.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 por comodidad de uso.
 7.	elegimos "Disco persistente equilibrado" y subimos memoria a 100GB. 
-8.	Permitir http y https
+
+    ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
+9.	Permitir http y https
 (AQUÍ IMAGEN)
 (AQUÍ IMAGEN)
 - Esto luego se puede ejecutar aquí mismo con este comando:
@@ -81,6 +83,8 @@ Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos e
  STATUS: RUNNING
  enrique@cloudshell:~ (tfm-elastic-cern-uam)$
   ```
+  
+      ![Instancia creada](./img/03_ArrancarInstancia.png)
 8. Creo una regla de firewall que permita salida de puerto 80
 Commando REST equivalente:
 
@@ -147,6 +151,8 @@ gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --pro
     ```
 
 Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de la de Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejamos en blanco.
+
+    ![Abrir SSH](./img/04_AbrirSSH.png)
 Probamos su correcto funcionamiento:
  ```shell
 ls
@@ -381,6 +387,7 @@ El mensaje de ejemplo anterior debería transformarse en el siguiente:
 {"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
 ```
 Es decir, aplicarle un valor de fecha a la línea completa, y esta dejarla entera en un único campo llamado "messagge"
+    ![IngestaSimpleFilebeat](./img/05_IngestaSimpleDeMensajesFilebeat.png)
 
 Es decir, queremos aplicarle las siguientes operaciones:
 1. Seleccionar las líneas que contengan "unavailable"
