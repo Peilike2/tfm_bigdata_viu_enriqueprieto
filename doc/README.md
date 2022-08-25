@@ -231,13 +231,13 @@ Como editor de texto usamos vim.
  docker-compose version 1.27.4, build 40524192
    ```
    Que indica que funciona correctamente
-21. A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
+ 21. A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
 Cambiamos el permiso: 
  ```shell
  sudo chmod 666 /var/run/docker.sock
   ```
 ¡ESTO TENDREMOS QUE EJECUTARLO CADA VEZ QUE ARRAMQUEMOS DE NUEVO LA INSTANCIA DE LA MÁQUINA VIRTUAL!
-22. Ahora volvemos a probar docker run hello-world y comprobamos que funciona:
+ 22. Ahora volvemos a probar docker run hello-world y comprobamos que funciona:
  ```shell
  docker run hello-world
    ```
@@ -251,7 +251,7 @@ Status: Downloaded newer image for hello-world:latest
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
    ```
-23. Personalización de docker-comose.yml
+ 23. Personalización de docker-comose.yml
  - Se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
  - En el apartado kibana se ha redirigido el puerto al 80 con "80:5601"
 ---
@@ -268,7 +268,7 @@ Para ello este apartado efectuaremos lo siguente:
  - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana.
 
 ## INSTALACIÓN DEL STACK
-23. Vamos a /filebeat/config y allí aseguramos los permisos correspondientes:
+ 24. Vamos a /filebeat/config y allí aseguramos los permisos correspondientes:
 ```shell
 cd /filebeat/config/
 chmod go-w filebeat.yml
