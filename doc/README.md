@@ -146,45 +146,45 @@ Para transferir las claves ssh a la máquina virtual y conectarse:
 
  ```shell 
 SSH => abrir en otra ventana del navegador 
-  ```
+ ```
 (Esto puede ser guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina:
-    ```shell
+ ```shell
 gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --project "tfm-elastic-cern-uam"
-    ```
+ ```
 
 Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de la de Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejamos en blanco.
 
-    ![Abrir SSH](./img/04_AbrirSSH.png)
+    ![AbrirSSH](./img/04_AbrirSSH.png)
 Probamos su correcto funcionamiento:
  ```shell
 ls
 pwd
 whoami
-  ```
+ ```
 ## INSTALACIÓN DE GIT Y DOCKER  
 A continuación instalamos Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
 
 10.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
  ```shell
 sudo yum install git
-  ```
+ ```
 (yum es para que encuentre la última versión). Responder a la pregunta con Y(es)
 11. Comprobamos:
  ```shell
 git --version 
-  ```
+ ```
 Devuelve si está todo correcto:
  ```shell
 git version 2.31.1
-  ```
+ ```
 12. Una vez instalado el GIT, clonamos nuestro Git de github:
  ```shell
 git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
-  ```
+ ```
 13.	Aseguramos el cumplimiento de requisitos de memoria máxima de linux antes de lanzar docker-compose:
  ```shell
  sudo sysctl -w vm.max_map_count=262144
-  ```
+ ```
 (¡ESTO HABRÁ QUE EJECUTARLO CADA VEZ QUE SE REINICIE LA INSTANCIA!)
 
 Usaremos los comandos docker basicos https://dockerlabs.collabnix.com/docker/cheatsheet/ y docker-compose https://devhints.io/docker-compose
