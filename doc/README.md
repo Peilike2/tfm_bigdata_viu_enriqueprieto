@@ -55,6 +55,7 @@ La plataforma permite actualmente utilizarla gratuitamente 300$ durante 90 dias,
 1.	https://console.cloud.google.com/
 2.	Pinchamos en "Crear Proyecto" => ·Compute engine· + ·Instancias de VM· + ·Habilitar Engine API" 
 3.	Creo una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB parecen suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
+
     ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
 5.	Seleccionamos "Centos 8".
 6.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 por comodidad de uso.
