@@ -51,8 +51,10 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 sysctl -w vm.max_map_count=262144
 ```
 Sin embargo se indica más adelante cómo proceder para el caso que nos ocupa, desde GCP.
-- Sistema operatovo probado CentOS 8
-- Por último, para iniciar el stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
+- Sistema operativo probado CentOS 8
+- Git version 2.31.1
+- Kibana 7.3
+- Por último, para iniciar el Stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
 
 
 ## Entorno Desarrollo ELK en GCP 
@@ -144,72 +146,78 @@ Esta es la respuesta REST:
   "selfLink": "projects/tfm-elastic-cern-uam/global/firewalls/enri-abrir-puerto80-salida"
 }
   ```
-  
+8.b. Se comprueba que kibana está abierto en el puerto 80 con: 
+ ```shell
+curl localhost:80
+ ```
+Se confirma que no da error como resultado, y a continuación desde cualquier navegador se utiliza la ip que proporciona la plataforma, y dicho puerto 80:
+(AQUÍ IMAGEN)
+
+
 ## CONEXIÓN POR SSH
 Para transferir las claves ssh a la máquina virtual y conectarse:
-9. En la instancia, columna “Conectar” pinchar
+9. En la instancia, columna “Conectar” se cliquea:
 
  ```shell 
 SSH => abrir en otra ventana del navegador 
  ```
-(Esto puede ser guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina:
+Esto puede ser guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina:
  ```shell
 gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --project "tfm-elastic-cern-uam"
  ```
 
-Y nos podemos conectar desde el propio Cloud Shell de Google cloud en vez de la de Windows. Nos crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que dejamos en blanco.
+La plataforma permite la conexión desde el propio Cloud Shell de Google cloud en vez de la de Windows. Crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que se deberá dejar en blanco.
 
 ![AbrirSSH](./img/04_AbrirSSH.png)
 
-Probamos su correcto funcionamiento:
+Se pueden ejecutar a continuaciónlos siguientes comandos para comprobar su correcto funcionamiento:
  ```shell
 ls
 pwd
 whoami
  ```
 ## INSTALACIÓN DE GIT Y DOCKER  
-A continuación instalamos Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
+A continuación se instalan Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
 
 10.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
  ```shell
 sudo yum install git
  ```
-(yum es para que encuentre la última versión). Responder a la pregunta con Y(es)
-11. Comprobamos:
+(yum se encarga de solicitar la última versión). Responder a la pregunta con Y(es)
+11. Se comprueba con lo siguiente:
  ```shell
 git --version 
  ```
-Devuelve si está todo correcto:
+Devolviendo, si está todo correcto:
  ```shell
 git version 2.31.1
  ```
-12. Una vez instalado el GIT, clonamos nuestro Git de github:
+12. Una vez instalado el GIT, se clonará el Git instalado previamente en github:
  ```shell
 git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
  ```
-13.	Aseguramos el cumplimiento de requisitos de memoria máxima de linux antes de lanzar docker-compose:
+13.	Antes de lanzar docker-compose se deberá asegurar el cumplimiento de requisitos de memoria máxima de linux, como se indicó en el apartado "requisitos":
  ```shell
  sudo sysctl -w vm.max_map_count=262144
  ```
-(¡ESTO HABRÁ QUE EJECUTARLO CADA VEZ QUE SE REINICIE LA INSTANCIA!)
+Lo cual habrá que ejecutar cada vez que se reinicie la instancia tras una parada.
 
-Usaremos los comandos docker basicos https://dockerlabs.collabnix.com/docker/cheatsheet/ y docker-compose https://devhints.io/docker-compose
-Como editor de texto usamos vim.
+A modo informativo, se usarán comandos docker basicos descritos en https://dockerlabs.collabnix.com/docker/cheatsheet/ además de los comandos de docker-compose detalados en https://devhints.io/docker-compose y como editor de texto se utiliza vim.
 
-14. Instalamos Docker pero con “SUDO” delante:
+14. Instalción de Docker, Deberá en este caso utilizarse “SUDO” delante:
  ```shell
  sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
    ```
-15. Instalamos el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
+15. Se instala el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
  ```shell
  sudo dnf install docker-ce docker-ce-cli containerd.io
    ```
 
-16. Arrancamos el servicio Docker y lo añadimos al autorun:
+16. Se procede a arrancar el servicio Docker y añadiéndolo al autorun:
  ```shell
  sudo systemctl enable --now docker
    ```
-17. CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, necesitamos añadir una regla de enmascaramiento a él.
+17. CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, se requiere añadir una regla de enmascaramiento hacia él.
  ```shell
  sudo firewall-cmd --zone=public --add-masquerade --permanent
    ```
@@ -218,37 +226,37 @@ Como editor de texto usamos vim.
    ```
 
 ## INSTALACIÓN DE DOCKER-COMPOSE
-18. Ahora instalamos  Docker compose, utilidad que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
+18. En este punto se instala  Docker-compose, servicio que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
  ```shell
  sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
    ```
-19.  Ahora lo hacemos ejecutable:
+19.  A continuación se le da carácter ejecutable:
  ```shell
  sudo chmod +x /usr/local/bin/docker-compose
    ```
-20.  Lo comprobamos:
+20.  Procediendo a su comprobación posterior:
  ```shell
  docker-compose -v
    ```
-   y nos responde:
+   obtniendo como respuesta de confirmación:
  ```shell
  docker-compose version 1.27.4, build 40524192
    ```
-   Que indica que funciona correctamente
+   lo cual indica que funciona correctamente.
    
-21. A continuación tratamos de evitar la denegación de servicio aplicando lo expuesto en 
+21. Seguidamente se evitará la denegación de servicio aplicando lo expuesto en 
 https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
-Cambiamos el permiso: 
+Para lo cual habrá que cambiar el siguiente permiso: 
  ```shell
  sudo chmod 666 /var/run/docker.sock
   ```
-¡ESTO TENDREMOS QUE EJECUTARLO CADA VEZ QUE ARRAMQUEMOS DE NUEVO LA INSTANCIA DE LA MÁQUINA VIRTUAL!
+Esto será preciso ejectutarlo cada vez que se arranque de nuevo la instancia de la máquina virtual.
 
-22. Ahora volvemos a probar docker run hello-world y comprobamos que funciona:
+22. Posteriormente se prueba ejecutando docker run hello-world y comprobandos que funciona:
  ```shell
  docker run hello-world
    ```
-Recibiremos como confirmación la siguiente respuesta:
+Recibiendo como confirmación la siguiente respuesta:
  ```shellUnable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 2db29710123e: Pull complete
@@ -259,28 +267,29 @@ Hello from Docker!
 This message shows that your installation appears to be working correctly.
    ```
 23. Personalización de docker-comose.yml
- - Se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
- - En el apartado kibana se ha redirigido el puerto al 80 con "80:5601"
+ - En dicho fichero de configuración del mencionado git, se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
+ - Además, en el apartado kibana se ha redirigido el puerto al 80 con "80:5601"
+ - TRas su edición, se puede comprobar la integridad de este y otros ficheros ".yml" con herramientas como esta online: http://www.yamllint.com/
 ---
 
 <a name="item2"></a> [Volver a Índice](#indice)
  ### 2. Instalación del Stack Elastic
-Trataremos de instalar los servicios necesarios para lograr la siguiente estructura de ejecución: 
+En este apartado se instalan los servicios necesarios para lograr la siguiente estructura de ejecución: 
 
 ![Elastic Stack](./img/enri_elastic-stack.png)
 
-Para ello este apartado efectuaremos lo siguente:
+Para ello se efectuarán las siguentes acciones:
  - Instalar un conjunto de contenedores en los que se encuentra elasticsearch, kibana y filebeat
  - Arrancar dichos servicios, comprobando que funcionan correctamente
  - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana.
 
 ## INSTALACIÓN DEL STACK
-24. Vamos a /filebeat/config y allí aseguramos los permisos correspondientes:
+24. Se procede al aseguramiento de los permisos correspondientes a /filebeat/config :
 ```shell
 cd /filebeat/config/
 chmod go-w filebeat.yml
 ```
-25. Después nos aseguramos del borrado de datos anteriores en caso de no ser la primera prueba y arrancamos los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello regresamos a la raíz del proyecto y ejecutamos:
+25. Después se garantiza el borrado de datos anteriores (para el caso de no ser la primera prueba) a la vez que el arranque de los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello se accede a la raíz del proyecto y se ejecuta lo siguiente:
 ```shell
 cd PWD
 docker-compose down -v
@@ -305,22 +314,22 @@ docker-compose down --rmi <all|local>
 # Con "--remove-orphans" eliminamos contenedores creados anteriormente que ya no estén registrados en docker-compose.yml
 ```
 ## COMPROBACIONES
-26. Ejecutaremos `docker ps` para comprobar que tenemos 3 contenedores en estado healthy (filebeat, kibana, elasticsearch).
+26. Se ejecuta `docker ps` para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch).
 
-27. Podemos también comprobar si han arrancado correctamente, visualizando los respectivos logs de los distintos servicios:
+27. Además se comprueba si han arrancado correctamente, visualizando los respectivos logs de los mencionados servicios:
 
 ```shell
 docker logs -f elasticsearch
 docker logs -f kibana
 docker logs -f filebeat
 ```
-28. Por otro lado se puede comprobar la integridad de los yml con herramientas como esta: http://www.yamllint.com/
+
 
 28. En caso de modificar el fichero de testeo, deberá asegurarse de que el sistema operativo Windows no le ha añadido caracteres ilegibles en UNIX, usando la siguiente instrucción:
 ```shell
-dos2unix test/ficherolog.log
+dos2unix test/srm-grid002Domain_original_extracto_unix.log
 ```
-Como alternativa se puede usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
+Como alternativa se pueden usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
 
 ## Visualización vía Logs UI
 29. A continuación, abrimos en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
