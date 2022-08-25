@@ -11,7 +11,7 @@ output.elasticsearch:
   hosts: ["elasticsearch:9200"]
   username: '${ES_USERNAME:elastic}'
   password: '${ES_PASSWORD:changeme}'
-  #Siguiente línea descomentada para que ejecute la pipeline
+  #Descomentar la siguiente línea descomentada para que ejecute la pipeline
   #pipeline: logs-pipeline
 
 xpack.monitoring.enabled: true
