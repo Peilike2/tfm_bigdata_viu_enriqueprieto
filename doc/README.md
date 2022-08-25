@@ -39,7 +39,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 
 - Un mínimo de 4GB de RAM para contenedores. Los usuarios de Mac y Windows deben configurar su máquina virtual Docker para disponer de ese mínimo.
 
-    ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
+    ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
 
 - Debido a que que por defecto la [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) no es suficiente, los usuarios de Linux deben ejecutar el siguiente comando como `root`:
 
@@ -55,7 +55,7 @@ La plataforma permite actualmente utilizarla gratuitamente 300$ durante 90 dias,
 1.	https://console.cloud.google.com/
 2.	Pinchamos en "Crear Proyecto" => ·Compute engine· + ·Instancias de VM· + ·Habilitar Engine API" 
 3.	Creo una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB parecen suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
-    ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
+    ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
 5.	Seleccionamos "Centos 8".
 6.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 por comodidad de uso.
 7.	elegimos "Disco persistente equilibrado" y subimos memoria a 100GB. 
