@@ -332,32 +332,36 @@ dos2unix test/srm-grid002Domain_original_extracto_unix.log
 Como alternativa se pueden usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
 
 ## Visualización vía Logs UI
-29. A continuación, abrimos en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
-
+29. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
+Si se estuviera trabajando en local sería:
 - http://localhost:80/
+Pero al tratarse de acceso desde otra m´quina, se utiliza la ip proporcionada por la plataforma, y dicho puerto 80según se configuró anteriormente en el apartado kibana del fichero de configuración docker-compose.yml: 
+https://xxx.xxx.xxx:80/
 - Usuario: elastic
 - Password: changeme
+(AQUÍ IMAGEN)
 
 
-30. Selecionamos en el menú de la izquierda `Logs`.
+30. Dentro de la interfaz de kibana que aparee en el navegador, se selecciona en el menú de la izquierda el apartado `Logs`.
 (AQUÍ IMAGEN)
 
 ![Logs Menu](./img/logs-icon.png)
 
-31. Si pulsamos en la esquina superior derecha, `Stream Live`, se actualizarán los logs que llegaron a elasticsearch. En este caso no devería variar, al tratarse de la ingesta de un único fichero y no de una fuente continua de datos (stream)
+31. Para actualizar los logs que llegn a elasticsearch se pulsa en la esquina superior derecha, `Stream Live`. En este caso no debe variar, al tratarse de la ingesta de un único fichero y no de una fuente continua de datos (stream). Pero se debe busca a cambio el rango de fechas y horas que coincida con el de los datos ingestados
+(AQUÍ IAMAGEN)
 
-30. También podemos modificar el tamaño de letra de los logs, si queremos hacer wrapping, etc. con la opción del menú `Customize`.
+30. También se puede modificar el tamaño de letra de los logs, si se desea hacer wrapping, etc. con la opción del menú `Customize`.
 (COMPROBAR ESTA IMAGEN)
 
 ![Logs Customization](./img/logs-view-custom.png)
 
-32. Pulsando en `Configuration`, se puede modificar qué [índices](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/_basic_concepts.html#_index) de elasticsearch kibana nos va a mostrar, el campo a usar como `timestamp`, etc. Interesante en la configuración, ir a la segunda pestaña, `Log Columns`, donde podemos indicar qué campos queremos mostrar en la pantalla.
+32. Pulsando en `Configuration`, se puede modificar qué [índices](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/_basic_concepts.html#_index) de elasticsearch kibana se deben mostrar, el campo a usar como `timestamp`, etc. Interesante en la configuración, ir a la segunda pestaña, `Log Columns`, donde se puede indicar qué campos se desea mostrar en la pantalla.
 
-33. Dado que no tenemos el campo `event.dataset`...
+33. Dado que en este caso no se precisa el campo `event.dataset`...
 
 ![Logs Configuration](./img/logs-view-config-1.png)
 
-34. ...lo podemos eliminar y guardar con `Update source`.
+34. ...se puede eliminar y guardar con `Update source`.
 
 ![Logs Configuration](./img/logs-view-config-2.png)
 
@@ -365,12 +369,12 @@ Como alternativa se pueden usar herramientas online como esta: https://toolslick
 
 ![Logs View](./img/logs-view-2.png)
 
-36. Podemos igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, buscamos el texto `override the driver` o `calculate`.
+36. Se puede igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, se ha busado el texto `xxxxxxxx` o `xxxxxxxxxxxxxxxxx`.
 
 ![Logs Search](./img/logs-view-search-1.png)
 ![Logs Search](./img/logs-view-search-2.png)
 
-37. Para pasar al siguiente apartado, pararemos filebeat ejecutando:
+37. Para pasar al siguiente apartado, se procede a la detención de filebeat filebeat ejecutando:
 
 ```shell
 docker-compose stop filebeat
