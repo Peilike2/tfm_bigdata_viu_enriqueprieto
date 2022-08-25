@@ -11,7 +11,7 @@ PUT _ingest/pipeline/logs-pipeline
     {
       "set": {
         "field": "enri_prefijo",
-        "value": "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN="
+        "value": "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN="
       }
     },
    {
