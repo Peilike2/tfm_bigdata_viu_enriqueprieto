@@ -25,18 +25,21 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 
 <a name="item1"></a> [Volver a Índice](#indice)
  ### 1. Requisitos y asunciones
-- Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](../.env).
+- Se basa en la versión 7.17.5 del stack. Configurada en el fichero [.env](../.env) para cambiar a la última versión 7:
+  ```shellvim .env
+  ELK_VERSION=7.17.5
+  !qw
+  ```
 - Docker y Docker Compose. Se ha probado con docker versión 19.03.2 y docker-compose 1.24.1.
   - Usuarios de Windows y Mac users tendrán Compose instalado automáticamente con Docker para [Windows](https://docs.docker.com/docker-for-windows/install/)/[Mac](https://docs.docker.com/docker-for-mac/install/).
   - Los usuarios de Linux puede leer las [instrucciones de instalación](https://docs.docker.com/compose/install/#install-compose) o pueden instalar vía `pip`:
-  
     ```shell
     pip install docker-compose
     ```
 
 - Un mínimo de 4GB de RAM para contenedores. Los usuarios de Mac y Windows deben configurar su máquina virtual Docker para disponer de ese mínimo.
 
-    ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
+    ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
 
 - Debido a que que por defecto la [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) no es suficiente, los usuarios de Linux deben ejecutar el siguiente comando como `root`:
 
@@ -52,10 +55,11 @@ La plataforma permite actualmente utilizarla gratuitamente 300$ durante 90 dias,
 1.	https://console.cloud.google.com/
 2.	Pinchamos en "Crear Proyecto" => ·Compute engine· + ·Instancias de VM· + ·Habilitar Engine API" 
 3.	Creo una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB parecen suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
-4.	Seleccionamos "Centos 8".
-5.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 por comodidad de uso.
-6.	elegimos "Disco persistente equilibrado" y subimos memoria a 100GB. 
-7.	Permitir http y https
+    ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
+5.	Seleccionamos "Centos 8".
+6.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 por comodidad de uso.
+7.	elegimos "Disco persistente equilibrado" y subimos memoria a 100GB. 
+8.	Permitir http y https
 (AQUÍ IMAGEN)
 (AQUÍ IMAGEN)
 - Esto luego se puede ejecutar aquí mismo con este comando:
@@ -236,7 +240,9 @@ Status: Downloaded newer image for hello-world:latest
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
    ```
-
+23. Personalización de docker-comose.yml
+ - Se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
+ - En el apartado kibana se ha redirigido el puerto al 80 con "80:5601"
 ---
 
 <a name="item2"></a> [Volver a Índice](#indice)
@@ -259,7 +265,7 @@ chmod go-w filebeat.yml
 ```shell
 cd PWD
 docker-compose down -v
-docker-compose up -d
+docker-compose up -d --remove-orphans
 ```
 A título informativo, se indican las distintas formas de detener y eliminar:
 ```shell
@@ -276,6 +282,8 @@ docker-compose down -v
 
 # Parar y eliminar imágenes:
 docker-compose down --rmi <all|local> 
+
+# Con "--remove-orphans" eliminamos contenedores creados anteriormente que ya no estén registrados en docker-compose.yml
 ```
 ## COMPROBACIONES
 25. Ejecutaremos `docker ps` para comprobar que tenemos 3 contenedores en estado healthy (filebeat, kibana, elasticsearch).
