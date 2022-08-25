@@ -85,8 +85,8 @@ Tendremos entonces creada la siguiente instancia, que ejecutaremos o pararemos e
  STATUS: RUNNING
  enrique@cloudshell:~ (tfm-elastic-cern-uam)$
   ```
-  
-      ![Instancia creada](./img/03_ArrancarInstancia.png)
+
+    ![Instancia creada](./img/03_ArrancarInstancia.png)
 8. Creo una regla de firewall que permita salida de puerto 80
 Commando REST equivalente:
 
