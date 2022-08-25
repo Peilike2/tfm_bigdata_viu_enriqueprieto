@@ -170,12 +170,14 @@ La plataforma permite la conexión desde el propio Cloud Shell de Google cloud e
 
 ![AbrirSSH](./img/04_AbrirSSH.png)
 
-Se pueden ejecutar a continuaciónlos siguientes comandos para comprobar su correcto funcionamiento:
+Se pueden ejecutar a continuación los siguientes comandos para comprobar su correcto funcionamiento:
  ```shell
 ls
 pwd
 whoami
  ```
+ Las instrucciones que se comentan a partir de ahora se entienden introducidas en la ventana de esta conexión establecida.
+ 
 ## INSTALACIÓN DE GIT Y DOCKER  
 A continuación se instalan Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
 
@@ -334,11 +336,15 @@ Como alternativa se pueden usar herramientas online como esta: https://toolslick
 ## Visualización vía Logs UI
 29. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 Si se estuviera trabajando en local sería:
-- http://localhost:80/
-Pero al tratarse de acceso desde otra m´quina, se utiliza la ip proporcionada por la plataforma, y dicho puerto 80según se configuró anteriormente en el apartado kibana del fichero de configuración docker-compose.yml: 
-https://xxx.xxx.xxx:80/
+```shell
+http://localhost:80/
+```
+Pero al tratarse de acceso desde otra máquina, se utiliza la ip proporcionada por la plataforma, y dicho puerto 80según se configuró anteriormente en el apartado kibana del fichero de configuración docker-compose.yml: 
+```shell
+http://xxx.xxx.xxx:80/
 - Usuario: elastic
 - Password: changeme
+```
 (AQUÍ IMAGEN)
 
 
@@ -369,7 +375,7 @@ https://xxx.xxx.xxx:80/
 
 ![Logs View](./img/logs-view-2.png)
 
-36. Se puede igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, se ha busado el texto `xxxxxxxx` o `xxxxxxxxxxxxxxxxx`.
+36. Se puede igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, se ha buscado el texto `xxxxxxxx` o `xxxxxxxxxxxxxxxxx`.
 
 ![Logs Search](./img/logs-view-search-1.png)
 ![Logs Search](./img/logs-view-search-2.png)
@@ -380,15 +386,15 @@ https://xxx.xxx.xxx:80/
 docker-compose stop filebeat
 ```
 
-38. Y en Kibana borraremos el índice generado para los logs de Filebeat. Para ello, selecciona en el menú izquierdo `Management`.
+38. Y en Kibana se debe eliminar el índice generado para los logs de Filebeat. Para ello, se selecciona en el menú izquierdo `Management`.
 
 ![Kibana Management](./img/management-icon.png)
 
-39. Seleccionamos `Index Management` en el grupo Elasticsearch.
+39. Después se selecciona `Index Management` en el grupo Elasticsearch.
 
 ![Index Management](./img/index-management.png)
 
-40. Y borramos el índice o índices `filebeat`.
+40. Y se procede al borrado del índice o índices `filebeat`.
 
 ![Delete Index](./img/delete-filebeat.png)
  
@@ -399,22 +405,23 @@ docker-compose stop filebeat
 <a name="item3"></a> [Volver a Índice](#indice)
 ### 3. Política de Logs
 
-Ingestamos en elastic nuestros logs sin modelar, sin estructura. Es decir, dado un log con el formato:
+La estrategia a seguir será la ingesta en elastic de los logs que llegan sin modelar y sin estructura. Em concreto con el formato genérico:
 ```
 27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)
 ```
+como es el caso de "srm-grid002Domain_original_extracto_unix.log" en el cual se han seleccionado dos líneas de mensaje de error distintos, en concreto el primero y el último. Al fichero se le han anonimizado los datos y se ha asegurado la compatibilidad Windows Unix según el pocedimiento anteriormente señalado.
 
-El documento que hemos acabado guardando en Elasticsearch tiene un campo `timestamp` con la fecha de ingesta, y un segundo campo `message` con el mensaje completo del log.
-
-Ahora queremos separar el contenido de este campo `message`, de forma que podamos explotar obtener el `campo01`, el `campo02`, etc. Es decir, darle estructura a los datos que nos llegan.
-El mensaje de ejemplo anterior debería transformarse en el siguiente:
+El plan de accines a seguir continúa obteniendo en Elasticsearch un mensaje mínimamente estructurado a través de filebeat, conteniendo un campo `timestamp` con la fecha de ingesta, y un segundo campo `message` con el mensaje completo de dicho log.
+ 
+ ![IngestaSimpleFilebeat](./img/05_IngestaSimpleDeMensajesFilebeat.png)
+    
+A continuación se procederá a separar el contenido de este campo `message`, de forma que se puedan obtener los campos `campo01`, `campo02`, etc. Es decir, se trata de dotar de una estructura a los datos recibidos.
+El mensaje de ejemplo anterior debería por tanto transformarse en el siguiente:
 ```json
 {"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
 ```
-Es decir, aplicarle un valor de fecha a la línea completa, y esta dejarla entera en un único campo llamado "messagge"
-    ![IngestaSimpleFilebeat](./img/05_IngestaSimpleDeMensajesFilebeat.png)
 
-Es decir, queremos aplicarle las siguientes operaciones:
+Para ello, queremos aplicarle las siguientes operaciones:
 1. Seleccionar las líneas que contengan "unavailable"
 2. Seleccionar las líneas que contengan "root" en la dirección url del mensaje
 3. Extraer dicha url de cada mensaje, aladirle el prefijo "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
@@ -427,7 +434,7 @@ srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxx
 
 Ejemplo de referencia multilínea [^nota1].  
 
-Así podremos agrupar valores similares, visualizarlos, y explotar toda la potencia de nuestros logs. Nos permitirá contestar preguntas como ¿Cuáles son los errores más habituales?¿cuánta es su repetición? ¿En qué momentosa se producen? (`campo 01`, `campo02`, ...).
+Así se podrán agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
 
 Para ello necesitaremos modelar, es decir conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
 
@@ -443,7 +450,7 @@ En este punto, el documento que llega a elastic tiene este aspecto:
 "message" : "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"}
 ```
 
-Y nos gustaría que en elastic se guardara como:
+Y la intención es que Elastic lo acabe guardando como:
 
 ```json
 {
