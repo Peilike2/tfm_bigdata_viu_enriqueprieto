@@ -41,7 +41,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
     pip install docker-compose
     ```
 
-- Un mínimo de 4GB de RAM [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su máquina virtual Docker para disponer de ese mínimo de la siguiente manera:
+- Un mínimo de 4GB de RAM [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su mávirtual Docker para disponer de ese mínimo de la siguiente manera:
 
     ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
 
@@ -336,15 +336,19 @@ Como alternativa se pueden usar herramientas online como esta: https://toolslick
 ## Visualización vía Logs UI
 29. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 Si se estuviera trabajando en local sería:
+
 ```shell
 http://localhost:80/
 ```
-Pero al tratarse de acceso desde otra máquina, se utiliza la ip proporcionada por la plataforma, y dicho puerto 80según se configuró anteriormente en el apartado kibana del fichero de configuración docker-compose.yml: 
+
+Pero al tratarse de acceso desde otra máquina, se utiliza la ip proporcionada por la plataforma, y dicho puerto 80 según se configuró anteriormente en el apartado kibana del fichero de configuración docker-compose.yml: 
+
 ```shell
 http://xxx.xxx.xxx:80/
 - Usuario: elastic
 - Password: changeme
 ```
+
 (AQUÍ IMAGEN)
 
 
