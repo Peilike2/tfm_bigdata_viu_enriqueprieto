@@ -41,7 +41,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
     pip install docker-compose
     ```
 
-- Un mínimo de 4GB de RAM [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su mávirtual Docker para disponer de ese mínimo de la siguiente manera:
+- Un mínimo de 4GB de RAM [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su máquina virtual Docker para disponer de ese mínimo de la siguiente manera:
 
     ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
 
@@ -50,7 +50,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 ```
 sysctl -w vm.max_map_count=262144
 ```
-Sin embargo se indica más adelante cómo proceder para el caso que nos ocupa, desde GCP.
+Sin embargo se indica más adelante cómo proceder para el caso de este proyecto, desde GCP.
 - Sistema operativo probado CentOS 8
 - Git version 2.31.1
 - Kibana 7.3
@@ -58,28 +58,28 @@ Sin embargo se indica más adelante cómo proceder para el caso que nos ocupa, d
 
 
 ## Entorno Desarrollo ELK en GCP 
-La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se pueden utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud de los que se disponga acceso, o con máquina virtual en local como VirtualBox, que se ha descartsdo por la excesiva capacidad de memoria que requiere.
+La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se pueden utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud de los que se disponga acceso, o con máquina virtual en local como VirtualBox, que se ha descartado por la excesiva capacidad de memoria que requiere.
 
 1.	https://console.cloud.google.com/
-2.	Click en "Crear Proyecto" => ·Compute engine· + ·Instancias de VM· + ·Habilitar Engine API" 
+2.	Click en "Crear Proyecto" => *Compute engine* + *Instancias de VM* + *Crear Proyecto* + *Nombre:"TFM Elastic CERN UAM" Organización:"sin organización"* + *Crear* + *Habilitar Engine API* + *Crear Instancia*
 3.	Se crea una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB son suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
 
     ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
-5.	Se selecciona "Centos 8".
-6.	Disco de arranque cambiar=>" cambio de Debian a CENTOS 8 (por mayor conveniencia de uso).
-7.	Elección de "Disco persistente equilibrado" y fijado de memoria a 100GB. 
+4.	Se selecciona "Centos 8" por mayor conveniencia de uso (Disco de arranque: *cambiar* + Versión: *CentOS Stream 8*.
+5.	Elección de "Disco persistente equilibrado" y fijado de memoria a 100GB. 
+(AQUÍ IMAGEN)
 
     ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
-9.	Permitir http y https
+6.	Permitir http y https
 (AQUÍ IMAGEN)
-(AQUÍ IMAGEN)
-- Esto luego se puede ejecutar aquí mismo con este comando:
+7. Clik en *Crear*
+- Esto luego se puede ejecutar aquí mismo con este comando REST:
 ```
-gcloud compute instances create enriqueprieto-instancia10 --project=tfm-elastic-cern-uam --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=58105659734-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=enriqueprieto-instancia10,image=projects/centos-cloud/global/images/centos-stream-8-v20220719,mode=rw,size=100,type=projects/tfm-elastic-cern-uam/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --labels=proyecto=tfm,autor=enrique_prieto --reservation-affinity=any
+gcloud compute instances create tfm-enrique-prieto --project=tfm-elastic-cern-uam-360608 --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=746661842685-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=tfm-enrique-prieto,image=projects/centos-cloud/global/images/centos-stream-8-v20220822,mode=rw,size=100,type=projects/tfm-elastic-cern-uam-360608/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --labels=proyecto=tfm,fecha=26-08-2022,autor=enrique-prieto --reservation-affinity=any
 ```
  y pulsando en “ejecutar en cloud shell” en vez de “copiar en portapapeles” (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
 - SE ABRE EN EL MISMO GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
-(AQUÍ IMAGEN)
+(AQUÍ IMAGEN cloud shell))
 Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o detener en función del uso, procurando minimizar su coste:
  ```shell
  NAME: enriqueprieto-centos8-2
@@ -94,7 +94,10 @@ Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o det
 
    ![Instancia creada](./img/03_ArrancarInstancia.png)
    
-8. A continuación se crea una regla de firewall que permita salida de puerto 80
+8. A continuación se crea una regla de firewall que permita entrada de puerto 80. Pulsar los tres puntos a la derecha de la instancia + *Ver detalles de red* + Columna izquiera *Firewall* + *Create Firewall Policy* + Nombre:xxx + *Continuar* + *Agegar regla* + Prioridad: 1000 + Dirección del tráfico: *Entrada* + Rangos de IPv4 de destino: poner la ip de la instancia "34.175.112.47 " + *crear* + *continuar* + *asociar* + seleccionar la red default + *asociado* + *Continuar* + *crear*
+(AQUÍ IMAGEN Ver detalles de la red para el firewall)
+(AQUÍ IMAGEN CONFIGURACIÓN FIREWALL1)
+(AQUÍ IMAGEN CONFIGURACIÓN FIREWALL1
 Commando REST equivalente:
 
  ```shell
@@ -102,9 +105,9 @@ POST https://www.googleapis.com/compute/v1/projects/tfm-elastic-cern-uam/global/
 {
   "kind": "compute#firewall",
   "name": "enri-abrir-puerto80-salida",
-  "selfLink": "projects/tfm-elastic-cern-uam/global/firewalls/enri-abrir-puerto80-salida",
+  "selfLink": "projects/tfm-elastic-cern-uam/global/firewalls/enri-abrir-puerto80-entrada",
   "network": "projects/tfm-elastic-cern-uam/global/networks/default",
-  "direction": "EGRESS",
+  "direction": "INGRESS",
   "priority": 1000,
   "description": "enri-abrir-puerto80",
   "allowed": [
@@ -184,6 +187,7 @@ A continuación se instalan Git y Docker como superusuario (poniendo SUDO delant
 10.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
  ```shell
 sudo yum install git
+(y)
  ```
 (yum se encarga de solicitar la última versión). Responder a la pregunta con Y(es)
 11. Se comprueba con lo siguiente:
@@ -192,7 +196,7 @@ git --version
  ```
 Devolviendo, si está todo correcto:
  ```shell
-git version 2.31.1
+git version 1.8.3.1
  ```
 12. Una vez instalado el GIT, se clonará el Git instalado previamente en github:
  ```shell
@@ -206,6 +210,19 @@ Lo cual habrá que ejecutar cada vez que se reinicie la instancia tras una parad
 
 A modo informativo, se usarán comandos docker basicos descritos en https://dockerlabs.collabnix.com/docker/cheatsheet/ además de los comandos de docker-compose detalados en https://devhints.io/docker-compose y como editor de texto se utiliza vim.
 
+13.a Instalación de dnf:
+
+```shell
+sudo yum install dnf
+(y)
+   ```
+
+13.b. Instalación de plugins:
+
+```shell
+ sudo yum install dnf-plugins-core
+    ```
+    
 14. Instalción de Docker, Deberá en este caso utilizarse “SUDO” delante:
  ```shell
  sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
@@ -213,6 +230,8 @@ A modo informativo, se usarán comandos docker basicos descritos en https://dock
 15. Se instala el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
  ```shell
  sudo dnf install docker-ce docker-ce-cli containerd.io
+ (y)
+ (y)
    ```
 
 16. Se procede a arrancar el servicio Docker y añadiéndolo al autorun:
@@ -267,6 +286,25 @@ Status: Downloaded newer image for hello-world:latest
 
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
    ```
 23. Personalización de docker-comose.yml
  - En dicho fichero de configuración del mencionado git, se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
@@ -286,14 +324,15 @@ Para ello se efectuarán las siguentes acciones:
  - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana.
 
 ## INSTALACIÓN DEL STACK
-24. Se procede al aseguramiento de los permisos correspondientes a /filebeat/config :
+24. Se procede al aseguramiento de los permisos correspondientes a /filebeat/config  (siendo tfm_bigdata_viu_enriqueprieto el directorio del proyecto:
 ```shell
-cd /filebeat/config/
+cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 chmod go-w filebeat.yml
 ```
 25. Después se garantiza el borrado de datos anteriores (para el caso de no ser la primera prueba) a la vez que el arranque de los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello se accede a la raíz del proyecto y se ejecuta lo siguiente:
 ```shell
-cd PWD
+cd $pwd
+cd tfm_bigdata_viu_enriqueprieto
 docker-compose down -v
 docker-compose up -d --remove-orphans
 ```
@@ -313,7 +352,7 @@ docker-compose down -v
 # Parar y eliminar imágenes:
 docker-compose down --rmi <all|local> 
 
-# Con "--remove-orphans" eliminamos contenedores creados anteriormente que ya no estén registrados en docker-compose.yml
+# Con "--remove-orphans" eliminarán en su caso los contenedores que hubieran sido creados anteriormente y que ya no estén registrados en docker-compose.yml
 ```
 ## COMPROBACIONES
 26. Se ejecuta `docker ps` para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch).
@@ -322,13 +361,18 @@ docker-compose down --rmi <all|local>
 
 ```shell
 docker logs -f elasticsearch
+Ctrl+c
 docker logs -f kibana
+Ctrl+c
 docker logs -f filebeat
+Ctrl+c
 ```
 
 
-28. En caso de modificar el fichero de testeo, deberá asegurarse de que el sistema operativo Windows no le ha añadido caracteres ilegibles en UNIX, usando la siguiente instrucción:
+28. En caso de modificar el fichero de testeo, deberá asegurarse de que el sistema operativo Windows no le ha añadido caracteres ilegibles en UNIX, usando la siguiente instalación seguido de la instrucción a continuación:
 ```shell
+sudo yum install dos2unix
+(y)
 dos2unix test/srm-grid002Domain_original_extracto_unix.log
 ```
 Como alternativa se pueden usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
