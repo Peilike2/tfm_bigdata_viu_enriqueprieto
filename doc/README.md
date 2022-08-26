@@ -409,13 +409,15 @@ docker-compose stop filebeat
 <a name="item3"></a> [Volver a Índice](#indice)
 ### 3. Política de Logs
 
-La estrategia a seguir será la ingesta en elastic de los logs que llegan sin modelar y sin estructura. Em concreto con el formato genérico:
+*(En este apartado no se ejecutan instrucciones sino que simplemente se identifica lo que se va a obtener, en qué formato, y qué se deberá hacer con ello para obtener el resultado deseado, que también se tipifica aquí:)*
+
+La estrategia a seguir será la ingesta en elastic de los logs que llegan sin modelar y sin estructura. En concreto con el formato genérico:
 ```
 27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)
 ```
-como es el caso de "srm-grid002Domain_original_extracto_unix.log" en el cual se han seleccionado dos líneas de mensaje de error distintos, en concreto el primero y el último. Al fichero se le han anonimizado los datos y se ha asegurado la compatibilidad Windows Unix según el pocedimiento anteriormente señalado.
+como es el caso de "srm-grid002Domain_original_extracto_unix.log", incluido en el directorio [test](../test), en el cual se han seleccionado dos líneas de mensaje de error distintos, en concreto el primero y el último. Al fichero se le han anonimizado los datos y se ha asegurado la compatibilidad Windows Unix según el pocedimiento anteriormente señalado.
 
-El plan de accines a seguir continúa obteniendo en Elasticsearch un mensaje mínimamente estructurado a través de filebeat, conteniendo un campo `timestamp` con la fecha de ingesta, y un segundo campo `message` con el mensaje completo de dicho log.
+El plan de acciones a seguir continúa obteniendo en Elasticsearch un mensaje mínimamente estructurado a través de filebeat, conteniendo un campo `timestamp` con la fecha de ingesta, y un segundo campo `message` con el mensaje completo de dicho log.
  
  ![IngestaSimpleFilebeat](./img/05_IngestaSimpleDeMensajesFilebeat.png)
     
@@ -434,9 +436,9 @@ srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxx
 ```
 4. Eliminar filas duplicadas
 
-<!-- Esto es un comentario de prueba de Enrique -->
+<!-- BORRAR: Esto es un comentario de prueba de Enrique -->
 
-Ejemplo de referencia multilínea [^nota1].  
+*BORRAR:* Ejemplo de referencia multilínea [^nota1].  
 
 Así se podrán agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
 
