@@ -5,7 +5,7 @@
 
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
 * El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
-* En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic(https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana (https://www.elastic.co/guide/en/kibana/7.3/index.html).
+* En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic (https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana (https://www.elastic.co/guide/en/kibana/7.3/index.html).
  ---
  
 <a name="indice"></a>
@@ -25,9 +25,9 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
    -  Creación de la pipeline de procesos. Alta en Elastic.
 11. [ PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS](#item11)
    -  Direccionamiento desde filebeat, de los datos hacia los procesos de la pipeline.
-12. [ Activación de acción](#item12) 
+12. [ ACTIVACIÓN DE ACCIÓN](#item12) 
    - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
-13. [ Siguientes pasos](#item13)
+13. [ SIGUIENTES PASOS](#item13)
 
 ---
 
@@ -68,8 +68,8 @@ Sin embargo, se indica más adelante cómo proceder para el caso de este proyect
 ### 2. ENTORNO DE DESARROLLO ELK EN GCP  
 La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se pueden utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud de los que se disponga acceso, o con máquina virtual en local como VirtualBox, que se ha descartado por la excesiva capacidad de memoria que requiere.
 
-1.	https://console.cloud.google.com/
-2.	Click en "Crear Proyecto" => *Compute engine* + *Instancias de VM* + *Crear Proyecto* + *Nombre:"TFM Elastic CERN UAM" Organización:"sin organización"* + *Crear* + *Habilitar Engine API* + *Crear Instancia*
+1.	Arrir navegador y ejecutar la dirección https://console.cloud.google.com/
+2.	Cliquear en "Crear Proyecto" => *Compute engine* + *Instancias de VM* + *Crear Proyecto* + *Nombre:"TFM Elastic CERN UAM" Organización:"sin organización"* + *Crear* + *Habilitar Engine API* + *Crear Instancia*
 3.	Se crea una instancia VM en Región europe-southwest1 (Madrid)= zona europe-southwest1-a de uso general serie E2 tipo de máquina e2-mediom (2 CPU virtuales, 4 GB de memoria). Inicialmente 4GB son suficientes para una instancia de ElasticSearch (ES), una de Kibana (KB) y una de Filebeat (FB)
 
     ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
