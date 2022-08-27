@@ -14,11 +14,11 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 2. [ Instalación del Stack Elastic](#item2)
    - En este apartado, se instala y arranca un stack elastic con un clúster de un nodo de [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) y una instancia de [Kibana](https://www.elastic.co/guide/en/kibana/7.3/index.html).
 3. [ Rearranque de la instancia de Máquina virtual](#item3)
-   - Pasos a realizar de nuevo cada vez que se pare y vuelva a arrancar la instancia de Máquina Virtual (MV).
+   - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
 4. [ Modelado Simple de Logs con Filebeat](#item4)
-   - Modelamos los campos y creamos una pipeline de procesos
+   - Modelado de los campos y creación de una pipeline de procesos
 5. [ Activación de acción](#item5) 
-   - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
+   - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
 6. [ Siguientes pasos](#item6)
 
 ---
