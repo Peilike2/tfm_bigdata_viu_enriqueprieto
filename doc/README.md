@@ -78,7 +78,7 @@ La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante
 4.	Se selecciona "Centos 8" por mayor conveniencia de uso (Disco de arranque: *cambiar* + Versión: *CentOS Stream 8*.
 5.	Elección de "Disco persistente equilibrado" y fijado de memoria a 100GB. 
 (AQUÍ IMAGEN)
-
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
 6.	Permitir http y https
 (AQUÍ IMAGEN)
@@ -316,6 +316,7 @@ sudo yum install git
  ```
 
 (yum se encarga de solicitar la última versión). Responder a la pregunta con Y(es)
+
 23. Se comprueba con lo siguiente:
 
 ```shell
