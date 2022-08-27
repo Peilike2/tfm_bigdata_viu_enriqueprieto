@@ -1,6 +1,6 @@
  <a name="top"></a>
 # TFM VIU 2022
-## _Tutora: Inmaculada del Valls_
+## _Tutora: Immaculada Valls Bernaus_
 ## _Masterando: Enrique Prieto Catalán_
 
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
@@ -490,13 +490,14 @@ Y pulsamos `Create Index Pattern`.
 Poe último, Seleccionamos en el menú de la izquierda en Kibana `Discover`.
 
 Hacemos clic en `New` en el menú superior, para limpiar cualquier filtro que tuviéramos en la búsqueda.
-
+    
+    ![Discover Filebeat](./img/discover-filebeat.png)
+ 
 Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
 Se selecciona arriba a la derecha el rango de fechas y horas correspondientes a los de los datos ingestados
 
-(COMPROBAR QUE AQUÍ SE VEN LOS DATOS INGESTADOS)
-![Discover Filebeat](./img/discover-filebeat.png)
- 
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+
 ---
 
 <a name="item8"></a> [Volver a Índice](#indice) 
@@ -663,7 +664,7 @@ POST _ingest/pipeline/_simulate
 
 Al ejecutar esta petición, podremos comprobar si el JSON resultante es el esperado.
 
-![Simulate Ingest pipeline](./img/ingest-pipeline-simulate.png)
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
 
 Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/simulate-pipeline-api.html) una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, tenemos un JSON con los procesadores de la pipeline:
 
@@ -719,7 +720,7 @@ PUT _ingest/pipeline/logs-pipeline
 
 Creando la pipeline de ingesta **logs-pipeline**, que usaremos en el próximo apartado.
 
-![Ingest pipeline](./img/ingest-pipeline-put.png)
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
    
 ---
 
@@ -757,13 +758,8 @@ Volvemos a Kibana.
 Usamos la barra de búsqueda para filtrar nuestros datos. filtramos por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
 
     ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-    
-![Discover KQL](./img/discover-kql.png)
-
 
     ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-    
-![Discover KQL](./img/discover-kql-2.png)
 
 El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/7.3/kuery-query.html).
 
