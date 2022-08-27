@@ -664,7 +664,7 @@ POST _ingest/pipeline/_simulate
 
 Al ejecutar esta petición, podremos comprobar si el JSON resultante es el esperado.
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
 
 Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/simulate-pipeline-api.html) una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, tenemos un JSON con los procesadores de la pipeline:
 
@@ -720,7 +720,7 @@ PUT _ingest/pipeline/logs-pipeline
 
 Creando la pipeline de ingesta **logs-pipeline**, que usaremos en el próximo apartado.
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
    
 ---
 
@@ -757,9 +757,9 @@ Volvemos a Kibana.
 
 Usamos la barra de búsqueda para filtrar nuestros datos. filtramos por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
 
 El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/7.3/kuery-query.html).
 
@@ -786,7 +786,7 @@ Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el
 <a name="item13"></a> [Volver a Índice](#indice)
  ### 13.  Siguientes pasos
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 
 
