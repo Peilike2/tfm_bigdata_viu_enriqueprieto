@@ -64,6 +64,8 @@ Sin embargo, se indica más adelante cómo proceder para el caso de este proyect
 - Kibana 7.3
 - Por último, para iniciar el Stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
 
+---
+
 <a name="item2"></a> [Volver a Índice](#indice) 
 ### 2. ENTORNO DE DESARROLLO ELK EN GCP  
 La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se pueden utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud de los que se disponga acceso, o con máquina virtual en local como VirtualBox, que se ha descartado por la excesiva capacidad de memoria que requiere.
@@ -162,6 +164,7 @@ Esta es la respuesta REST:
 }
   ```
 
+---
 
 <a name="item3"></a> [Volver a Índice](#indice) 
 ### 3. CONEXIÓN POR SSH. INSTALACIÓN DE DNF Y DOCKER 
@@ -230,6 +233,8 @@ sudo yum install dnf
  sudo firewall-cmd --reload
    ```
 
+---
+
 <a name="item4"></a> [Volver a Índice](#indice) 
 ### 4. INSTALACIÓN DE DOCKER-COMPOSE
 17. En este punto se instala  Docker-compose, servicio que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
@@ -297,6 +302,8 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
    ```
    
+---
+
 <a name="item5"></a> [Volver a Índice](#indice) 
 ### 5. INSTALACIÓN DE GIT
 A continuación se instalan Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
@@ -336,7 +343,8 @@ git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
 Lo cual habrá que ejecutar cada vez que se reinicie la instancia tras una parada.
 
 A modo informativo, se usarán comandos docker basicos descritos en https://dockerlabs.collabnix.com/docker/cheatsheet/ además de los comandos de docker-compose detalados en https://devhints.io/docker-compose y como editor de texto se utiliza vim.
-
+ 
+---
 
 <a name="item6"></a> [Volver a Índice](#indice) 
 ### 6. INSTALACIÓN DEL STACK ELASTIC
@@ -410,6 +418,8 @@ sudo yum install dos2unix
 dos2unix test/srm-grid002Domain_original_extracto_unix.log
 ```
 Como alternativa se pueden usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
+   
+---
 
 <a name="item7"></a> [Volver a Índice](#indice) 
 ### 7. VISUALIZACIÓN CON KIBANA. CREACIÓN DE INDEX PATTERN
@@ -471,6 +481,7 @@ Se selecciona arriba a la derecha el rango de fechas y horas correspondientes a 
 (COMPROBAR QUE AQUÍ SE VEN LOS DATOS INGESTADOS)
 ![Discover Filebeat](./img/discover-filebeat.png)
  
+---
 
 <a name="item8"></a> [Volver a Índice](#indice) 
 ### 8. REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
@@ -513,6 +524,8 @@ http://xxx.xxx.xxx:80/
 - Usuario: elastic
 - Password: changeme
 ```
+   
+---
 
 <a name="item9"></a> [Volver a Índice](#indice) 
 ### 9. SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS (VM)
@@ -640,6 +653,8 @@ Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/
 
 - [**dissect**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html): Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
 - [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no nos interesa guardara esta información redundante.
+   
+---
 
 <a name="item10"></a> [Volver a Índice](#indice) 
 ### 10. ALTA DE LA PIPELINE DE PROCESADO DE LOGS (VM)
@@ -689,6 +704,8 @@ PUT _ingest/pipeline/logs-pipeline
 Creando la pipeline de ingesta **logs-pipeline**, que usaremos en el próximo apartado.
 
 ![Ingest pipeline](./img/ingest-pipeline-put.png)
+   
+---
 
 <a name="item11"></a> [Volver a Índice](#indice) 
 ### 11. PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS (VM)
@@ -721,8 +738,6 @@ docker logs -f filebeat
 
 Volvemos a Kibana.
 
-
-
 Usamos la barra de búsqueda para filtrar nuestros datos. filtramos por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
 (CAMBIAR IMAGEN)
 ![Discover KQL](./img/discover-kql.png)
@@ -735,7 +750,6 @@ El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](h
 Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el nombre `[Filebeat] Host/Process`
 
 ![Save Search](./img/save-search.png)
-
 
 
 ## Finalizamos
@@ -751,6 +765,7 @@ Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el
    - 
 
 ---
+
 <a name="item13"></a> [Volver a Índice](#indice)
  ### 13.  Siguientes pasos
    - 
