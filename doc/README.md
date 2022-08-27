@@ -549,38 +549,6 @@ http://xxx.xxx.xxx:80/
 <a name="item9"></a> [Volver a Índice](#indice) 
 ### 9. SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS (VM)
 
-*(En este apartado no se ejecutan instrucciones sino que simplemente se identifica lo que se va a obtener, en qué formato, y qué se deberá hacer con ello para obtener el resultado deseado, que también se tipifica aquí:)*
-
-La estrategia a seguir será la ingesta en elastic de los logs que llegan sin modelar y sin estructura. En concreto con el formato genérico:
-```
-27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)
-```
-como es el caso de "srm-grid002Domain_original_extracto_unix.log", incluido en el directorio [test](../test), en el cual se han seleccionado dos líneas de mensaje de error distintos, en concreto el primero y el último. Al fichero se le han anonimizado los datos respecto a las máquinas y puertos de origen y se ha asegurado la compatibilidad Windows-Unix según el pocedimiento anteriormente señalado.
-
-El plan de acciones a seguir continúa obteniendo en Elasticsearch un mensaje mínimamente estructurado a través de filebeat, conteniendo un campo `timestamp` con la fecha de ingesta, y un segundo campo `message` con el mensaje completo de dicho log.
- 
- ![IngestaSimpleFilebeat](./img/05_IngestaSimpleDeMensajesFilebeat.png)
-    
-A continuación se procede a separar el contenido de este campo `message`, de forma que se puedan obtener los campos `campo01`, `campo02`, etc. Es decir, se trata de dotar de una estructura a los datos recibidos.
-El mensaje de ejemplo anterior debería por tanto transformarse en el siguiente:
-```json
-{"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
-```
-
-Para ello, queremos aplicarle las siguientes operaciones:
-1. Seleccionar las líneas que contengan "unavailable"
-2. Seleccionar las líneas que contengan "root" en la dirección url del mensaje
-3. Extraer dicha url de cada mensaje, aladirle el prefijo "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
-```
-srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
-```
-4. Eliminar filas duplicadas
-
-Así se podrán agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
-
-Para ello necesitaremos modelar, es decir conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
-
-
 El documento que llega a Elastic tiene líneas de log con este aspecto:
 
 "27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"
@@ -608,27 +576,26 @@ Y la intención es que Elastic lo acabe guardando como:
 }
 ```
 
-Dado que el mensaje final de error que nos interesa es de tipo:
+Dado que el mensaje final de error que interesa obtener es de tipo:
 ```
 "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
 ```
-Para realizar esta transformación, recurriremos a las [pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/pipeline.html) de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest.html).
+Para realizar esta transformación, se recurre a las [pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/pipeline.html) de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest.html).
 
-Dado que tenemos un clúster elasticsearch con un solo nodo, este nodo realizará todos los roles (master, data, ingest, etc.).
+Dado que se parte de un clúster elasticsearch con un solo nodo, este nodo realizará todos los roles (master, data, ingest, etc.).
 (Más información sobre roles de los nodos en la [documentación](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/modules-node.html).
 
-Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, podemos analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
+Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, se pueden analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
 
 ![Ingest pipeline](./img/ingest-pipeline.png)
 
 
-En primer lugar, vamos a crear una simple pipeline de ingesta, basada en un procesador de tipo [dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html), que nos parseará el campo `message` de entrada generando los diversos campos que queremos a la salida (`process_name`, `process_id`, `host_name`, etc).
-
-Antes de crear esta pipeline, es interesante simular cual sería su comportamiento. Para ello, en Kibana seleccionaremos en el menú de la izquierda Management:`Dev Tools`.
+En primer lugar, se procede a crear una simple pipeline de ingesta, basada en un procesador de tipo [dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html), que parseará el campo `message` de entrada generando los diversos campos que se precisan a la salida (`process_name`, `process_id`, `host_name`, etc).
+se selecciona en el menú de la izquierda Management:`Dev Tools`.
 
 ![Dev Tools](./img/devtools-icon.png)
 
-Y pegaremos lo siguiente en la consola:
+Y se copia y pega lo siguiente en la consola:
 
 ```json
 POST _ingest/pipeline/_simulate
@@ -668,7 +635,7 @@ POST _ingest/pipeline/_simulate
 }
 ```
 
-Al ejecutar esta petición, podremos comprobar si el JSON resultante es el esperado:
+Al ejecutar esta petición, se puede comprobar si el JSON resultante es el esperado:
 
 ```json
 {
@@ -702,16 +669,16 @@ Al ejecutar esta petición, podremos comprobar si el JSON resultante es el esper
 }
 ```
 
-Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/simulate-pipeline-api.html) una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, tenemos un JSON con los procesadores de la pipeline:
+Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/simulate-pipeline-api.html) una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, se dispone de un JSON con los procesadores de la pipeline:
 
 - [**dissect**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html): Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
-- [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no nos interesa guardar esta información redundante.
+- [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no interesa guardar esta información redundante.
    
 ---
 
 <a name="item10"></a> [Volver a Índice](#indice) 
 ### 10. ALTA DE LA PIPELINE DE PROCESADO DE LOGS (VM)
-Una vez comprobamos que la pipeline de ingesta funciona según deseamos, la daremos de alta en elasticsearch para poder usarla. Para ello, en la misma consola de Dev Tools, ejecutaremos:
+Una vez se comprueba que la pipeline de ingesta funciona según lo deseado, se da de alta en elasticsearch para poder usarla. Para ello, en la misma consola de Dev Tools, de debe ejecutar:
 
 ```json
 PUT _ingest/pipeline/logs-pipeline
@@ -753,7 +720,7 @@ PUT _ingest/pipeline/logs-pipeline
   ]
 }
 ```
-Se obtiene la respuesta de confirmación:
+De lo cual se obtendrá la respuesta de confirmación:
 
 ```json
 {
@@ -770,7 +737,7 @@ Creando la pipeline de ingesta **logs-pipeline**, que se usará  en el próximo 
 <a name="item11"></a> [Volver a Índice](#indice) 
 ### 11. PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS (VM)
 
-Ahora se debe indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, es necesario editar el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` hemos descomentado la línea `pipeline: logs-pipeline`.
+Ahora se debe indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, es necesario editar el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` se  descomenta la línea `pipeline: logs-pipeline`.
 
 ```shell
 cd $PWD
@@ -800,7 +767,7 @@ cd ..
 docker-compose up -d
 ```
 
-Podemos comprobar que no haya errores en la ejecución de filebeat, antes de pasar al siguiente apartado:
+Se puede comprobar que no hay errores en la ejecución de filebeat, antes de pasar al siguiente apartado:
 
 ```shell
 docker logs -f filebeat
@@ -808,9 +775,7 @@ docker logs -f filebeat
 
 ## Visualización de los logs en Discover
 
-Volvemos a Kibana.
-
-Usamos la barra de búsqueda para filtrar nuestros datos. filtramos por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
+Nuevamente en Kibana, a través del navegador, se usa la barra de búsqueda para filtrar los datos proporcionados. Se procede a filtrar por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
 
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
 
@@ -819,18 +784,31 @@ Usamos la barra de búsqueda para filtrar nuestros datos. filtramos por `enri_ca
 El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/7.3/kuery-query.html).
 
 
-Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el nombre `[Filebeat] Host/Process`
+Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el nombre `[Filebeat] Host/Process`
 
 ![Save Search](./img/save-search.png)
 
 
-## Finalizamos
+## Fin del proceso
 
 ---
 
 <a name="item12"></a> [Volver a Índice](#indice)
  ### 12. ACTIVACIÓN DE ACCIÓN 
-   - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
+   - Se emitirán órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
+Para ello se precisa modelar, es decir conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
+COn dicho fin, se aplicarán las siguientes operaciones:
+1. Seleccionar las líneas que contengan "unavailable"
+2. Seleccionar las líneas que contengan "root" en la dirección url del mensaje
+3. Extraer dicha url de cada mensaje, aladirle el prefijo "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
+```
+srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
+```
+4. Eliminar filas duplicadas
+
+Así se podrán agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
+
+
    - 
    - 
    - 
