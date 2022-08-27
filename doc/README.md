@@ -13,8 +13,8 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 1. [ Requisitos y asunciones](#item1)
 2. [ Instalación del Stack Elastic](#item2)
    - En este apartado, se instala y arranca un stack elastic con un clúster de un nodo de [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) y una instancia de [Kibana](https://www.elastic.co/guide/en/kibana/7.3/index.html).
-3. [ Política de Logs](#item3)
-   - Establecemos las directrices de los que queremos hacer con los datos en función de las necesidades.
+3. [ Rearranque de la instancia de Máquina virtual](#item3)
+   - Pasos a realizar de nuevo cada vez que se pare y vuelva a arrancar la instancia de Máquina Virtual (MV).
 4. [ Modelado Simple de Logs con Filebeat](#item4)
    - Modelamos los campos y creamos una pipeline de procesos
 5. [ Activación de acción](#item5) 
@@ -50,7 +50,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 ```
 sysctl -w vm.max_map_count=262144
 ```
-Sin embargo se indica más adelante cómo proceder para el caso de este proyecto, desde GCP.
+Sin embargo, se indica más adelante cómo proceder para el caso de este proyecto, desde GCP.
 - Sistema operativo probado CentOS 8
 - Git version 2.31.1
 - Kibana 7.3
@@ -80,7 +80,7 @@ gcloud compute instances create tfm-enrique-prieto --project=tfm-elastic-cern-ua
  y pulsando en “ejecutar en cloud shell” en vez de “copiar en portapapeles” (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
 - SE ABRE EN EL MISMO GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
 (AQUÍ IMAGEN cloud shell))
-Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o detener en función del uso, procurando minimizar su coste:
+Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o detener (menú hamburguesa a la derecha de SSH, "Detener"), en función del uso, procurando minimizar su coste:
  ```shell
  NAME: enriqueprieto-centos8-2
  ZONE: europe-southwest1-a
@@ -149,22 +149,17 @@ Esta es la respuesta REST:
   "selfLink": "projects/tfm-elastic-cern-uam/global/firewalls/enri-abrir-puerto80-salida"
 }
   ```
-8.b. Se comprueba que kibana está abierto en el puerto 80 con: 
- ```shell
-curl localhost:80
- ```
-Se confirma que no da error como resultado, y a continuación desde cualquier navegador se utiliza la ip que proporciona la plataforma, y dicho puerto 80:
-(AQUÍ IMAGEN)
+
 
 
 ## CONEXIÓN POR SSH
 Para transferir las claves ssh a la máquina virtual y conectarse:
-9. En la instancia, columna “Conectar” se cliquea:
+9. En la columna “Conectar” de la instancia,  se cliquea:
 
  ```shell 
 SSH => abrir en otra ventana del navegador 
  ```
-Esto puede ser guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina:
+Esto puede guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina:
  ```shell
 gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --project "tfm-elastic-cern-uam"
  ```
@@ -181,35 +176,6 @@ whoami
  ```
  Las instrucciones que se comentan a partir de ahora se entienden introducidas en la ventana de esta conexión establecida.
  
-## INSTALACIÓN DE GIT Y DOCKER  
-A continuación se instalan Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
-
-10.	Instalar git https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 
- ```shell
-sudo yum install git
-(y)
- ```
-(yum se encarga de solicitar la última versión). Responder a la pregunta con Y(es)
-11. Se comprueba con lo siguiente:
- ```shell
-git --version 
- ```
-Devolviendo, si está todo correcto:
- ```shell
-git version 1.8.3.1
- ```
-12. Una vez instalado el GIT, se clonará el Git instalado previamente en github:
- ```shell
-git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
- ```
-13.	Antes de lanzar docker-compose se deberá asegurar el cumplimiento de requisitos de memoria máxima de linux, como se indicó en el apartado "requisitos":
- ```shell
- sudo sysctl -w vm.max_map_count=262144
- ```
-Lo cual habrá que ejecutar cada vez que se reinicie la instancia tras una parada.
-
-A modo informativo, se usarán comandos docker basicos descritos en https://dockerlabs.collabnix.com/docker/cheatsheet/ además de los comandos de docker-compose detalados en https://devhints.io/docker-compose y como editor de texto se utiliza vim.
-
 13.a Instalación de dnf:
 
 ```shell
@@ -259,7 +225,7 @@ sudo yum install dnf
  ```shell
  docker-compose -v
    ```
-   obtniendo como respuesta de confirmación:
+   obteniendo como respuesta de confirmación:
  ```shell
  docker-compose version 1.27.4, build 40524192
    ```
@@ -268,17 +234,22 @@ sudo yum install dnf
 21. Seguidamente se evitará la denegación de servicio aplicando lo expuesto en 
 https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
 Para lo cual habrá que cambiar el siguiente permiso: 
- ```shell
+
+```shell
  sudo chmod 666 /var/run/docker.sock
   ```
+
 Esto será preciso ejectutarlo cada vez que se arranque de nuevo la instancia de la máquina virtual.
 
 22. Posteriormente se prueba ejecutando docker run hello-world y comprobandos que funciona:
- ```shell
+
+```shell
  docker run hello-world
    ```
+
 Recibiendo como confirmación la siguiente respuesta:
- ```shellUnable to find image 'hello-world:latest' locally
+
+```shellUnable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 2db29710123e: Pull complete
 Digest: sha256:53f1bbee2f52c39e41682ee1d388285290c5c8a76cc92b42687eecf38e0af3f0
@@ -306,10 +277,51 @@ Share images, automate workflows, and more with a free Docker ID:
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
    ```
-23. Personalización de docker-comose.yml
+   
+## INSTALACIÓN DE GIT Y DOCKER  
+A continuación se instalan Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
+
+10.	Instalar git, por tener los contenedores subidos y compartidos en Github (más información en https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 )
+
+```shell
+sudo yum install git
+(y)
+ ```
+
+(yum se encarga de solicitar la última versión). Responder a la pregunta con Y(es)
+11. Se comprueba con lo siguiente:
+
+```shell
+git --version 
+ ```
+
+Devolviendo, si está todo correcto:
+
+```shell
+git version 1.8.3.1
+ ```
+
+12. Una vez instalado el GIT, se clonará el Git instalado previamente en github:
+
+```shell
+git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
+ ```
+
+13.	Antes de lanzar docker-compose se deberá asegurar el cumplimiento de requisitos de memoria máxima de linux, como se indicó en el apartado "requisitos":
+
+```shell
+ sudo sysctl -w vm.max_map_count=262144
+ ```
+
+Lo cual habrá que ejecutar cada vez que se reinicie la instancia tras una parada.
+
+A modo informativo, se usarán comandos docker basicos descritos en https://dockerlabs.collabnix.com/docker/cheatsheet/ además de los comandos de docker-compose detalados en https://devhints.io/docker-compose y como editor de texto se utiliza vim.
+
+
+23. Personalización de docker-compose.yml
  - En dicho fichero de configuración del mencionado git, se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
  - Además, en el apartado kibana se ha redirigido el puerto al 80 con "80:5601"
- - TRas su edición, se puede comprobar la integridad de este y otros ficheros ".yml" con herramientas como esta online: http://www.yamllint.com/
+ - Tras su edición, ya incorporada en el git, se puede comprobar la integridad de este y otros ficheros ".yml" con herramientas como esta online: http://www.yamllint.com/
 ---
 
 <a name="item2"></a> [Volver a Índice](#indice)
@@ -325,17 +337,21 @@ Para ello se efectuarán las siguentes acciones:
 
 ## INSTALACIÓN DEL STACK
 24. Se procede al aseguramiento de los permisos correspondientes a /filebeat/config  (siendo tfm_bigdata_viu_enriqueprieto el directorio del proyecto:
+
 ```shell
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 chmod go-w filebeat.yml
 ```
+
 25. Después se garantiza el borrado de datos anteriores (para el caso de no ser la primera prueba) a la vez que el arranque de los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello se accede a la raíz del proyecto y se ejecuta lo siguiente:
+
 ```shell
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto
 docker-compose down -v
 docker-compose up -d --remove-orphans
 ```
+
 A título informativo, se indican las distintas formas de detener y eliminar:
 ```shell
 # Solamente detener los servicios:
@@ -378,6 +394,15 @@ dos2unix test/srm-grid002Domain_original_extracto_unix.log
 Como alternativa se pueden usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
 
 ## Visualización vía Logs UI
+28.b. Priemero se  comprueba que kibana está abierto en el puerto 80 en la ventana de la conexión SSH con: 
+
+ ```shell
+curl localhost:80
+ ```
+ 
+Se confirma que no da error como resultado, y a continuación desde cualquier navegador se utiliza la ip que proporciona la plataforma, y dicho puerto 80:
+(AQUÍ IMAGEN)
+
 29. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 Si se estuviera trabajando en local sería:
 
@@ -404,53 +429,87 @@ http://xxx.xxx.xxx:80/
 31. Para actualizar los logs que llegn a elasticsearch se pulsa en la esquina superior derecha, `Stream Live`. En este caso no debe variar, al tratarse de la ingesta de un único fichero y no de una fuente continua de datos (stream). Pero se debe busca a cambio el rango de fechas y horas que coincida con el de los datos ingestados
 (AQUÍ IAMAGEN)
 
-30. También se puede modificar el tamaño de letra de los logs, si se desea hacer wrapping, etc. con la opción del menú `Customize`.
-(COMPROBAR ESTA IMAGEN)
+## Visualizar logs en Discover
 
-![Logs Customization](./img/logs-view-custom.png)
+Volvemos a Kibana.
 
-32. Pulsando en `Configuration`, se puede modificar qué [índices](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/_basic_concepts.html#_index) de elasticsearch kibana se deben mostrar, el campo a usar como `timestamp`, etc. Interesante en la configuración, ir a la segunda pestaña, `Log Columns`, donde se puede indicar qué campos se desea mostrar en la pantalla.
+Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.3/tutorial-define-index.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
 
-33. Dado que en este caso no se precisa el campo `event.dataset`...
+Si no le indicamos lo contrario en la configuración de filebeat para envío a elasticsearch, los índices que se crearán son con el nombre `filebeat-*`.
 
-![Logs Configuration](./img/logs-view-config-1.png)
+![Index Patterns](./img/index-pattern.png)
 
-34. ...se puede eliminar y guardar con `Update source`.
+Por lo tanto, en la sección de Management de Kibana, seleccionamos `Index Patterns` en el grupo `Kibana`.
 
-![Logs Configuration](./img/logs-view-config-2.png)
+![Index Patterns](./img/kibana-index-patterns-management.png)
 
-35. A partir de aquí la vista de los logs presentará el siguiente aspecto.
+Pulsamos el botón azul `Create Index Pattern` y damos de alta un patrón `filebeat-*`.
 
-![Logs View](./img/logs-view-2.png)
+![Index Patterns](./img/index-pattern-create-1.png)
 
-36. Se puede igualmente usar la barra de búsqueda superior para filtrar los logs. En los ejemplos, se ha buscado el texto `xxxxxxxx` o `xxxxxxxxxxxxxxxxx`.
+Hacemos clic en `Next step`y seleccionaremos el campo a usar para mostrar la serie temporal de datos en Discover. En
+este caso, escogemos `@timestamp`.
 
-![Logs Search](./img/logs-view-search-1.png)
-![Logs Search](./img/logs-view-search-2.png)
+![Index Patterns](./img/index-pattern-create-2.png)
 
-37. Para pasar al siguiente apartado, se procede a la detención de filebeat filebeat ejecutando:
+Y pulsamos `Create Index Pattern`.
 
-```shell
-docker-compose stop filebeat
-```
+Seleccionamos en el menú de la izquierda en Kibana `Discover`.
 
-38. Y en Kibana se debe eliminar el índice generado para los logs de Filebeat. Para ello, se selecciona en el menú izquierdo `Management`.
+Hacemos clic en `New` en el menú superior, para limpiar cualquier filtro que tuviéramos en la búsqueda.
 
-![Kibana Management](./img/management-icon.png)
+Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
 
-39. Después se selecciona `Index Management` en el grupo Elasticsearch.
-
-![Index Management](./img/index-management.png)
-
-40. Y se procede al borrado del índice o índices `filebeat`.
-
-![Delete Index](./img/delete-filebeat.png)
+![Discover Filebeat](./img/discover-filebeat.png)
  
 [Subir](#top)
  
 ---
 
 <a name="item3"></a> [Volver a Índice](#indice)
+
+### 3.  Rearranque de la instancia de Máquina virtual (VM)
+Cada vez que se detanga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
+
+```shell
+Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia, anotar el dato de la columna "ip externa" y en Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador",escribiendo a continuación en ella lo siguiente:
+sudo chmod +x /usr/local/bin/docker-compose
+(Comprobación:) 
+docker-compose -v
+
+sudo chmod 666 /var/run/docker.sock
+(Comprobación:)
+docker run hello-world
+
+sudo sysctl -w vm.max_map_count=262144
+cd $pwd
+cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
+chmod go-w filebeat.yml
+cd $pwd
+cd tfm_bigdata_viu_enriqueprieto
+
+(Nota: Si se desea borrar los logs anteriores, añadir -v al final de docker-compose down)
+docker-compose down
+docker-compose up -d --remove-orphans
+
+(Comprobaciones:)
+docker ps
+docker logs -f elasticsearch
+Ctrl+c
+docker logs -f kibana
+Ctrl+c
+docker logs -f filebeat
+Ctrl+c
+curl localhost
+
+(Ir a navegador, sustituyendo xxx por la ip externa específica de la instancia)
+
+http://xxx.xxx.xxx:80/
+- Usuario: elastic
+- Password: changeme
+```
+
+
 ### 3. Política de Logs
 
 *(En este apartado no se ejecutan instrucciones sino que simplemente se identifica lo que se va a obtener, en qué formato, y qué se deberá hacer con ello para obtener el resultado deseado, que también se tipifica aquí:)*
@@ -459,13 +518,13 @@ La estrategia a seguir será la ingesta en elastic de los logs que llegan sin mo
 ```
 27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)
 ```
-como es el caso de "srm-grid002Domain_original_extracto_unix.log", incluido en el directorio [test](../test), en el cual se han seleccionado dos líneas de mensaje de error distintos, en concreto el primero y el último. Al fichero se le han anonimizado los datos y se ha asegurado la compatibilidad Windows Unix según el pocedimiento anteriormente señalado.
+como es el caso de "srm-grid002Domain_original_extracto_unix.log", incluido en el directorio [test](../test), en el cual se han seleccionado dos líneas de mensaje de error distintos, en concreto el primero y el último. Al fichero se le han anonimizado los datos respecto a las máquinas y puertos de origen y se ha asegurado la compatibilidad Windows-Unix según el pocedimiento anteriormente señalado.
 
 El plan de acciones a seguir continúa obteniendo en Elasticsearch un mensaje mínimamente estructurado a través de filebeat, conteniendo un campo `timestamp` con la fecha de ingesta, y un segundo campo `message` con el mensaje completo de dicho log.
  
  ![IngestaSimpleFilebeat](./img/05_IngestaSimpleDeMensajesFilebeat.png)
     
-A continuación se procederá a separar el contenido de este campo `message`, de forma que se puedan obtener los campos `campo01`, `campo02`, etc. Es decir, se trata de dotar de una estructura a los datos recibidos.
+A continuación se procede a separar el contenido de este campo `message`, de forma que se puedan obtener los campos `campo01`, `campo02`, etc. Es decir, se trata de dotar de una estructura a los datos recibidos.
 El mensaje de ejemplo anterior debería por tanto transformarse en el siguiente:
 ```json
 {"timestamp":1569939745276,"message":"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"}
