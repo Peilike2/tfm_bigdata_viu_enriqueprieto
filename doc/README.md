@@ -111,19 +111,19 @@ Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o det
 
 (AQUÍ IMAGEN Ver detalles de la red para el firewall)
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 
 (AQUÍ IMAGEN CONFIGURACIÓN FIREWALL1)
 
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 
 (AQUÍ IMAGEN CONFIGURACIÓN FIREWALL2)
 
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 
 Commando REST equivalente:
@@ -446,7 +446,7 @@ curl localhost:80
  
 Se confirma que no da error como resultado, y a continuación desde cualquier navegador se utiliza la ip que proporciona la plataforma, y dicho puerto 80:
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 33. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 Si se estuviera trabajando en local sería:
@@ -463,7 +463,7 @@ http://xxx.xxx.xxx:80/
 - Password: changeme
 ```
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 
 34. Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.3/tutorial-define-index.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
@@ -496,7 +496,7 @@ Hacemos clic en `New` en el menú superior, para limpiar cualquier filtro que tu
 Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
 Se selecciona arriba a la derecha el rango de fechas y horas correspondientes a los de los datos ingestados
 
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
 
 ---
 
