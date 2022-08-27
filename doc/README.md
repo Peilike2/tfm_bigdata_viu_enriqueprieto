@@ -1,12 +1,16 @@
  <a name="top"></a>
+<!-- BORRAR: Esto es un comentario de prueba de Enrique -->
 # TFM VIU 2022
 ## _Tutora: Immaculada Valls Bernaus_
 ## _Masterando: Enrique Prieto Catalán_
 
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
 * El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
-* En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic (https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana (https://www.elastic.co/guide/en/kibana/7.3/index.html).
- ---
+* En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana (https://www.elastic.co/guide/en/kibana/7.3/index.html).
+
+
+*BORRAR:* Ejemplo de referencia multilínea .  
+---
  
 <a name="indice"></a>
 ## Índice de contenidos
@@ -574,10 +578,6 @@ srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxx
 ```
 4. Eliminar filas duplicadas
 
-<!-- BORRAR: Esto es un comentario de prueba de Enrique -->
-
-*BORRAR:* Ejemplo de referencia multilínea [^nota1].  
-
 Así se podrán agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
 
 Para ello necesitaremos modelar, es decir conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
@@ -791,12 +791,14 @@ Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el
 
 
 ---
-[^nota1]: (Borrar esta prueba de nota a pie de página) Cada línea extrade estas notas empicezan con doble espacio.  
+[^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html
+
+[^nota2]: (Borrar esta prueba de nota a pie de página) Cada línea extrade estas notas empicezan con doble espacio.  
   Esta línea empezó con doble espacio.
   
-[^nota2]: vista de [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana
+[^nota3]: vista de [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana
 
-[^nota3]: Prueba
+[^nota4]: Prueba
 
 [Subir](#top)
 
