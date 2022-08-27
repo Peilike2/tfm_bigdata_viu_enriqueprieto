@@ -791,9 +791,11 @@ Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el
 
 
 ---
-[^nota1]: Cada línea extrade estas notas empicezan con doble espacio.  
+[^nota1]: (Borrar esta prueba de nota a pie de página) Cada línea extrade estas notas empicezan con doble espacio.  
   Esta línea empezó con doble espacio.
+  
 [^nota2]: vista de [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana
+
 [^nota3]: Prueba
 
 [Subir](#top)
