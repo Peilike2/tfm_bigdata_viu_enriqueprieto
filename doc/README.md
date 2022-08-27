@@ -10,21 +10,30 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
  
 <a name="indice"></a>
 ## Índice de contenidos
-1. [ Requisitos y asunciones](#item1)
-2. [ Instalación del Stack Elastic](#item2)
+1. [ REQUISITOS Y ASUNCIONES](#item1)
+2. [ ENTORNO DE DESARROLLO ELK EN GCP](#item2)
    - En este apartado, se instala y arranca un stack elastic con un clúster de un nodo de [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html) y una instancia de [Kibana](https://www.elastic.co/guide/en/kibana/7.3/index.html).
-3. [ Rearranque de la instancia de Máquina virtual](#item3)
+3. [ CONEXIÓN POR SSH. INSTALACIÓN DE DNF Y DOCKER](#item3)
+4. [ INSTALACIÓN DE DOCKER-COMPOSE](#item4)
+5. [ INSTALACIÓN DE GIT](#item5)
+6. [ INSTALACIÓN DEL STACK ELASTIC](#item6)
+7. [ VISUALIZACIÓN CON KIBANA. CREACIÓN DE INDEX PATTERN](#item7)
+8. [ REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item8)
    - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
-4. [ Modelado Simple de Logs con Filebeat](#item4)
-   - Modelado de los campos y creación de una pipeline de procesos
-5. [ Activación de acción](#item5) 
+9. [ SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS](#item9)
+   - Modelado de los campos para la pipeline, y comprobación de salidas en entorno de prueba.
+10. [ ALTA DE LA PIPELINE DE PROCESADO DE LOGS](#item10)
+   -  Creación de la pipeline de procesos. Alta en Elastic.
+11. [ PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS](#item11)
+   -  Direccionamiento desde filebeat, de los datos hacia los procesos de la pipeline.
+12. [ Activación de acción](#item12) 
    - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
-6. [ Siguientes pasos](#item6)
+13. [ Siguientes pasos](#item13)
 
 ---
 
 <a name="item1"></a> [Volver a Índice](#indice)
- ### 1. Requisitos y asunciones
+ ### 1. REQUISITOS Y ASUNCIONES
 - Se asume la instalación del entorno de desarrollo ELK en la plataforma Google Cloud Platform (GCP)
 - Se basa en la versión 7.17.5 del Stack Elastic (ELK). Configurada en el fichero [.env](../.env) para funcionar con la última versión 7:
   ```shell
@@ -56,8 +65,8 @@ Sin embargo, se indica más adelante cómo proceder para el caso de este proyect
 - Kibana 7.3
 - Por último, para iniciar el Stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
 
-
-## Entorno Desarrollo ELK en GCP 
+<a name="item2"></a> [Volver a Índice](#indice) 
+### 2. ENTORNO DE DESARROLLO ELK EN GCP  
 La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se pueden utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud de los que se disponga acceso, o con máquina virtual en local como VirtualBox, que se ha descartado por la excesiva capacidad de memoria que requiere.
 
 1.	https://console.cloud.google.com/
@@ -95,9 +104,13 @@ Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o det
    ![Instancia creada](./img/03_ArrancarInstancia.png)
    
 8. A continuación se crea una regla de firewall que permita entrada de puerto 80. Pulsar los tres puntos a la derecha de la instancia + *Ver detalles de red* + Columna izquiera *Firewall* + *Create Firewall Policy* + Nombre:xxx + *Continuar* + *Agegar regla* + Prioridad: 1000 + Dirección del tráfico: *Entrada* + Rangos de IPv4 de destino: poner la ip de la instancia "34.175.112.47 " + *crear* + *continuar* + *asociar* + seleccionar la red default + *asociado* + *Continuar* + *crear*
+
 (AQUÍ IMAGEN Ver detalles de la red para el firewall)
+
 (AQUÍ IMAGEN CONFIGURACIÓN FIREWALL1)
+
 (AQUÍ IMAGEN CONFIGURACIÓN FIREWALL1
+
 Commando REST equivalente:
 
  ```shell
@@ -135,7 +148,7 @@ Esta es la respuesta REST:
   "destinationRanges": [
     "34.175.205.191"
   ],
-  "direction": "EGRESS",
+  "direction": "INGRESS",
   "disabled": false,
   "enableLogging": false,
   "id": "2176967777015422080",
@@ -151,24 +164,24 @@ Esta es la respuesta REST:
   ```
 
 
-
-## CONEXIÓN POR SSH
-Para transferir las claves ssh a la máquina virtual y conectarse:
+<a name="item3"></a> [Volver a Índice](#indice) 
+### 3. CONEXIÓN POR SSH. INSTALACIÓN DE DNF Y DOCKER 
+Para conectarse a la instancia de Máquina Virtual a través de conexión segura SSH:
 9. En la columna “Conectar” de la instancia,  se cliquea:
 
  ```shell 
 SSH => abrir en otra ventana del navegador 
  ```
-Esto puede guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina:
+Esto puede guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina (se ejecuta desde cliente CLI de Windows, o directamente desde la interfaz de GCP arriba a la derecha, el Cloud Shell de Google cloud, con 50 horas iniciales gratuitas):
  ```shell
 gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --project "tfm-elastic-cern-uam"
  ```
 
-La plataforma permite la conexión desde el propio Cloud Shell de Google cloud en vez de la de Windows. Crea automáticamente los directorios, y el usuario de SSH enrique, en la máquina enriqueprieto.centos8-2 pidiendo contraseña que se deberá dejar en blanco.
+Crea automáticamente los directorios, y el usuario de SSH (en este caso auaenrique), en la máquina enriqueprieto.centos8-2 pidiendo contraseña que se deberá dejar en blanco.
 
 ![AbrirSSH](./img/04_AbrirSSH.png)
 
-Se pueden ejecutar a continuación los siguientes comandos para comprobar su correcto funcionamiento:
+10. Se pueden ejecutar a continuación los siguientes comandos para comprobar su correcto funcionamiento:
  ```shell
 ls
 pwd
@@ -176,52 +189,59 @@ whoami
  ```
  Las instrucciones que se comentan a partir de ahora se entienden introducidas en la ventana de esta conexión establecida.
  
-13.a Instalación de dnf:
+11.  Instalación de dnf:
 
 ```shell
 sudo yum install dnf
 (y)
    ```
 
-13.b. Instalación de plugins:
+12. Instalación de plugins:
 
 ```shell
  sudo yum install dnf-plugins-core
-    ```
+ ```
     
-14. Instalción de Docker, Deberá en este caso utilizarse “SUDO” delante:
- ```shell
+13. Instalación de Docker. Deberá en este caso utilizarse “SUDO” delante:
+
+```shell
  sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
    ```
-15. Se instala el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
- ```shell
+
+14. Se instala el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
+
+```shell
  sudo dnf install docker-ce docker-ce-cli containerd.io
  (y)
  (y)
    ```
 
-16. Se procede a arrancar el servicio Docker y añadiéndolo al autorun:
- ```shell
+15. Se procede a arrancar el servicio Docker y añadírselo al autorun:
+
+```shell
  sudo systemctl enable --now docker
    ```
-17. CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, se requiere añadir una regla de enmascaramiento hacia él.
- ```shell
+
+16. CentOS 8 utiliza un firewall diferente al de Docker. Por lo tanto, al tener firewall habilitado, se requiere añadir una regla de enmascaramiento hacia él.
+
+```shell
  sudo firewall-cmd --zone=public --add-masquerade --permanent
    ```
  ```shell
  sudo firewall-cmd --reload
    ```
 
-## INSTALACIÓN DE DOCKER-COMPOSE
-18. En este punto se instala  Docker-compose, servicio que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
+<a name="item4"></a> [Volver a Índice](#indice) 
+### 4. INSTALACIÓN DE DOCKER-COMPOSE
+17. En este punto se instala  Docker-compose, servicio que permite desplegar el proyecto en otra máquina utilizando un solo comando. Para descargarlo:
  ```shell
  sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
    ```
-19.  A continuación se le da carácter ejecutable:
+18.  A continuación se le da carácter ejecutable:
  ```shell
  sudo chmod +x /usr/local/bin/docker-compose
    ```
-20.  Procediendo a su comprobación posterior:
+19.  Procediendo a su comprobación posterior:
  ```shell
  docker-compose -v
    ```
@@ -231,7 +251,7 @@ sudo yum install dnf
    ```
    lo cual indica que funciona correctamente.
    
-21. Seguidamente se evitará la denegación de servicio aplicando lo expuesto en 
+20. Seguidamente se evitará la denegación de servicio aplicando lo expuesto en 
 https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
 Para lo cual habrá que cambiar el siguiente permiso: 
 
@@ -241,7 +261,7 @@ Para lo cual habrá que cambiar el siguiente permiso:
 
 Esto será preciso ejectutarlo cada vez que se arranque de nuevo la instancia de la máquina virtual.
 
-22. Posteriormente se prueba ejecutando docker run hello-world y comprobandos que funciona:
+21. Posteriormente se prueba ejecutando docker run hello-world y comprobandos que funciona:
 
 ```shell
  docker run hello-world
@@ -278,10 +298,11 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
    ```
    
-## INSTALACIÓN DE GIT Y DOCKER  
+<a name="item5"></a> [Volver a Índice](#indice) 
+### 5. INSTALACIÓN DE GIT
 A continuación se instalan Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
 
-10.	Instalar git, por tener los contenedores subidos y compartidos en Github (más información en https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 )
+22.	Instalar git, por tener los contenedores subidos y compartidos en Github (más información en https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 )
 
 ```shell
 sudo yum install git
@@ -289,7 +310,7 @@ sudo yum install git
  ```
 
 (yum se encarga de solicitar la última versión). Responder a la pregunta con Y(es)
-11. Se comprueba con lo siguiente:
+23. Se comprueba con lo siguiente:
 
 ```shell
 git --version 
@@ -301,13 +322,13 @@ Devolviendo, si está todo correcto:
 git version 1.8.3.1
  ```
 
-12. Una vez instalado el GIT, se clonará el Git instalado previamente en github:
+24. Una vez instalado el GIT, se clonará el Git instalado previamente en github:
 
 ```shell
 git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
  ```
 
-13.	Antes de lanzar docker-compose se deberá asegurar el cumplimiento de requisitos de memoria máxima de linux, como se indicó en el apartado "requisitos":
+25.	Antes de lanzar docker-compose se deberá asegurar el cumplimiento de requisitos de memoria máxima de linux, como se indicó en el apartado "requisitos":
 
 ```shell
  sudo sysctl -w vm.max_map_count=262144
@@ -318,14 +339,8 @@ Lo cual habrá que ejecutar cada vez que se reinicie la instancia tras una parad
 A modo informativo, se usarán comandos docker basicos descritos en https://dockerlabs.collabnix.com/docker/cheatsheet/ además de los comandos de docker-compose detalados en https://devhints.io/docker-compose y como editor de texto se utiliza vim.
 
 
-23. Personalización de docker-compose.yml
- - En dicho fichero de configuración del mencionado git, se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
- - Además, en el apartado kibana se ha redirigido el puerto al 80 con "80:5601"
- - Tras su edición, ya incorporada en el git, se puede comprobar la integridad de este y otros ficheros ".yml" con herramientas como esta online: http://www.yamllint.com/
----
-
-<a name="item2"></a> [Volver a Índice](#indice)
- ### 2. Instalación del Stack Elastic
+<a name="item6"></a> [Volver a Índice](#indice) 
+### 6. INSTALACIÓN DEL STACK ELASTIC
 En este apartado se instalan los servicios necesarios para lograr la siguiente estructura de ejecución: 
 
 ![Elastic Stack](./img/enri_elastic-stack.png)
@@ -335,15 +350,19 @@ Para ello se efectuarán las siguentes acciones:
  - Arrancar dichos servicios, comprobando que funcionan correctamente
  - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana.
 
-## INSTALACIÓN DEL STACK
-24. Se procede al aseguramiento de los permisos correspondientes a /filebeat/config  (siendo tfm_bigdata_viu_enriqueprieto el directorio del proyecto:
+26. Personalización de docker-compose.yml
+ - En dicho fichero de configuración del mencionado git, se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
+ - Además, en el apartado kibana se ha redirigido el puerto al 80 con "80:5601"
+ - Tras su edición, ya incorporada en el git, se puede comprobar la integridad de este y otros ficheros ".yml" con herramientas como esta online: http://www.yamllint.com/
+
+27. Se procede al aseguramiento de los permisos correspondientes a /filebeat/config  (siendo tfm_bigdata_viu_enriqueprieto el directorio del proyecto:
 
 ```shell
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 chmod go-w filebeat.yml
 ```
 
-25. Después se garantiza el borrado de datos anteriores (para el caso de no ser la primera prueba) a la vez que el arranque de los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello se accede a la raíz del proyecto y se ejecuta lo siguiente:
+28. Después se garantiza el borrado de datos anteriores (para el caso de no ser la primera prueba) a la vez que el arranque de los contenedores del stack Elasticic definido en [docker-compose.yml](../../docker-compose.yml). Para ello se accede a la raíz del proyecto y se ejecuta lo siguiente:
 
 ```shell
 cd $pwd
@@ -371,9 +390,9 @@ docker-compose down --rmi <all|local>
 # Con "--remove-orphans" eliminarán en su caso los contenedores que hubieran sido creados anteriormente y que ya no estén registrados en docker-compose.yml
 ```
 ## COMPROBACIONES
-26. Se ejecuta `docker ps` para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch).
+29. Se ejecuta `docker ps` para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch).
 
-27. Además se comprueba si han arrancado correctamente, visualizando los respectivos logs de los mencionados servicios:
+30. Además se comprueba si han arrancado correctamente, visualizando los respectivos logs de los mencionados servicios:
 
 ```shell
 docker logs -f elasticsearch
@@ -385,7 +404,7 @@ Ctrl+c
 ```
 
 
-28. En caso de modificar el fichero de testeo, deberá asegurarse de que el sistema operativo Windows no le ha añadido caracteres ilegibles en UNIX, usando la siguiente instalación seguido de la instrucción a continuación:
+31. En caso de modificar el fichero de testeo, deberá asegurarse de que el sistema operativo Windows no le ha añadido caracteres ilegibles en UNIX, usando la siguiente instalación seguido de la instrucción a continuación:
 ```shell
 sudo yum install dos2unix
 (y)
@@ -393,8 +412,9 @@ dos2unix test/srm-grid002Domain_original_extracto_unix.log
 ```
 Como alternativa se pueden usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
 
-## Visualización vía Logs UI
-28.b. Priemero se  comprueba que kibana está abierto en el puerto 80 en la ventana de la conexión SSH con: 
+<a name="item7"></a> [Volver a Índice](#indice) 
+### 7. VISUALIZACIÓN CON KIBANA. CREACIÓN DE INDEX PATTERN
+32. Primero se  comprueba que kibana está abierto en el puerto 80 en la ventana de la conexión SSH con: 
 
  ```shell
 curl localhost:80
@@ -403,7 +423,7 @@ curl localhost:80
 Se confirma que no da error como resultado, y a continuación desde cualquier navegador se utiliza la ip que proporciona la plataforma, y dicho puerto 80:
 (AQUÍ IMAGEN)
 
-29. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
+33. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 Si se estuviera trabajando en local sería:
 
 ```shell
@@ -421,54 +441,40 @@ http://xxx.xxx.xxx:80/
 (AQUÍ IMAGEN)
 
 
-30. Dentro de la interfaz de kibana que aparee en el navegador, se selecciona en el menú de la izquierda el apartado `Logs`.
-(AQUÍ IMAGEN)
+34. Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.3/tutorial-define-index.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
 
-![Logs Menu](./img/logs-icon.png)
-
-31. Para actualizar los logs que llegn a elasticsearch se pulsa en la esquina superior derecha, `Stream Live`. En este caso no debe variar, al tratarse de la ingesta de un único fichero y no de una fuente continua de datos (stream). Pero se debe busca a cambio el rango de fechas y horas que coincida con el de los datos ingestados
-(AQUÍ IAMAGEN)
-
-## Visualizar logs en Discover
-
-Volvemos a Kibana.
-
-Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.3/tutorial-define-index.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
-
-Si no le indicamos lo contrario en la configuración de filebeat para envío a elasticsearch, los índices que se crearán son con el nombre `filebeat-*`.
+Si no se indica lo contrario en la configuración de filebeat para envío a elasticsearch, los índices que se crearán con el nombre `filebeat-*`.
 
 ![Index Patterns](./img/index-pattern.png)
 
-Por lo tanto, en la sección de Management de Kibana, seleccionamos `Index Patterns` en el grupo `Kibana`.
+Por lo tanto, en la sección de Management de Kibana, se debe seleccionar `Index Patterns` en el grupo `Kibana`.
 
 ![Index Patterns](./img/kibana-index-patterns-management.png)
 
-Pulsamos el botón azul `Create Index Pattern` y damos de alta un patrón `filebeat-*`.
+A continuación se pulsa el botón azul `Create Index Pattern` y se da de alta un patrón `filebeat-*`.
 
 ![Index Patterns](./img/index-pattern-create-1.png)
 
-Hacemos clic en `Next step`y seleccionaremos el campo a usar para mostrar la serie temporal de datos en Discover. En
-este caso, escogemos `@timestamp`.
+tras cliquear `Next step`, se selecciona el campo a usar para mostrar la serie temporal de datos en Discover. En
+este caso `@timestamp`.
 
 ![Index Patterns](./img/index-pattern-create-2.png)
 
 Y pulsamos `Create Index Pattern`.
 
-Seleccionamos en el menú de la izquierda en Kibana `Discover`.
+Poe último, Seleccionamos en el menú de la izquierda en Kibana `Discover`.
 
 Hacemos clic en `New` en el menú superior, para limpiar cualquier filtro que tuviéramos en la búsqueda.
 
 Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
+Se selecciona arriba a la derecha el rango de fechas y horas correspondientes a los de los datos ingestados
 
+(COMPROBAR QUE AQUÍ SE VEN LOS DATOS INGESTADOS)
 ![Discover Filebeat](./img/discover-filebeat.png)
  
-[Subir](#top)
- 
----
 
-<a name="item3"></a> [Volver a Índice](#indice)
-
-### 3.  Rearranque de la instancia de Máquina virtual (VM)
+<a name="item8"></a> [Volver a Índice](#indice) 
+### 8. REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
 Cada vez que se detanga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
 
 ```shell
@@ -509,8 +515,8 @@ http://xxx.xxx.xxx:80/
 - Password: changeme
 ```
 
-
-### 3. Política de Logs
+<a name="item9"></a> [Volver a Índice](#indice) 
+### 9. SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS (VM)
 
 *(En este apartado no se ejecutan instrucciones sino que simplemente se identifica lo que se va a obtener, en qué formato, y qué se deberá hacer con ello para obtener el resultado deseado, que también se tipifica aquí:)*
 
@@ -547,23 +553,16 @@ Así se podrán agrupar valores similares, visualizarlos, y explotar toda la pot
 
 Para ello necesitaremos modelar, es decir conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
 
-[Subir](#top)
 
----
+El documento que llega a Elastic tiene líneas de log con este aspecto:
 
-<a name="item4"></a> [Volver a Índice](#indice)
-### 4. Modelado Simple de Logs con Filebeat
-En este punto, el documento que llega a elastic tiene este aspecto:
-```json
-{"timestamp" : 1569846065739,
-"message" : "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"}
-```
+"27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"
 
 Y la intención es que Elastic lo acabe guardando como:
 
 ```json
 {
-          "@timestamp" : "30 Dec 2020 01:56:30",
+          "@timestamp" : "27 Dec 2020 03:09:29",
           "enri_campo02" : "()",
           "enri_campo03" : "[3Bs:6871:srm2:prepareToGet:-1093078942:-1093078941 3Bs:6871:srm2:prepareToGet",
           "enri_campo04" : "[3Bs:6871:srm2:prepareToGet",
@@ -582,21 +581,19 @@ Y la intención es que Elastic lo acabe guardando como:
 }
 ```
 
+Dado que el mensaje final de error que nos interesa es de tipo:
+```
+"srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
+```
 Para realizar esta transformación, recurriremos a las [pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/pipeline.html) de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest.html).
 
-Dado que tenemos un cluster elasticsearch con un solo nodo, este nodo realizará todos los roles (master, data, ingest, etc.).
+Dado que tenemos un clúster elasticsearch con un solo nodo, este nodo realizará todos los roles (master, data, ingest, etc.).
 (Más información sobre roles de los nodos en la [documentación](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/modules-node.html).
 
 Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, podemos analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
 
 ![Ingest pipeline](./img/ingest-pipeline.png)
 
-En este apartado realizaremos:
-
-1. Ingesta de logs estruturados usando la pipeline de ingesta de elasticsearch.
-2. Visualización de logs en Kibana Discover.
-
-## Creación de la pipeline de ingesta
 
 En primer lugar, vamos a crear una simple pipeline de ingesta, basada en un procesador de tipo [dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html), que nos parseará el campo `message` de entrada generando los diversos campos que queremos a la salida (`process_name`, `process_id`, `host_name`, etc).
 
@@ -615,7 +612,7 @@ POST _ingest/pipeline/_simulate
       {
         "dissect": {
           "field": "message",
-          "pattern": "%{@timestamp} %{host_name} %{process_name} %{process_id} %{message_id} %{event_data} %{message_content}"
+          "pattern": "%{@timestamp}"
         }
       },
       {
@@ -629,7 +626,7 @@ POST _ingest/pipeline/_simulate
     {
       "_source": {
         "timestamp" : 1569846065739,
-        "message" : "2019-09-30T12:21:04.702Z leadengage.info omnis 7009 ID418 - Connecting the microchip won't do anything, we need to override the auxiliary PNG protocol!"
+        "message" : "27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"
       }
     }
   ]
@@ -645,6 +642,8 @@ Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/
 - [**dissect**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html): Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
 - [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no nos interesa guardara esta información redundante.
 
+<a name="item10"></a> [Volver a Índice](#indice) 
+### 10. ALTA DE LA PIPELINE DE PROCESADO DE LOGS (VM)
 Una vez comprobamos que la pipeline de ingesta funciona según deseamos, la daremos de alta en elasticsearch para poder usarla. Para ello, en la misma consola de Dev Tools, ejecutaremos:
 
 ```json
@@ -661,7 +660,7 @@ PUT _ingest/pipeline/logs-pipeline
     {
       "set": {
         "field": "enri_prefijo",
-        "value": "srm://grid002.ft.uam.es:8443/srm/managerv2?SFN="
+        "value": "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN="
       }
     },
    {
@@ -692,7 +691,8 @@ Creando la pipeline de ingesta **logs-pipeline**, que usaremos en el próximo ap
 
 ![Ingest pipeline](./img/ingest-pipeline-put.png)
 
-## Configuracion de Filebeat
+<a name="item11"></a> [Volver a Índice](#indice) 
+### 11. PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS (VM)
 
 Ahora tenemos que indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, hemos editado el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` hemos descomentado la línea `pipeline: logs-pipeline`.
 
@@ -718,38 +718,11 @@ Podemos comprobar que no haya errores en la ejecución de filebeat, antes de pas
 docker logs -f filebeat
 ```
 
-## Visualizar logs en Discover
+## Visualización de los logs en Discover
 
 Volvemos a Kibana.
 
-Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.3/tutorial-define-index.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
 
-Si no le indicamos lo contrario en la configuración de filebeat para envío a elasticsearch, los índices que se crearán son con el nombre `filebeat-*`.
-
-![Index Patterns](./img/index-pattern.png)
-
-Por lo tanto, en la sección de Management de Kibana, seleccionamos `Index Patterns` en el grupo `Kibana`.
-
-![Index Patterns](./img/kibana-index-patterns-management.png)
-
-Pulsamos el botón azul `Create Index Pattern` y damos de alta un patrón `filebeat-*`.
-
-![Index Patterns](./img/index-pattern-create-1.png)
-
-Hacemos clic en `Next step`y seleccionaremos el campo a usar para mostrar la serie temporal de datos en Discover. En
-este caso, escogemos `@timestamp`.
-
-![Index Patterns](./img/index-pattern-create-2.png)
-
-Y pulsamos `Create Index Pattern`.
-
-Seleccionamos en el menú de la izquierda en Kibana `Discover`.
-
-Hacemos clic en `New` en el menú superior, para limpiar cualquier filtro que tuviéramos en la búsqueda.
-
-Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
-
-![Discover Filebeat](./img/discover-filebeat.png)
 
 Usamos la barra de búsqueda para filtrar nuestros datos. filtramos por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
 (CAMBIAR IMAGEN)
@@ -770,8 +743,8 @@ Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el
 
 ---
 
-<a name="item5"></a> [Volver a Índice](#indice)
- ### 5. [ Activación de acción](#item5) 
+<a name="item12"></a> [Volver a Índice](#indice)
+ ### 12. ACTIVACIÓN DE ACCIÓN 
    - Damos órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
    - 
    - 
@@ -779,9 +752,8 @@ Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el
    - 
 
 ---
-
-<a name="item6"></a> [Volver a Índice](#indice)
- ### 6.  Siguientes pasos 
+<a name="item13"></a> [Volver a Índice](#indice)
+ ### 13.  Siguientes pasos
    - 
    - 
    - 
