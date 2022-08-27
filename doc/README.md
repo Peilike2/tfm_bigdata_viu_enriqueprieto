@@ -77,7 +77,7 @@ La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante
     ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
 4.	Se selecciona "Centos 8" por mayor conveniencia de uso (Disco de arranque: *cambiar* + Versión: *CentOS Stream 8*.
 5.	Elección de "Disco persistente equilibrado" y fijado de memoria a 100GB. 
-(AQUÍ IMAGEN)
+
     ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
 6.	Permitir http y https
