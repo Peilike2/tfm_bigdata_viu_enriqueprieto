@@ -493,7 +493,7 @@ Poe último, Seleccionamos en el menú de la izquierda en Kibana `Discover`.
 
 Hacemos clic en `New` en el menú superior, para limpiar cualquier filtro que tuviéramos en la búsqueda.
     
-    ![Discover Filebeat](./img/discover-filebeat.png)
+  ![Discover Filebeat](./img/discover-filebeat.png)
  
 Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
 Se selecciona arriba a la derecha el rango de fechas y horas correspondientes a los de los datos ingestados
