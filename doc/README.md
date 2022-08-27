@@ -82,7 +82,9 @@ La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante
     
     ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
 6.	Permitir http y https
-(AQUÍ IMAGEN)
+
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
 7. Clik en *Crear*
 - Esto luego se puede ejecutar aquí mismo con este comando REST:
 ```
@@ -109,9 +111,20 @@ Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o det
 
 (AQUÍ IMAGEN Ver detalles de la red para el firewall)
 
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
+
 (AQUÍ IMAGEN CONFIGURACIÓN FIREWALL1)
 
-(AQUÍ IMAGEN CONFIGURACIÓN FIREWALL1
+
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
+
+(AQUÍ IMAGEN CONFIGURACIÓN FIREWALL2)
+
+
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
 
 Commando REST equivalente:
 
@@ -432,8 +445,9 @@ curl localhost:80
  ```
  
 Se confirma que no da error como resultado, y a continuación desde cualquier navegador se utiliza la ip que proporciona la plataforma, y dicho puerto 80:
-(AQUÍ IMAGEN)
 
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
 33. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
 Si se estuviera trabajando en local sería:
 
@@ -449,8 +463,8 @@ http://xxx.xxx.xxx:80/
 - Password: changeme
 ```
 
-(AQUÍ IMAGEN)
-
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
 
 34. Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.3/tutorial-define-index.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
 
@@ -741,9 +755,14 @@ docker logs -f filebeat
 Volvemos a Kibana.
 
 Usamos la barra de búsqueda para filtrar nuestros datos. filtramos por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
-(CAMBIAR IMAGEN)
+
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
 ![Discover KQL](./img/discover-kql.png)
-(CAMBIAR IMAGEN)
+
+
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
 ![Discover KQL](./img/discover-kql-2.png)
 
 El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/7.3/kuery-query.html).
@@ -770,16 +789,9 @@ Pulsamos el botón `Save` en la barra superior y guardaremos la búsqueda con el
 
 <a name="item13"></a> [Volver a Índice](#indice)
  ### 13.  Siguientes pasos
-   - 
-   - 
-   - 
-   - 
-   - 
-   - 
-   - 
-   -
-   -   
-   -   
+
+    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
 
 
 ---
