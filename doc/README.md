@@ -79,6 +79,7 @@ La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante
 5.	Elección de "Disco persistente equilibrado" y fijado de memoria a 100GB. 
 
     ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+    
     ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
 6.	Permitir http y https
 (AQUÍ IMAGEN)
