@@ -40,8 +40,8 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
   ```shell
   vim .env
   ELK_VERSION=7.17.5
-  Ctrl+c
-  !qw
+  Esc
+  :wq
   ```
 - Instalación de Docker Compose. Se ha probado con  docker-compose 1.27.4
   En el caso que se describe, desde Google Cloud Platform, se indica más adelante cómo se realiza. En cambio, para el caso de instalación local directa sería de la siguiente forma:
@@ -624,7 +624,7 @@ Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar
 
 En primer lugar, vamos a crear una simple pipeline de ingesta, basada en un procesador de tipo [dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html), que nos parseará el campo `message` de entrada generando los diversos campos que queremos a la salida (`process_name`, `process_id`, `host_name`, etc).
 
-Antes de crear esta pipeline, es interesante simular cual sería su comportamiento. Para ello, en Kibana seleccionaremos en el menú de la izquierda `Dev Tools`.
+Antes de crear esta pipeline, es interesante simular cual sería su comportamiento. Para ello, en Kibana seleccionaremos en el menú de la izquierda Management:`Dev Tools`.
 
 ![Dev Tools](./img/devtools-icon.png)
 
@@ -633,13 +633,21 @@ Y pegaremos lo siguiente en la consola:
 ```json
 POST _ingest/pipeline/_simulate
 {
+  
+  "mappings": {
+    "properties": {
+      "enri_campo01" : {"type": "date",
+        "format": ["dd MMM yyyy HH:mm:ss"]
+      }
+    }
+  },
   "pipeline": {
     "description": "_description",
     "processors": [
       {
         "dissect": {
           "field": "message",
-          "pattern": "%{@timestamp}"
+          "pattern": "%{enri_campo01} %{enri_campo02} %{enri_campo03} %{enri_campo04} %{enri_campo05} %{enri_campo06} %{enri_campo07} %{enri_campo08} %{enri_campo09} %{enri_campo10} %{enri_campo11} %{enri_campo12}"
         }
       },
       {
@@ -660,14 +668,44 @@ POST _ingest/pipeline/_simulate
 }
 ```
 
-Al ejecutar esta petición, podremos comprobar si el JSON resultante es el esperado.
+Al ejecutar esta petición, podremos comprobar si el JSON resultante es el esperado:
 
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+```json
+{
+  "docs" : [
+    {
+      "doc" : {
+        "_index" : "_index",
+        "_type" : "_doc",
+        "_id" : "_id",
+        "_source" : {
+          "enri_campo05" : "()",
+          "enri_campo06" : "[k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431",
+          "enri_campo07" : "k6A:2394036:srm2:prepareToGet",
+          "enri_campo08" : "SRM-grid002]",
+          "enri_campo01" : "27",
+          "enri_campo12" : "/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)",
+          "enri_campo02" : "Dec",
+          "enri_campo03" : "2020",
+          "enri_campo04" : "03:09:29",
+          "enri_campo09" : "Pinning",
+          "enri_campo10" : "failed",
+          "enri_campo11" : "for",
+          "timestamp" : 1569846065739
+        },
+        "_ingest" : {
+          "timestamp" : "2022-08-27T11:51:27.867470949Z"
+        }
+      }
+    }
+  ]
+}
+```
 
 Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/simulate-pipeline-api.html) una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, tenemos un JSON con los procesadores de la pipeline:
 
 - [**dissect**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html): Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
-- [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no nos interesa guardara esta información redundante.
+- [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no nos interesa guardar esta información redundante.
    
 ---
 
@@ -715,8 +753,15 @@ PUT _ingest/pipeline/logs-pipeline
   ]
 }
 ```
+Se obtiene la respuesta de confirmación:
 
-Creando la pipeline de ingesta **logs-pipeline**, que usaremos en el próximo apartado.
+```json
+{
+  "acknowledged" : true
+}
+```
+
+Creando la pipeline de ingesta **logs-pipeline**, que se usará  en el próximo apartado.
 
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
    
@@ -725,7 +770,13 @@ Creando la pipeline de ingesta **logs-pipeline**, que usaremos en el próximo ap
 <a name="item11"></a> [Volver a Índice](#indice) 
 ### 11. PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS (VM)
 
-Ahora tenemos que indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, hemos editado el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` hemos descomentado la línea `pipeline: logs-pipeline`.
+Ahora se debe indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, es necesario editar el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` hemos descomentado la línea `pipeline: logs-pipeline`.
+
+```shell
+cd $PWD
+cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
+vim filebeat.yml
+```
 
 ```yaml
 output.elasticsearch:
@@ -734,12 +785,18 @@ output.elasticsearch:
   password: '${ES_PASSWORD:changeme}'
   pipeline: logs-pipeline
 ```
+```shell
+Esc
+:wq
+```
 
 ## Ingesta de logs estructurados
 
-Arrancamos de nuevo `filebeat`.
+Se procede a arrancar de nuevo `filebeat`.
 
 ```shell
+cd ..
+cd ..
 docker-compose up -d
 ```
 
