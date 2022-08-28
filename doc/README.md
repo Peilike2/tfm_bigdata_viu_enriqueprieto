@@ -2,9 +2,9 @@
 <!-- BORRAR: Esto es un comentario de prueba de Enrique -->
 # TFM VIU 2022
 
-**_Tutora: Immaculada Valls Bernaus_**
+***_Tutora: Immaculada Valls Bernaus_ @immavalls ***
   
-**_Masterando: Enrique Prieto Catalán_**
+***_Masterando: Enrique Prieto Catalán_ @Peilike2***
 
 
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
@@ -718,7 +718,7 @@ Esc
 :wq
 ```
 
-**Ingesta de logs estructurados**
+***Ingesta de logs estructurados***
 
 Se procede a arrancar de nuevo `filebeat`.
 
@@ -734,7 +734,7 @@ Se puede comprobar que no hay errores en la ejecución de filebeat, antes de pas
 docker logs -f filebeat
 ```
 
-**Visualización de los logs en Discover**
+***Visualización de los logs en Discover***
 
 Nuevamente en Kibana, a través del navegador, se usa la barra de búsqueda para filtrar los datos proporcionados. Se procede a filtrar por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
 
