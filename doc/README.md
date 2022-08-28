@@ -8,10 +8,10 @@
 
 ---
 
-Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
+Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en la Universidad Internacional de Valencia (VIU) titulado
+***"IMPLEMENTACIÓN DE SISTEMATIZACIÓN DE LA OBSERVABILIDAD EN EL NODO UAM-LCG2 DE LA MALLA DE CÁLCULO MUNDIAL DEDICADA A LOS EXPERIMENTOS DEL DETECTOR ATLAS DEL GRAN COLISIONADOR DE HADRONES LHC DE LA ORGANIZACIÓN EUROPEA PARA LA INVESTIGACIÓN NUCLEAR (CERN) EN GINEBRA, SUIZA."***
 
-* El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
-* En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana[^nota2].
+* En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana[^nota2] mediante Docker Compose.
 
 ---
  
