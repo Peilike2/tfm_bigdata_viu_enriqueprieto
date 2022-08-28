@@ -787,7 +787,7 @@ Así se podrán agrupar valores similares, visualizarlos, y explotar toda la pot
 ---
 
 <a name="item13"></a> [Volver a Índice](#indice) 
-### ANEXO. REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
+### ANEXO: REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
 Cada vez que se detanga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
 
 ```shell
