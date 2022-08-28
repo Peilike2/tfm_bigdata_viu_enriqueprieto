@@ -1,4 +1,5 @@
  <a name="top"></a>
+[Ver contnido del repositorio, acceso y explicación de los ficheros de configuración](../)
 <!-- BORRAR: Esto es un comentario de prueba de Enrique -->
 # TFM VIU 2022
 ## _Tutora: Immaculada Valls Bernaus_
@@ -19,17 +20,17 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 5. [ INSTALACIÓN DE GIT](#item5)
 6. [ INSTALACIÓN DEL STACK ELASTIC](#item6)
 7. [ VISUALIZACIÓN CON KIBANA. CREACIÓN DE INDEX PATTERN](#item7)
-8. [ REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item8)
-   - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
-9. [ SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS](#item9)
+8. [ SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS](#item8)
    - Modelado de los campos para la pipeline, y comprobación de salidas en entorno de prueba.
-10. [ ALTA DE LA PIPELINE DE PROCESADO DE LOGS](#item10)
+9. [ ALTA DE LA PIPELINE DE PROCESADO DE LOGS](#item8)
    -  Creación de la pipeline de procesos. Alta en Elastic.
-11. [ PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS](#item11)
+10. [ PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS](#item10)
    -  Direccionamiento desde filebeat, de los datos hacia los procesos de la pipeline.
-12. [ ACTIVACIÓN DE ACCIÓN](#item12) 
+11. [ ACTIVACIÓN DE ACCIÓN](#item11) 
    - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
-13. [ SIGUIENTES PASOS](#item13)
+12. [ SIGUIENTES PASOS](#item12)
+13. [ ANEXO: REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item13)
+   - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
 
 ---
 
@@ -499,55 +500,11 @@ Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
 Se selecciona arriba a la derecha el rango de fechas y horas correspondientes a los de los datos ingestados
 
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-
----
-
-<a name="item8"></a> [Volver a Índice](#indice) 
-### 8. REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
-Cada vez que se detanga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
-
-```shell
-Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia, anotar el dato de la columna "ip externa" y en Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador",escribiendo a continuación en ella lo siguiente:
-sudo chmod +x /usr/local/bin/docker-compose
-(Comprobación:) 
-docker-compose -v
-
-sudo chmod 666 /var/run/docker.sock
-(Comprobación:)
-docker run hello-world
-
-sudo sysctl -w vm.max_map_count=262144
-cd $pwd
-cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
-chmod go-w filebeat.yml
-cd $pwd
-cd tfm_bigdata_viu_enriqueprieto
-
-(Nota: Si se desea borrar los logs anteriores, añadir -v al final de docker-compose down)
-docker-compose down
-docker-compose up -d --remove-orphans
-
-(Comprobaciones:)
-docker ps
-docker logs -f elasticsearch
-Ctrl+c
-docker logs -f kibana
-Ctrl+c
-docker logs -f filebeat
-Ctrl+c
-curl localhost
-
-(Ir a navegador, sustituyendo xxx por la ip externa específica de la instancia)
-
-http://xxx.xxx.xxx:80/
-- Usuario: elastic
-- Password: changeme
-```
    
 ---
 
-<a name="item9"></a> [Volver a Índice](#indice) 
-### 9. SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS (VM)
+<a name="item8"></a> [Volver a Índice](#indice) 
+### 8. SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS (VM)
 
 El documento que llega a Elastic tiene líneas de log con este aspecto:
 
@@ -676,8 +633,8 @@ Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/
    
 ---
 
-<a name="item10"></a> [Volver a Índice](#indice) 
-### 10. ALTA DE LA PIPELINE DE PROCESADO DE LOGS (VM)
+<a name="item9"></a> [Volver a Índice](#indice) 
+### 9. ALTA DE LA PIPELINE DE PROCESADO DE LOGS (VM)
 Una vez se comprueba que la pipeline de ingesta funciona según lo deseado, se da de alta en elasticsearch para poder usarla. Para ello, en la misma consola de Dev Tools, de debe ejecutar:
 
 ```json
@@ -734,8 +691,8 @@ Creando la pipeline de ingesta **logs-pipeline**, que se usará  en el próximo 
    
 ---
 
-<a name="item11"></a> [Volver a Índice](#indice) 
-### 11. PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS (VM)
+<a name="item10"></a> [Volver a Índice](#indice) 
+### 10. PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS (VM)
 
 Ahora se debe indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, es necesario editar el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` se  descomenta la línea `pipeline: logs-pipeline`.
 
@@ -793,8 +750,8 @@ Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el n
 
 ---
 
-<a name="item12"></a> [Volver a Índice](#indice)
- ### 12. ACTIVACIÓN DE ACCIÓN 
+<a name="item11"></a> [Volver a Índice](#indice)
+ ### 11. ACTIVACIÓN DE ACCIÓN 
    - Se emitirán órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
 Para ello se precisa modelar, es decir conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
 COn dicho fin, se aplicarán las siguientes operaciones:
@@ -816,12 +773,54 @@ Así se podrán agrupar valores similares, visualizarlos, y explotar toda la pot
 
 ---
 
-<a name="item13"></a> [Volver a Índice](#indice)
- ### 13.  Siguientes pasos
+<a name="item12"></a> [Volver a Índice](#indice)
+ ### 12.  Siguientes pasos
 
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
+---
 
+<a name="item13"></a> [Volver a Índice](#indice) 
+### 13. REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
+Cada vez que se detanga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
+
+```shell
+Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia, anotar el dato de la columna "ip externa" y en Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador",escribiendo a continuación en ella lo siguiente:
+sudo chmod +x /usr/local/bin/docker-compose
+(Comprobación:) 
+docker-compose -v
+
+sudo chmod 666 /var/run/docker.sock
+(Comprobación:)
+docker run hello-world
+
+sudo sysctl -w vm.max_map_count=262144
+cd $pwd
+cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
+chmod go-w filebeat.yml
+cd $pwd
+cd tfm_bigdata_viu_enriqueprieto
+
+(Nota: Si se desea borrar los logs anteriores, añadir -v al final de docker-compose down)
+docker-compose down
+docker-compose up -d --remove-orphans
+
+(Comprobaciones:)
+docker ps
+docker logs -f elasticsearch
+Ctrl+c
+docker logs -f kibana
+Ctrl+c
+docker logs -f filebeat
+Ctrl+c
+curl localhost
+
+(Ir a navegador, sustituyendo xxx por la ip externa específica de la instancia)
+
+http://xxx.xxx.xxx:80/
+- Usuario: elastic
+- Password: changeme
+```
 
 ---
 [^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html
