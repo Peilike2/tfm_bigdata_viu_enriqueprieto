@@ -2,9 +2,9 @@
 <!-- BORRAR: Esto es un comentario de prueba de Enrique -->
 # TFM VIU 2022
 
-***_Tutora: Immaculada Valls Bernaus_ @github/immavalls ***
-  
-***_Masterando: Enrique Prieto Catalán_ @https://github.com/Peilike2***
+***[_Tutora: Immaculada Valls Bernaus_]( https://github.com/Peilike2)***
+
+***[_Masterando: Enrique Prieto Catalán_]( https://github.com/Peilike2)***
 
 
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
