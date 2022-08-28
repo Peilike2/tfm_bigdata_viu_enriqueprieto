@@ -1,5 +1,4 @@
  <a name="top"></a>
-[Ver contnido del repositorio, acceso y explicación de los ficheros de configuración](../)
 <!-- BORRAR: Esto es un comentario de prueba de Enrique -->
 # TFM VIU 2022
 ## _Tutora: Immaculada Valls Bernaus_
@@ -12,6 +11,8 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 ---
  
 <a name="indice"></a>
+[Ver contEnido del repositorio, acceso y explicación de los ficheros de configuración](../readme.MD)
+
 ## Índice de contenidos
 1. [ REQUISITOS Y ASUNCIONES](#item1)
 2. [ ENTORNO DE DESARROLLO ELK EN GCP](#item2)
