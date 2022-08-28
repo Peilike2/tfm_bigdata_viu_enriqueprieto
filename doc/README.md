@@ -6,6 +6,7 @@
   
 **_Masterando: Enrique Prieto Catalán_**
 
+
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
 * El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
 * En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana[^nota2].
@@ -417,7 +418,7 @@ docker-compose down --rmi <all|local>
 
 # Con "--remove-orphans" eliminarán en su caso los contenedores que hubieran sido creados anteriormente y que ya no estén registrados en docker-compose.yml
 ```
-## COMPROBACIONES
+**COMPROBACIONES**
 29. Se ejecuta `docker ps` para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch).
 
 30. Además se comprueba si han arrancado correctamente, visualizando los respectivos logs de los mencionados servicios:
@@ -717,7 +718,7 @@ Esc
 :wq
 ```
 
-## Ingesta de logs estructurados
+**Ingesta de logs estructurados**
 
 Se procede a arrancar de nuevo `filebeat`.
 
@@ -733,7 +734,7 @@ Se puede comprobar que no hay errores en la ejecución de filebeat, antes de pas
 docker logs -f filebeat
 ```
 
-## Visualización de los logs en Discover
+**Visualización de los logs en Discover**
 
 Nuevamente en Kibana, a través del navegador, se usa la barra de búsqueda para filtrar los datos proporcionados. Se procede a filtrar por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
 
@@ -749,7 +750,7 @@ Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el n
 ![Save Search](./img/save-search.png)
 
 
-## Fin del proceso
+****Fin del proceso****
 
 ---
 
