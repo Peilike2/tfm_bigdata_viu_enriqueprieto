@@ -58,7 +58,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
     pip install docker-compose
     ```
 
-- Un mínimo de 4GB de RAM [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/vm-max-map-count.html) para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su máquina virtual Docker para disponer de ese mínimo de la siguiente manera:
+- Un mínimo de 4GB de RAM [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/vm-max-map-count.html) para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su máquina virtual Docker para disponer de ese mínimo de la siguiente manera:
 
     ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
 
@@ -70,7 +70,7 @@ sysctl -w vm.max_map_count=262144
 Sin embargo, se indica más adelante cómo proceder para el caso de este proyecto, desde GCP.
 - Sistema operativo probado CentOS 8
 - Git version 2.31.1
-- Kibana 7.3
+- Kibana 7.17
 - Por último, para iniciar el Stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
 
 ---
@@ -379,7 +379,7 @@ En este apartado se instalan los servicios necesarios para lograr la siguiente e
 Para ello se efectuarán las siguentes acciones:
  - Instalar un conjunto de contenedores en los que se encuentra elasticsearch, kibana y filebeat
  - Arrancar dichos servicios, comprobando que funcionan correctamente
- - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana.
+ - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.17/discover.html) en Kibana.
 
 26. Personalización de docker-compose.yml
  - En dicho fichero de configuración del mencionado git, se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
@@ -475,7 +475,7 @@ http://xxx.xxx.xxx:80/
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 
-34. Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.3/tutorial-define-index.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
+34. Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.17/index-patterns.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
 
 Si no se indica lo contrario en la configuración de filebeat para envío a elasticsearch, los índices que se crearán con el nombre `filebeat-*`.
 
@@ -744,7 +744,7 @@ Nuevamente en Kibana, a través del navegador, se usa la barra de búsqueda para
 
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
 
-El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/7.3/kuery-query.html).
+El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/7.17/kuery-query.html).
 
 
 Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el nombre `[Filebeat] Host/Process`
@@ -831,7 +831,7 @@ http://xxx.xxx.xxx:80/
 ---
 [^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/index.html
 
-[^nota2]: https://www.elastic.co/guide/en/kibana/7.3/index.html
+[^nota2]: https://www.elastic.co/guide/en/kibana/7.17/index.html
 
 [^nota5]: (Borrar esta prueba de nota a pie de página) Cada línea extrade estas notas empicezan con doble espacio.  
   Esta línea empezó con doble espacio.
