@@ -2,7 +2,7 @@
 <!-- BORRAR: Esto es un comentario de prueba de Enrique -->
 # TFM VIU 2022
 
-***_Tutora: Immaculada Valls Bernaus_ @immavalls ***
+***_Tutora: Immaculada Valls Bernaus_ @github/immavalls ***
   
 ***_Masterando: Enrique Prieto Catalán_ @Peilike2***
 
@@ -33,7 +33,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 11. [ ACTIVACIÓN DE ACCIÓN](#item11) 
    - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
 12. [ SIGUIENTES PASOS](#item12)
-13. [ ANEXO: REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item13)
+[ ANEXO: REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item13)
    - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
 
 ---
@@ -785,7 +785,7 @@ Así se podrán agrupar valores similares, visualizarlos, y explotar toda la pot
 ---
 
 <a name="item13"></a> [Volver a Índice](#indice) 
-### 13. REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
+### ANEXO. REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
 Cada vez que se detanga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
 
 ```shell
