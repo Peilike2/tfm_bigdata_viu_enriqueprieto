@@ -1,8 +1,8 @@
  <a name="top"></a>
 <!-- BORRAR: Esto es un comentario de prueba de Enrique -->
 # TFM VIU 2022
-## _Tutora: Immaculada Valls Bernaus_
-## _Masterando: Enrique Prieto Catalán_
+**_Tutora: Immaculada Valls Bernaus_**
+**_Masterando: Enrique Prieto Catalán_**
 
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
 * El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
