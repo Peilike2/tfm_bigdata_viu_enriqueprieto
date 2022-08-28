@@ -11,7 +11,7 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 ---
  
 <a name="indice"></a>
-[Ver contenido del repositorio, acceso y explicación de los ficheros de configuración](../../readme.MD)
+[Ver contenido del repositorio, acceso y explicación de los ficheros de configuración](../README.md)
 
 ## Índice de contenidos
 1. [ REQUISITOS Y ASUNCIONES](#item1)
