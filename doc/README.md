@@ -6,8 +6,10 @@
 
 ***Masterando: [_Enrique Prieto Catalán_]( https://github.com/Peilike2)***
 
+---
 
 Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en el que se va a ejecutar el stack mediante Docker Compose.
+
 * El objetivo es la prueba de concepto de la instalación de la aplicación para Observabilidad del stack en un grupo de servidores.
 * En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana[^nota2].
 
