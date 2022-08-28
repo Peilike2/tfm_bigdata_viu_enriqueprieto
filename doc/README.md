@@ -543,17 +543,17 @@ Dado que el mensaje final de error que interesa obtener es de tipo:
 ```
 "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
 ```
-Para realizar esta transformación, se recurre a las [pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/pipeline.html) de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest.html).
+Para realizar esta transformación, se recurre a las [pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/pipeline.html) de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/ingest.html).
 
 Dado que se parte de un clúster elasticsearch con un solo nodo, este nodo realizará todos los roles (master, data, ingest, etc.).
-(Más información sobre roles de los nodos en la [documentación](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/modules-node.html).
+(Más información sobre roles de los nodos en la [documentación](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/modules-node.html).
 
-Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, se pueden analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
+Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, se pueden analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/717/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
 
 ![Ingest pipeline](./img/ingest-pipeline.png)
 
 
-En primer lugar, se procede a crear una simple pipeline de ingesta, basada en un procesador de tipo [dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html), que parseará el campo `message` de entrada generando los diversos campos que se precisan a la salida (`process_name`, `process_id`, `host_name`, etc).
+En primer lugar, se procede a crear una simple pipeline de ingesta, basada en un procesador de tipo [dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/dissect-processor.html), que parseará el campo `message` de entrada generando los diversos campos que se precisan a la salida (`process_name`, `process_id`, `host_name`, etc).
 se selecciona en el menú de la izquierda Management:`Dev Tools`.
 
 ![Dev Tools](./img/devtools-icon.png)
@@ -632,10 +632,10 @@ Al ejecutar esta petición, se puede comprobar si el JSON resultante es el esper
 }
 ```
 
-Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/simulate-pipeline-api.html) una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, se dispone de un JSON con los procesadores de la pipeline:
+Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/simulate-pipeline-api.html) una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, se dispone de un JSON con los procesadores de la pipeline:
 
-- [**dissect**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/dissect-processor.html): Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
-- [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.3/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no interesa guardar esta información redundante.
+- [**dissect**](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/dissect-processor.html): Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
+- [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no interesa guardar esta información redundante.
    
 ---
 
@@ -829,14 +829,14 @@ http://xxx.xxx.xxx:80/
 ```
 
 ---
-[^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.3/index.html
+[^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/index.html
 
 [^nota2]: https://www.elastic.co/guide/en/kibana/7.3/index.html
 
 [^nota5]: (Borrar esta prueba de nota a pie de página) Cada línea extrade estas notas empicezan con doble espacio.  
   Esta línea empezó con doble espacio.
   
-[^nota3]: vista de [Discover](https://www.elastic.co/guide/en/kibana/7.3/discover.html) en Kibana
+[^nota3]: vista de [Discover](https://www.elastic.co/guide/en/kibana/7.17/discover.html) en Kibana
 
 [^nota4]: Prueba
 
