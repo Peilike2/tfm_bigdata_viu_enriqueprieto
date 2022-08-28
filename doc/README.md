@@ -8,10 +8,11 @@
 
 ---
 
-Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en la Universidad Internacional de Valencia (VIU) titulado
+Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en la Universidad Internacional de Valencia (VIU) titulado:
+
 ***"IMPLEMENTACIÓN DE SISTEMATIZACIÓN DE LA OBSERVABILIDAD EN EL NODO UAM-LCG2 DE LA MALLA DE CÁLCULO MUNDIAL DEDICADA A LOS EXPERIMENTOS DEL DETECTOR ATLAS DEL GRAN COLISIONADOR DE HADRONES LHC DE LA ORGANIZACIÓN EUROPEA PARA LA INVESTIGACIÓN NUCLEAR (CERN) EN GINEBRA, SUIZA."***
 
-* En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana[^nota2] mediante Docker Compose.
+En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana[^nota2] mediante Docker Compose.
 
 ---
  
