@@ -842,6 +842,7 @@ cd $pwd
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 chmod go-w filebeat.yml
 cd $pwd
+cd tfm_bigdata_viu_enriqueprieto
 ```
 
 _Nota: Si se desea conservar los logs anteriores, eliminar -v al final de la siguiente línea)._
