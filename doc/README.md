@@ -852,6 +852,7 @@ docker-compose down -v
 docker-compose up -d --remove-orphans
 ```
 (Esto último puede durar varios minutos)
+
 Comprobar elasticsearch:
 
 ```shell
