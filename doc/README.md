@@ -493,21 +493,23 @@ A continuación se pulsa el botón azul `Create Index Pattern` y se da de alta u
 
 ![Index Patterns](./img/index-pattern-create-1.png)
 
-tras cliquear `Next step`, se selecciona el campo a usar para mostrar la serie temporal de datos en Discover. En
-este caso `@timestamp`.
+Seguidamente, en la misma ventana se selecciona el 'Timestamp field', que es el campo a usar para mostrar la serie temporal de datos en Discover.
+
+En este caso indicamos`@timestamp`.
 
 ![Index Patterns](./img/index-pattern-create-2.png)
 
 Y pulsamos `Create Index Pattern`.
 
-Poe último, Seleccionamos en el menú de la izquierda en Kibana `Discover`.
+Por último, Seleccionamos en el "menú hamburguesa" de la izquierda, en Kibana, `Discover`.
 
-Hacemos clic en `New` en el menú superior, para limpiar cualquier filtro que tuviéramos en la búsqueda.
+Hacemos clic en `New` en el menú superior derecho, para limpiar cualquier filtro que tuviéramos en la búsqueda.
     
   ![Discover Filebeat](./img/discover-filebeat.png)
  
-Y en el selector escogemos el index pattern que acabamos de crear, `filebeat-*`.
-Se selecciona arriba a la derecha el rango de fechas y horas correspondientes a los de los datos ingestados
+Y en el selector de filtros, persiana desplaegable de la izquierda, escogemos el `index pattern` que acabamos de crear, `filebeat-*`.
+
+Acto seguido, Se selecciona arriba a la derecha el rango de fechas y horas que permita ver los datos ingestados. Por ejemplo desde `2 years ago` hasta `now`
 
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
    
@@ -564,38 +566,88 @@ se selecciona en el menú de la izquierda Management:`Dev Tools`.
 
 Y se copia y pega lo siguiente en la consola:
 
+
+
+
+
 ```json
 POST _ingest/pipeline/_simulate
 {
-  
-  "mappings": {
-    "properties": {
-      "enri_campo01" : {"type": "date",
-        "format": ["dd MMM yyyy HH:mm:ss"]
-      }
-    }
-  },
   "pipeline": {
     "description": "_description",
     "processors": [
       {
         "dissect": {
           "field": "message",
-          "pattern": "%{enri_campo01} %{enri_campo02} %{enri_campo03} %{enri_campo04} %{enri_campo05} %{enri_campo06} %{enri_campo07} %{enri_campo08} %{enri_campo09} %{enri_campo10} %{enri_campo11} %{enri_campo12}"
+          "pattern": "%{fecha} () [%{hash1} %{hash2} %{host.name}] %{hash3} %{hash4} %{hash5} %{url.original} %{error.message}"
         }
       },
       {
-        "remove": {
+        "date": {
+          "field": "fecha",
+          "target_field": "@timestamp",
+          "formats": [
+            "dd MMM yyyy HH:mm:ss"
+          ],
+          "timezone": "Europe/Amsterdam"
+        }
+      },
+      {
+        "remove": 
+          {
+          "field": "fecha"
+        }
+      },
+      {
+        "remove": 
+          {
           "field": "message"
         }
+        },
+      {
+        "remove": 
+          {
+          "field": "hash3"
+        }
+        
+      },
+      {
+        "remove": 
+          {
+          "field": "hash4"
+        }
+        },
+      {
+        "remove": 
+          {
+          "field": "hash5"
+        }
+      },
+            {
+        "remove": 
+          {
+          "field": "timestamp"
+        }
+      },
+    {
+      "set": {
+        "field": "url.full",
+        "value": "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN={{url.original}}"
       }
+    }
     ]
   },
   "docs": [
     {
       "_source": {
-        "timestamp" : 1569846065739,
-        "message" : "27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"
+        "timestamp": 1569846065739,
+        "message": "27 Dec 2020 03:09:29 () [k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431 k6A:2394036:srm2:prepareToGet SRM-grid002] Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)"
+      }
+    },
+    {
+      "_source": {
+        "timestamp": 1569846065739,
+        "message": "30 Dec 2020 06:33:29 () [3Bs:10796:srm2:prepareToGet:-1093074894:-1093074893 3Bs:10796:srm2:prepareToGet SRM-grid002] Pinning failed for /zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input (File is unavailable.)"
       }
     }
   ]
@@ -613,22 +665,47 @@ Al ejecutar esta petición, se puede comprobar si el JSON resultante es el esper
         "_type" : "_doc",
         "_id" : "_id",
         "_source" : {
-          "enri_campo05" : "()",
-          "enri_campo06" : "[k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431",
-          "enri_campo07" : "k6A:2394036:srm2:prepareToGet",
-          "enri_campo08" : "SRM-grid002]",
-          "enri_campo01" : "27",
-          "enri_campo12" : "/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)",
-          "enri_campo02" : "Dec",
-          "enri_campo03" : "2020",
-          "enri_campo04" : "03:09:29",
-          "enri_campo09" : "Pinning",
-          "enri_campo10" : "failed",
-          "enri_campo11" : "for",
-          "timestamp" : 1569846065739
+          "hash2" : "k6A:2394036:srm2:prepareToGet",
+          "@timestamp" : "2020-12-27T03:09:29.000+01:00",
+          "hash1" : "k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431",
+          "host" : {
+            "name" : "SRM-grid002"
+          },
+          "error" : {
+            "message" : "(File is unavailable.)"
+          },
+          "url" : {
+            "original" : "/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1",
+            "full" : "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
+          }
         },
         "_ingest" : {
-          "timestamp" : "2022-08-27T11:51:27.867470949Z"
+          "timestamp" : "2022-08-29T12:13:05.94632238Z"
+        }
+      }
+    },
+    {
+      "doc" : {
+        "_index" : "_index",
+        "_type" : "_doc",
+        "_id" : "_id",
+        "_source" : {
+          "hash2" : "3Bs:10796:srm2:prepareToGet",
+          "@timestamp" : "2020-12-30T06:33:29.000+01:00",
+          "hash1" : "3Bs:10796:srm2:prepareToGet:-1093074894:-1093074893",
+          "host" : {
+            "name" : "SRM-grid002"
+          },
+          "error" : {
+            "message" : "(File is unavailable.)"
+          },
+          "url" : {
+            "original" : "/zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input",
+            "full" : "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN=/zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input"
+          }
+        },
+        "_ingest" : {
+          "timestamp" : "2022-08-29T12:13:05.946326807Z"
         }
       }
     }
@@ -650,42 +727,69 @@ Una vez se comprueba que la pipeline de ingesta funciona según lo deseado, se d
 ```json
 PUT _ingest/pipeline/logs-pipeline
 {
-  "description": "Pipeline para TFM",
-  "processors": [
-    {
-      "dissect": {
-        "field": "message",
-        "pattern": "%{@timestamp} %{enri_campo02} %{enri_campo03} %{enri_campo04} %{enri_campo05} %{enri_campo06} %{enri_campo07} %{enri_campo08} %{enri_campo09} %{enri_campo10} %{enri_campo11} %{enri_campo12}"
-      }
-    },
+    "description": "_description",
+    "processors": [
+      {
+        "dissect": {
+          "field": "message",
+          "pattern": "%{fecha} () [%{hash1} %{hash2} %{host.name}] %{hash3} %{hash4} %{hash5} %{url.original} %{error.message}"
+        }
+      },
+      {
+        "date": {
+          "field": "fecha",
+          "target_field": "@timestamp",
+          "formats": [
+            "dd MMM yyyy HH:mm:ss"
+          ],
+          "timezone": "Europe/Amsterdam"
+        }
+      },
+      {
+        "remove": 
+          {
+          "field": "fecha"
+        }
+      },
+      {
+        "remove": 
+          {
+          "field": "message"
+        }
+        },
+      {
+        "remove": 
+          {
+          "field": "hash3"
+        }
+        
+      },
+      {
+        "remove": 
+          {
+          "field": "hash4"
+        }
+        },
+      {
+        "remove": 
+          {
+          "field": "hash5"
+        }
+      },
+            {
+        "remove": 
+          {
+          "field": "timestamp"
+        }
+      },
     {
       "set": {
-        "field": "enri_prefijo",
-        "value": "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN="
-      }
-    },
-   {
-      "append": {
-        "field": "enri_prefijo_mas_ruta",
-        "value": [
-          "{{enri_prefijo}}",
-          "{{enri_campo12}}"
-        ]
-      }
-    },
-   {
-      "join": {
-        "field": "enri_prefijo_mas_ruta",
-        "separator": ""
-      }
-    },
-    {
-      "remove": {
-        "field": "message"
+        "field": "url.full",
+        "value": "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN={{url.original}}"
       }
     }
-  ]
-}
+    ]
+  }
 ```
 De lo cual se obtendrá la respuesta de confirmación:
 
