@@ -50,7 +50,7 @@ En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacida
   vim .env
   ELK_VERSION=7.17.5
   Esc
-  :wq
+  :wq!
   ```
 - Instalación de Docker Compose. Se ha probado con  docker-compose 1.27.4
   En el caso que se describe, desde Google Cloud Platform, se indica más adelante cómo se realiza. En cambio, para el caso de instalación local directa sería de la siguiente forma:
