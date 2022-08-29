@@ -839,10 +839,9 @@ Continuar en la misma ventana:
 ```shell
 sudo sysctl -w vm.max_map_count=262144
 cd $pwd
-cd filebeat/config/
+cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 chmod go-w filebeat.yml
-cd $pwd
-cd tfm_bigdata_viu_enriqueprieto
+cd $PWD
 ```
 
 _Nota: Si se desea conservar los logs anteriores, eliminar -v al final de la siguiente línea)._
@@ -851,7 +850,7 @@ _Nota: Si se desea conservar los logs anteriores, eliminar -v al final de la sig
 docker-compose down -v
 docker-compose up -d --remove-orphans
 ```
-
+(Esto último puede durar varios minutos)
 Comprobar elasticsearch:
 
 ```shell
