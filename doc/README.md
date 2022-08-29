@@ -812,20 +812,27 @@ Escribir a continuación en la ventana recien abierta con conexión SSH lo sigui
 
 ```shell
 sudo chmod +x /usr/local/bin/docker-compose
-_Comprobación:_ 
-docker-compose -v
+```
 
+Comprobar:
+
+```shell
+docker-compose -v
+```
+
+Cntinuar:
+
+```shell
 sudo chmod 666 /var/run/docker.sock
 ```
 
-
-Comprobar
+Comprobar:
 
 ```shell
 docker run hello-world
 ```
 
-Continuar en la misma ventana
+Continuar en la misma ventana:
 
 ```shell
 sudo sysctl -w vm.max_map_count=262144
