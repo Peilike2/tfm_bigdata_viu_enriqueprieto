@@ -525,24 +525,25 @@ El documento que llega a Elastic tiene líneas de log con este aspecto:
 Y la intención es que Elastic lo acabe guardando como:
 
 ```json
-{
-          "@timestamp" : "27 Dec 2020 03:09:29",
-          "enri_campo02" : "()",
-          "enri_campo03" : "[3Bs:6871:srm2:prepareToGet:-1093078942:-1093078941 3Bs:6871:srm2:prepareToGet",
-          "enri_campo04" : "[3Bs:6871:srm2:prepareToGet",
-          "enri_campo05" : "SRM-grid002]",
-          "enri_campo06" : "Pinning",
-          "enri_campo07" : "failed",
-          "enri_campo08" : "for",
-          "enri_campo09" : "/xxxx/xx.xxx.xx/data/ops/nagios-argo-mon.xxx.xxx-xxx.hr/arcce/srm-input",
-          "enri_campo010" : "(File",
-          "enri_campo011" : "is ",
-          "enri_campo012" : "unavailable.)",
-          "enri_campo013" : "",
-          "enri_prefifo" : "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=",
-          "enri_prefijo_mas_ruta" : "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=",
-          "timestamp" : 1569846065739
-}
+      "doc" : {
+        "_index" : "_index",
+        "_type" : "_doc",
+        "_id" : "_id",
+        "_source" : {
+          "hash2" : "k6A:2394036:srm2:prepareToGet",
+          "@timestamp" : "2020-12-27T03:09:29.000+01:00",
+          "hash1" : "k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431",
+          "host" : {
+            "name" : "SRM-grid002"
+          },
+          "error" : {
+            "message" : "(File is unavailable.)"
+          },
+          "url" : {
+            "original" : "/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1",
+            "full" : "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
+          }
+        }
 ```
 
 Dado que el mensaje final de error que interesa obtener es de tipo:
