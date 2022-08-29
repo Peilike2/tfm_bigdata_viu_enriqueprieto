@@ -791,37 +791,61 @@ Así se podrán agrupar valores similares, visualizarlos, y explotar toda la pot
 <a name="item13"></a> [Volver a Índice](#indice) 
 ### ANEXO: REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
 Cada vez que se detenga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
+
 [Abrir primero la instancia de VM en GCP](https://console.cloud.google.com/compute/instances?project=proyecto-tfm-enriqueprieto)
+
+
 ```shell
 Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia =>
 =>Tras la última columna "menú hamburguesa" => Iniciar/REanudar
+```
 
 (Cuidado, a partir de aquí el sisetema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")
 
-Aanotar el dato de la columna "ip externa" y en Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador".
+Anotar el dato de la columna "ip externa" 
 
-Escribir a continuación en ella lo siguiente:
+```shell
+Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador".
+```
 
+Escribir a continuación en la ventana recien avierta con conexión SSH lo siguiente:
+
+```shell
 sudo chmod +x /usr/local/bin/docker-compose
 _Comprobación:_ 
 docker-compose -v
 
 sudo chmod 666 /var/run/docker.sock
-(Comprobación:)
-docker run hello-world
+```
 
+
+_Comprobación:_
+
+```shell
+docker run hello-world
+```
+
+_Continuar en la misma ventana:_
+
+```shell
 sudo sysctl -w vm.max_map_count=262144
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 chmod go-w filebeat.yml
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto
+```
 
-(Nota: Si se desea borrar los logs anteriores, añadir -v al final de docker-compose down)
-docker-compose down
+_Nota: Si se desea conservar los logs anteriores, eliminar -v al final de la siguiente línea)._
+
+```shell
+docker-compose down -v
 docker-compose up -d --remove-orphans
+```
 
-(Comprobaciones:)
+_Comprobaciones:_ 
+
+```shell
 docker ps
 docker logs -f elasticsearch
 Ctrl+c
@@ -830,9 +854,11 @@ Ctrl+c
 docker logs -f filebeat
 Ctrl+c
 curl localhost
+```
 
-(Ir a navegador, sustituyendo xxx por la ip externa específica de la instancia)
+_Ir a navegador, sustituyendo xxx por la ip externa específica de la instancia_
 
+```shell
 http://xxx.xxx.xxx:80/
 - Usuario: elastic
 - Password: changeme
