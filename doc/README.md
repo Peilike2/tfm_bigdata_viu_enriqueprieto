@@ -850,16 +850,31 @@ docker-compose down -v
 docker-compose up -d --remove-orphans
 ```
 
-Comprobar:
+Comprobar elasticsearch:
 
 ```shell
 docker ps
 docker logs -f elasticsearch
 Ctrl+c
+```
+
+Comprobar kibana:
+
+```shell
 docker logs -f kibana
 Ctrl+c
+```
+
+Comprobar filebeat:
+
+```shell
 docker logs -f filebeat
 Ctrl+c
+```
+
+Comprobar acceso a puerto 80:
+
+```shell
 curl localhost
 ```
 
