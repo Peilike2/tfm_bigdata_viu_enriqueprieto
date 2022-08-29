@@ -391,7 +391,8 @@ Para ello se efectuarán las siguentes acciones:
 27. Se procede al aseguramiento de los permisos correspondientes a /filebeat/config  (siendo tfm_bigdata_viu_enriqueprieto el directorio del proyecto:
 
 ```shell
-cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
+cd $pwd
+cd filebeat/config/
 chmod go-w filebeat.yml
 ```
 
@@ -837,7 +838,7 @@ Continuar en la misma ventana:
 ```shell
 sudo sysctl -w vm.max_map_count=262144
 cd $pwd
-cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
+cd filebeat/config/
 chmod go-w filebeat.yml
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto
