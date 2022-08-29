@@ -863,7 +863,7 @@ Ctrl+c
 curl localhost
 ```
 
-r a navegador, sustituyendo xxx por la ip externa específica de la instancia:
+r a navegador, sustituyendo xxx por la ip externa anteriormente anotada, específica de la instancia:
 
 ```shell
 http://xxx.xxx.xxx:80/
