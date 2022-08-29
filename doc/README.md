@@ -803,7 +803,7 @@ Aanotar el dato de la columna "ip externa" y en Columna "SSH" seleccionar del de
 Escribir a continuación en ella lo siguiente:
 
 sudo chmod +x /usr/local/bin/docker-compose
-(Comprobación:) 
+_Comprobación:_ 
 docker-compose -v
 
 sudo chmod 666 /var/run/docker.sock
