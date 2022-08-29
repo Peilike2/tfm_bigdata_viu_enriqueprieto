@@ -843,6 +843,7 @@ Se puede comprobar que no hay errores en la ejecución de filebeat, antes de pas
 
 ```shell
 docker logs -f filebeat
+Ctrl+c
 ```
 
 ***Visualización de los logs en Discover***
