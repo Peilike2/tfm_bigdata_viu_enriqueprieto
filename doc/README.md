@@ -36,7 +36,8 @@ En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacida
 11. [ ACTIVACIÓN DE ACCIÓN](#item11) 
    - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
 12. [ SIGUIENTES PASOS](#item12)
-[ ANEXO: REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item13)
+
+[ ANEXO:   REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item13)
    - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
 
 ---
@@ -792,6 +793,7 @@ Así se podrán agrupar valores similares, visualizarlos, y explotar toda la pot
 Cada vez que se detanga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
 
 ```shell
+https://console.cloud.google.com/welcome?project=proyecto-tfm-enriqueprieto
 Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia, anotar el dato de la columna "ip externa" y en Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador",escribiendo a continuación en ella lo siguiente:
 sudo chmod +x /usr/local/bin/docker-compose
 (Comprobación:) 
