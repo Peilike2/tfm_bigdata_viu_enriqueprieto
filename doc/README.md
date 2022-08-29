@@ -840,6 +840,20 @@ Continuar en la misma ventana:
 sudo sysctl -w vm.max_map_count=262144
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
+vim filebeat.yml
+```
+
+Comentar la línea de pipeline con # para que ingeste primeramente desde el fichero de log.
+Una vez que se cree una pipeline desde Kibana, ya se podrá descomentar para usarla.
+Salir de vim guardando con
+
+```shell
+Esc+ :wq!
+```
+
+Continuar en la ventana SSH:
+
+```shell
 chmod go-w filebeat.yml
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto
