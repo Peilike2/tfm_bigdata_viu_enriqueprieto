@@ -707,7 +707,7 @@ Creando la pipeline de ingesta **logs-pipeline**, que se usará  en el próximo 
 Ahora se debe indicar a elasticsearch que los documentos que vayan a ser almacenados en los índices creados por filebeat deben pasar primero esta pipeline que los va a transformar. Para ello, es necesario editar el fichero de configuración de filebeat. [filebeat/config/filebeat.yml](../../filebeat/config/filebeat.yml), y en la sección `output.elasticsearch` se  descomenta la línea `pipeline: logs-pipeline`.
 
 ```shell
-cd $PWD
+cd $pwd
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 vim filebeat.yml
 ```
@@ -721,7 +721,7 @@ output.elasticsearch:
 ```
 ```shell
 Esc
-:wq
+:wq!
 ```
 
 ***Ingesta de logs estructurados***
@@ -841,7 +841,7 @@ sudo sysctl -w vm.max_map_count=262144
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 chmod go-w filebeat.yml
-cd $PWD
+cd $pwd
 ```
 
 _Nota: Si se desea conservar los logs anteriores, eliminar -v al final de la siguiente línea)._
