@@ -800,7 +800,7 @@ Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la insta
 =>Tras la última columna "menú hamburguesa" => Iniciar/REanudar
 ```
 
-(Cuidado, a partir de aquí el sisetema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")
+_(Atención, a partir de aquí el sisetema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")_
 
 Anotar el dato de la columna "ip externa" 
 
@@ -808,7 +808,7 @@ Anotar el dato de la columna "ip externa"
 Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador".
 ```
 
-Escribir a continuación en la ventana recien avierta con conexión SSH lo siguiente:
+Escribir a continuación en la ventana recien abierta con conexión SSH lo siguiente:
 
 ```shell
 sudo chmod +x /usr/local/bin/docker-compose
@@ -819,13 +819,13 @@ sudo chmod 666 /var/run/docker.sock
 ```
 
 
-_Comprobación:_
+Comprobar
 
 ```shell
 docker run hello-world
 ```
 
-_Continuar en la misma ventana:_
+Continuar en la misma ventana
 
 ```shell
 sudo sysctl -w vm.max_map_count=262144
@@ -843,7 +843,7 @@ docker-compose down -v
 docker-compose up -d --remove-orphans
 ```
 
-_Comprobaciones:_ 
+Comprobar:
 
 ```shell
 docker ps
@@ -856,7 +856,7 @@ Ctrl+c
 curl localhost
 ```
 
-_Ir a navegador, sustituyendo xxx por la ip externa específica de la instancia_
+r a navegador, sustituyendo xxx por la ip externa específica de la instancia:
 
 ```shell
 http://xxx.xxx.xxx:80/
