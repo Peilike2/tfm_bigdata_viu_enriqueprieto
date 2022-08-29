@@ -875,13 +875,13 @@ docker logs -f filebeat
 Ctrl+c
 ```
 
-Comprobar acceso a puerto 80:
+Comprobar acceso a puerto 80, al no dar error la ejecución de la siguiente instrucción:
 
 ```shell
 curl localhost
 ```
 
-r a navegador, sustituyendo xxx por la ip externa anteriormente anotada, específica de la instancia:
+Ir a navegador, sustituyendo xxx por la ip externa anteriormente anotada, específica de la instancia:
 
 ```shell
 http://xxx.xxx.xxx:80/
