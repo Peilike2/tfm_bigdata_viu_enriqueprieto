@@ -793,9 +793,13 @@ Así se podrán agrupar valores similares, visualizarlos, y explotar toda la pot
 Cada vez que se detenga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
 [Abrir primero la instancia de VM en GCP](https://console.cloud.google.com/compute/instances?project=proyecto-tfm-enriqueprieto)
 ```shell
-Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia => Tras la última columna "menú hamburguesa" => Iniciar/REanudar
+Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia =>
+=>Tras la última columna "menú hamburguesa" => Iniciar/REanudar
+
 (Cuidado, a partir de aquí el sisetema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")
+
 Aanotar el dato de la columna "ip externa" y en Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador".
+
 Escribir a continuación en ella lo siguiente:
 
 sudo chmod +x /usr/local/bin/docker-compose
