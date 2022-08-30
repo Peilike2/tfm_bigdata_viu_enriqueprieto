@@ -1042,7 +1042,7 @@ Comprobar:
 docker-compose -v
 ```
 
-Cntinuar:
+Continuar:
 
 ```shell
 sudo chmod 666 /var/run/docker.sock
@@ -1092,23 +1092,23 @@ Comprobar elasticsearch:
 ```shell
 docker ps
 docker logs -f elasticsearch
-Ctrl+c
 ```
 
+Ctrl+c
 Comprobar kibana:
 
 ```shell
 docker logs -f kibana
-Ctrl+c
 ```
 
+Ctrl+c
 Comprobar filebeat:
 
 ```shell
 docker logs -f filebeat
-Ctrl+c
 ```
 
+Ctrl+c
 Comprobar acceso a puerto 80, al no dar error la ejecución de la siguiente instrucción:
 
 ```shell
