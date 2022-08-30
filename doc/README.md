@@ -307,8 +307,7 @@ whoami
 11.  Instalación de dnf:
 
 ```shell
-sudo yum install dnf
-(y)
+sudo yum install dnf -y
    ```
 
 12. Instalación de plugins:
@@ -323,13 +322,13 @@ sudo yum install dnf
  sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
    ```
 
+
 14. Se instala el Docker package, aceptando dos veces con Y(es) las preguntas que realiza en su proceso:
 
 ```shell
- sudo dnf install docker-ce docker-ce-cli containerd.io
- (y)
- (y)
+ sudo dnf install docker-ce docker-ce-cli containerd.io -y -y
    ```
+(Puede tardar  unos minutos)
 
 15. Se procede a arrancar el servicio Docker y añadírselo al autorun:
 
@@ -354,10 +353,14 @@ sudo yum install dnf
  ```shell
  sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
    ```
+(Puede tardar unos minutos)
+
 18.  A continuación se le da carácter ejecutable:
+
  ```shell
  sudo chmod +x /usr/local/bin/docker-compose
    ```
+   
 19.  Procediendo a su comprobación posterior:
  ```shell
  docker-compose -v
@@ -424,11 +427,10 @@ A continuación se instalan Git y Docker como superusuario (poniendo SUDO delant
 22.	Instalar git, por tener los contenedores subidos y compartidos en Github (más información en https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 )
 
 ```shell
-sudo yum install git
-(y)
+sudo yum install git -y
  ```
 
-(yum se encarga de solicitar la última versión). Responder a la pregunta con Y(es)
+(yum se encarga de solicitar la última versión).
 
 23. Se comprueba con lo siguiente:
 
@@ -480,7 +482,7 @@ Para ello se efectuarán las siguentes acciones:
 
 ```shell
 cd $pwd
-cd filebeat/config/
+cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 chmod go-w filebeat.yml
 ```
 
@@ -492,6 +494,8 @@ cd tfm_bigdata_viu_enriqueprieto
 docker-compose down -v
 docker-compose up -d --remove-orphans
 ```
+(+ Enter)
+(Puede tardar unos minutos)
 
 A título informativo, se indican las distintas formas de detener y eliminar:
 ```shell
@@ -512,24 +516,40 @@ docker-compose down --rmi <all|local>
 # Con "--remove-orphans" eliminarán en su caso los contenedores que hubieran sido creados anteriormente y que ya no estén registrados en docker-compose.yml
 ```
 **COMPROBACIONES**
-29. Se ejecuta `docker ps` para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch).
+29. Para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch), se ejecuta:
+
+```shell
+docker ps
+```
 
 30. Además se comprueba si han arrancado correctamente, visualizando los respectivos logs de los mencionados servicios:
 
 ```shell
 docker logs -f elasticsearch
-Ctrl+c
-docker logs -f kibana
-Ctrl+c
-docker logs -f filebeat
-Ctrl+c
 ```
+
+Ctrl+c
+
+```shell
+docker logs -f kibana
+```
+
+Ctrl+c
+
+```shell
+docker logs -f filebeat
+```
+
+Ctrl+c
+
 
 
 31. En caso de modificar el fichero de testeo, deberá asegurarse de que el sistema operativo Windows no le ha añadido caracteres ilegibles en UNIX, usando la siguiente instalación seguido de la instrucción a continuación:
 ```shell
-sudo yum install dos2unix
-(y)
+sudo yum install dos2unix -y
+```
+
+```shell
 dos2unix test/srm-grid002Domain_original_extracto_unix.log
 ```
 Como alternativa se pueden usar herramientas online como esta: https://toolslick.com/conversion/text/dos-to-unix
