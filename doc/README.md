@@ -71,9 +71,9 @@ sysctl -w vm.max_map_count=262144
 ```
 Sin embargo, se indica más adelante cómo proceder para el caso de este proyecto, desde GCP.
 - Sistema operativo probado CentOS 8
-- Git version 2.31.1
+- Git version 1.8.3.1
 - Docker-compose 1.27.4
-- Kibana 7.17
+- Elastic y Kibana 7.17.5
 - Por último, para iniciar el Stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
 
 ---
