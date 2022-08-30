@@ -282,7 +282,7 @@ Esta es la respuesta REST:
 <a name="item3"></a> [Volver a Índice](#indice) 
 ### 3. CONEXIÓN POR SSH. INSTALACIÓN DE DNF Y DOCKER 
 Para conectarse a la instancia de Máquina Virtual a través de conexión segura SSH:
-9. En la columna “Conectar” de la instancia,  se cliquea:
+9. Volver a la instancia (oplumna izquierda + Compute Engine + Instancias de VM) + En la columna “Conectar” de la instancia,  se cliquea:
 
  ```shell 
 SSH => abrir en otra ventana del navegador 
