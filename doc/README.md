@@ -98,13 +98,100 @@ La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante
     ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 7. Clik en *Crear*
-- Esto luego se puede ejecutar aquí mismo con este comando REST:
+- Esto luego se puede ejecutar aquí mismo con esta línea de comando Gcloud ejecutable en Cloud Shell (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
+
+(AQUÍ IMAGEN cloud shell)):
+
+```shell
+gcloud compute instances create tfm-enrique-prieto-instancia-vm-01 --project=proyecto-tfm-enriqueprieto --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=4836494966-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=tfm-enrique-prieto-instancia-vm-01,image=projects/centos-cloud/global/images/centos-stream-8-v20220822,mode=rw,size=100,type=projects/proyecto-tfm-enriqueprieto/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
 ```
-gcloud compute instances create tfm-enrique-prieto --project=tfm-elastic-cern-uam-360608 --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=746661842685-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=tfm-enrique-prieto,image=projects/centos-cloud/global/images/centos-stream-8-v20220822,mode=rw,size=100,type=projects/tfm-elastic-cern-uam-360608/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --labels=proyecto=tfm,fecha=26-08-2022,autor=enrique-prieto --reservation-affinity=any
+o con esta solicutud de REST equivalente:
+
+```json
+POST https://www.googleapis.com/compute/v1/projects/proyecto-tfm-enriqueprieto/zones/europe-southwest1-a/instances
+{
+  "canIpForward": false,
+  "confidentialInstanceConfig": {
+    "enableConfidentialCompute": false
+  },
+  "deletionProtection": false,
+  "description": "",
+  "disks": [
+    {
+      "autoDelete": true,
+      "boot": true,
+      "deviceName": "tfm-enrique-prieto-instancia-vm-01",
+      "diskEncryptionKey": {},
+      "initializeParams": {
+        "diskSizeGb": "100",
+        "diskType": "projects/proyecto-tfm-enriqueprieto/zones/europe-southwest1-a/diskTypes/pd-balanced",
+        "labels": {},
+        "sourceImage": "projects/centos-cloud/global/images/centos-stream-8-v20220822"
+      },
+      "mode": "READ_WRITE",
+      "type": "PERSISTENT"
+    }
+  ],
+  "displayDevice": {
+    "enableDisplay": false
+  },
+  "guestAccelerators": [],
+  "keyRevocationActionType": "NONE",
+  "labels": {},
+  "machineType": "projects/proyecto-tfm-enriqueprieto/zones/europe-southwest1-a/machineTypes/e2-medium",
+  "metadata": {
+    "items": []
+  },
+  "name": "tfm-enrique-prieto-instancia-vm-01",
+  "networkInterfaces": [
+    {
+      "accessConfigs": [
+        {
+          "name": "External NAT",
+          "networkTier": "PREMIUM"
+        }
+      ],
+      "stackType": "IPV4_ONLY",
+      "subnetwork": "projects/proyecto-tfm-enriqueprieto/regions/europe-southwest1/subnetworks/default"
+    }
+  ],
+  "reservationAffinity": {
+    "consumeReservationType": "ANY_RESERVATION"
+  },
+  "scheduling": {
+    "automaticRestart": true,
+    "onHostMaintenance": "MIGRATE",
+    "provisioningModel": "STANDARD"
+  },
+  "serviceAccounts": [
+    {
+      "email": "4836494966-compute@developer.gserviceaccount.com",
+      "scopes": [
+        "https://www.googleapis.com/auth/devstorage.read_only",
+        "https://www.googleapis.com/auth/logging.write",
+        "https://www.googleapis.com/auth/monitoring.write",
+        "https://www.googleapis.com/auth/servicecontrol",
+        "https://www.googleapis.com/auth/service.management.readonly",
+        "https://www.googleapis.com/auth/trace.append"
+      ]
+    }
+  ],
+  "shieldedInstanceConfig": {
+    "enableIntegrityMonitoring": true,
+    "enableSecureBoot": false,
+    "enableVtpm": true
+  },
+  "tags": {
+    "items": [
+      "http-server",
+      "https-server"
+    ]
+  },
+  "zone": "projects/proyecto-tfm-enriqueprieto/zones/europe-southwest1-a"
+}
 ```
- y pulsando en “ejecutar en cloud shell” en vez de “copiar en portapapeles” (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
-- SE ABRE EN EL MISMO GOOGLE CLOUD Shell TERMINAL CON EL ICONO SUPERIOR DERECHO “>=” 
-(AQUÍ IMAGEN cloud shell))
+
+
 Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o detener (menú hamburguesa a la derecha de SSH, "Detener"), en función del uso, procurando minimizar su coste:
  ```shell
  NAME: enriqueprieto-centos8-2
