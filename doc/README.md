@@ -206,7 +206,7 @@ Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o det
 
    ![Instancia creada](./img/03_ArrancarInstancia.png)
    
-8. A continuación se crea una regla de firewall que permita entrada de puerto 80. Pulsar los tres puntos a la derecha de la instancia + *Ver detalles de red* + Columna izquiera *Firewall* + *Create Firewall Policy* + Nombre:xxx + *Continuar* + *Agegar regla* + Prioridad: 1000 + Dirección del tráfico: *Entrada* + Rangos de IPv4 de destino: poner la ip de la instancia "34.175.112.47 " + *crear* + *continuar* + *asociar* + seleccionar la red default + *asociado* + *Continuar* + *crear*
+8. A continuación se crea una regla de firewall que permita entrada de puerto 80. Anotar la IP externa de la instancia, y pulsar los tres puntos a la derecha de la instancia + *Ver detalles de red* + Columna izquiera *Firewall* + *Crear regla de Firewall* + Nombre:xxx + *Continuar* + *Agegar regla* + Prioridad: 1000 + Dirección del tráfico: *Entrada* + Destinos: *Todas las instancias* + Filtro de origen: *Rangoas de IPv4* +Rangos de IPv4 de destino: poner la ip de la instancia "34.175.112.47 " + Protocolos y puertos: *Protocolos y puertos especificados* + TCP: *80* (puede que valga "all") + *crear* + *continuar* + *asociar* + seleccionar la red default + *asociado* + *Continuar* + *crear*
 
 (AQUÍ IMAGEN Ver detalles de la red para el firewall)
 
