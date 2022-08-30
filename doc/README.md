@@ -694,7 +694,13 @@ POST _ingest/pipeline/_simulate
       {
         "dissect": {
           "field": "message",
-          "pattern": "%{fecha} () [%{hash1} %{hash2} %{host.name}] %{hash3} %{hash4} %{hash5} %{url.original} %{error.message}"
+          "pattern": "%{fecha} () [%{method1} %{method2} %{host.name}] %{message}"
+        }
+      },
+      {
+        "dissect": {
+          "field": "message",
+          "pattern": "%{?ignoreme} %{?ignoreme} %{?ignoreme} %{url.original} %{?ignoreme}"
         }
       },
       {
@@ -712,43 +718,7 @@ POST _ingest/pipeline/_simulate
           {
           "field": "fecha"
         }
-      },
-      {
-        "remove": 
-          {
-          "field": "message"
-        }
-        },
-      {
-        "remove": 
-          {
-          "field": "hash3"
-        }
-        
-      },
-      {
-        "remove": 
-          {
-          "field": "hash4"
-        }
-        },
-      {
-        "remove": 
-          {
-          "field": "hash5"
-        }
-      },
-            {
-        "remove": 
-          {
-          "field": "timestamp"
-        }
-      },
-    {
-      "set": {
-        "field": "url.full",
-        "value": "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN={{url.original}}"
-      }
+      
     }
     ]
   },
@@ -780,22 +750,20 @@ Al ejecutar esta petición, se puede comprobar si el JSON resultante es el esper
         "_type" : "_doc",
         "_id" : "_id",
         "_source" : {
-          "hash2" : "k6A:2394036:srm2:prepareToGet",
           "@timestamp" : "2020-12-27T03:09:29.000+01:00",
-          "hash1" : "k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431",
+          "method1" : "k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431",
+          "method2" : "k6A:2394036:srm2:prepareToGet",
           "host" : {
             "name" : "SRM-grid002"
           },
-          "error" : {
-            "message" : "(File is unavailable.)"
-          },
+          "message" : "Pinning failed for /xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1 (File is unavailable.)",
           "url" : {
-            "original" : "/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1",
-            "full" : "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
-          }
+            "original" : "/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
+          },
+          "timestamp" : 1569846065739
         },
         "_ingest" : {
-          "timestamp" : "2022-08-29T12:13:05.94632238Z"
+          "timestamp" : "2022-08-30T19:05:42.796627212Z"
         }
       }
     },
@@ -805,22 +773,20 @@ Al ejecutar esta petición, se puede comprobar si el JSON resultante es el esper
         "_type" : "_doc",
         "_id" : "_id",
         "_source" : {
-          "hash2" : "3Bs:10796:srm2:prepareToGet",
           "@timestamp" : "2020-12-30T06:33:29.000+01:00",
-          "hash1" : "3Bs:10796:srm2:prepareToGet:-1093074894:-1093074893",
+          "method1" : "3Bs:10796:srm2:prepareToGet:-1093074894:-1093074893",
+          "method2" : "3Bs:10796:srm2:prepareToGet",
           "host" : {
             "name" : "SRM-grid002"
           },
-          "error" : {
-            "message" : "(File is unavailable.)"
-          },
+          "message" : "Pinning failed for /zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input (File is unavailable.)",
           "url" : {
-            "original" : "/zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input",
-            "full" : "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN=/zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input"
-          }
+            "original" : "/zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input"
+          },
+          "timestamp" : 1569846065739
         },
         "_ingest" : {
-          "timestamp" : "2022-08-29T12:13:05.946326807Z"
+          "timestamp" : "2022-08-30T19:05:42.796634283Z"
         }
       }
     }
@@ -847,7 +813,13 @@ PUT _ingest/pipeline/logs-pipeline
       {
         "dissect": {
           "field": "message",
-          "pattern": "%{fecha} () [%{hash1} %{hash2} %{host.name}] %{hash3} %{hash4} %{hash5} %{url.original} %{error.message}"
+          "pattern": "%{fecha} () [%{method1} %{method2} %{host.name}] %{message}"
+        }
+      },
+      {
+        "dissect": {
+          "field": "message",
+          "pattern": "%{?ignoreme} %{?ignoreme} %{?ignoreme} %{url.original} %{?ignoreme}"
         }
       },
       {
@@ -865,43 +837,7 @@ PUT _ingest/pipeline/logs-pipeline
           {
           "field": "fecha"
         }
-      },
-      {
-        "remove": 
-          {
-          "field": "message"
-        }
-        },
-      {
-        "remove": 
-          {
-          "field": "hash3"
-        }
-        
-      },
-      {
-        "remove": 
-          {
-          "field": "hash4"
-        }
-        },
-      {
-        "remove": 
-          {
-          "field": "hash5"
-        }
-      },
-            {
-        "remove": 
-          {
-          "field": "timestamp"
-        }
-      },
-    {
-      "set": {
-        "field": "url.full",
-        "value": "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN={{url.original}}"
-      }
+      
     }
     ]
   }
