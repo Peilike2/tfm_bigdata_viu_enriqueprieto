@@ -313,7 +313,7 @@ sudo yum install dnf -y
 12. Instalación de plugins:
 
 ```shell
- sudo yum install dnf-plugins-core
+ sudo yum install dnf-plugins-core -y
  ```
     
 13. Instalación de Docker. Deberá en este caso utilizarse “SUDO” delante:
@@ -514,6 +514,13 @@ docker-compose down -v
 docker-compose down --rmi <all|local> 
 
 # Con "--remove-orphans" eliminarán en su caso los contenedores que hubieran sido creados anteriormente y que ya no estén registrados en docker-compose.yml
+
+# Parar solo fielebeat
+Docker stop filebeat
+
+# Remove filebeat
+Docker rm filebeat
+
 ```
 **COMPROBACIONES**
 29. Para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch), se ejecuta:
