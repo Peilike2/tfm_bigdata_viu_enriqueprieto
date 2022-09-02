@@ -17,3 +17,7 @@ xpack.infra.sources.default.logAlias: "filebeat-*
 #,logstash-*,flogs-*"
 xpack.infra.sources.default.fields.timestamp: "@timestamp"
 xpack.infra.sources.default.fields.message: ['message', '@message', 'message_content']
+
+## X-Pack Claves para conectores de alertas
+xpack.security.encryptionKey: "abcdefghijklmnopqrstuvwxyz012345"
+xpack.encryptedSavedObjects.encryptionKey: "abcdefghijklmnopqrstuvwxyz012345"
