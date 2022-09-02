@@ -33,9 +33,12 @@ En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacida
    -  Creación de la pipeline de procesos. Alta en Elastic.
 10. [ PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS](#item10)
    -  Direccionamiento desde filebeat, de los datos hacia los procesos de la pipeline.
-11. [ ACTIVACIÓN DE ACCIÓN](#item11) 
+11. [ CONFIGURACIÓN PARA REGLAS Y ALERTAS](#item11)
+12. [ CREACIÓN DE REGLA](#item12)
+13. [CREACIÓN DE CUENTA Y CANAL DE SLACK](#item13)
+14. [CREACIÓN DE CONECTOR CON SLACK](#item14) 
    - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
-12. [ SIGUIENTES PASOS](#item12)
+15. [ SIGUIENTES PASOS](#item12)
 
 [ ANEXO:   REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item13)
    - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
@@ -615,6 +618,10 @@ En este caso indicamos`@timestamp`.
 
 Y pulsamos `Create Index Pattern`.
 
+Comprobamos que queda el Indx Pattern "Filebeat-*" creado en Stack Management + Index Patterns:
+
+![image](https://user-images.githubusercontent.com/23584277/188205896-aaafbc48-1c1a-4ecb-abd8-1982bb4d20ea.png)
+
 Por último, Seleccionamos en el "menú hamburguesa" de la izquierda, en Kibana, `Discover`.
 
 Hacemos clic en `New` en el menú superior derecho, para limpiar cualquier filtro que tuviéramos en la búsqueda.
@@ -895,6 +902,10 @@ Se puede comprobar que no hay errores en la ejecución de filebeat, antes de pas
 docker logs -f filebeat
 Ctrl+c
 ```
+Se comprueba que está creada la pipeline "logs-pipeline" en Stack Management + Ingest Pipelines ( http://34.175.112.47/app/management/ingest/ingest_pipelines )
+
+![image](https://user-images.githubusercontent.com/23584277/188205437-2c51e278-9345-4180-8b7c-df6772359117.png)
+
 
 ***Visualización de los logs en Discover***
 
@@ -915,6 +926,184 @@ Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el n
 ****Fin del proceso****
 
 ---
+
+<a name="item11"></a> [Volver a Índice](#indice)
+ ### 11. [ CONFIGURACIÓN PARA REGLAS Y ALERTAS]
+ En kibana:
+xpack.security.encryptionKey: "abcdefghijklmnopqrstuvwxyz012345"
+xpack.encryptedSavedObjects.encryptionKey: "abcdefghijklmnopqrstuvwxyz012345" 
+
+```shell
+cd $pwd
+cd tfm_bigdata_viu_enriqueprieto/elasticsearch/config/
+vim filebeat.yml
+```
+
+En elasticcsearch.yml se añadeqa!al final (ya incluido en el fichero del repositorio):
+
+```shell
+xpack.security.authc.api_key.enabled: true
+xpack.security.authc.api_key.hashing.algorithm: pbkdf2
+xpack.security.authc.api_key.cache.ttl: 1d
+xpack.security.authc.api_key.cache.max_kes: 10000
+xpack.security.authc.api_key.cache.hash_algo: ssha256
+```
+
+A continuación se sale guardando con "Esc" + 
+
+```shell
+:wq!
+```
+(Salir sin guardar con :qa!)
+
+Quedando así el fichero:
+![image](https://user-images.githubusercontent.com/23584277/188206700-82237ccf-a02f-4045-899f-a9171cbac9d0.png)
+
+Seguidamente, se procede a la edición del fichero de configuración de kibana:
+```shell
+cd $pwd
+cd tfm_bigdata_viu_enriqueprieto/kibana/config
+vim kibana.yml
+```
+
+Se deben añadir dos líneas con contraseña de al menos 32 caracteres:
+
+```shell
+xpack.security.encryptionKey: "abcdefghijklmnopqrstuvwxyz012345"
+xpack.encryptedSavedObjects.encryptionKey: "abcdefghijklmnopqrstuvwxyz012345"
+```
+
+A continuación se sale guardando con "Esc" + 
+
+```shell
+:wq!
+```
+(Salir sin guardar con :qa!)
+
+Quedando así el fichero:
+
+![image](https://user-images.githubusercontent.com/23584277/188209274-0ab73f26-1382-4362-a143-583bbf007b61.png)
+
+(Opcional) Se podría dejar preconfigurado el conector de slack con las siguientes líneas, aunque en este caso se documenta su configuración desde kibana:
+
+```shell
+xpack.actions.customHostSettings:
+  my-slack:
+   name: preconfigured-slack-connector-type
+   actionTypeId: .slack
+   secrets:
+     webhookUrl: 'https://hooks.slack.com/services/abcd/efgh/ijklmnopqrstuvwxyz'
+https://hooks.slack.com/services/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
+```
+
+Crada API key de nombre alerta01 para usuario elastic 
+b01kVzhJSUI4bFdzVGNvVVZjZFo6QXZnXzl1SXVSWnlybUoyX3VGSDhjUQ==
+Stack Management + Rules + Create Rule
+
+
+
+Prueba desde línea de comandos (https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B?added=1) :
+curl -X POST --data-urlencode "payload={\"channel\": \"#tfm-enrique-prieto\", \"username\": \"Robot de alertas desde curl\", \"text\": \"Alerta publicada con curl en el canal Slack #tfm-enrique-prieto procedente del robot webhookbot. <https://i.pinimg.com/564x/1c/aa/f2/1caaf2b3e6ab9b2b4bd1b62a85fec8f9.jpg|* info>    \", \"icon_emoji\": \":warning:\" }" https://hooks.slack.com/services/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
+
+---
+
+<a name="item12"></a> [Volver a Índice](#indice)
+ ### 12. [ CREACIÓN DE REGLA](#item12)
+https://www.elastic.co/guide/en/kibana/7.17/alert-action-settings-kb.html#action-settings
+https://www.elastic.co/guide/en/kibana/7.17/action-types.html
+https://www.elastic.co/guide/en/kibana/7.15/create-and-manage-rules.html#defining-rules-actions-details
+When number of matches:
+Is below or equals 1000
+FOR THE LAST 10000 days
+
+Select index filebeat-*
+Timestamp @timestamp
+
+
+Query alert:
+```json 
+{
+  "query": {
+    "bool": {
+      "must": [
+   {
+       "match": {
+        "message": "Pinning failed for"
+      }
+  
+    },
+        {
+          "range": {
+     "@timestamp": {
+        "gte": "now-2y/d",
+        "lte": "now/d"
+            }
+          }
+        }
+      ]
+    }
+  }  ,
+  "aggs": {
+    "Hostnames y ficheros con el mensaje buscado": {
+      "multi_terms": {
+      "terms":[ {
+        "field": "host.name"
+      }, {
+          "field": "url.original"
+      }]
+      }
+    }
+  }
+  }
+```
+
+---
+
+<a name="item13"></a> [Volver a Índice](#indice)
+ ### 13. [CREACIÓN DE CUENTA Y CANAL DE SLACK](#item13)
+ 
+
+---
+
+<a name="item14"></a> [Volver a Índice](#indice)
+ ### 14. [CREACIÓN DE CONECTOR CON SLACK](#item14) 
+
+https://www.elastic.co/guide/en/kibana/7.17/slack-action-type.html
+
+Only on status change: solo manda mensaje cuando hay nueva alerta
+Eveytime alert is active: envía mensajes periódicos aunque sea informando de  0 concurrencias
+
+Más info sobre formatos de mensajes con Slack-Markdown, etc:
+https://app.slack.com/block-kit-builder
+https://api.slack.com/reference/surfaces/formatting#visual-styles
+
+```shell
+:warning:       :red_circle::red_circle::white_circle::white_circle::white_circle: 
+  
+:clock2:       _{{context.date}}_
+               *{{alertName}}* de Kibana webhookbot
+               Muestrando desde *hace {{params.timeWindowSize}} {{params.timeWindowUnit}}*
+  
+:incoming_envelope: Desde la última alerta informada, ha sucedido *{{context.value}} :new: veces * :
+_" {{context.conditions}}"_ 
+
+
+*<https://i.pinimg.com/564x/1c/aa/f2/1caaf2b3e6ab9b2b4bd1b62a85fec8f9.jpg|:information_source:>*       *<mailto:enrique@aua-arquitectura.es?subject=Alerta_de_Kibana|:sos:>     <#C0412J19N1X>*
+ 
+ 
+{{#context.hits}}
+*Instante:* {{_source.@timestamp}}
+*Servidor:* {{_source.host.name}}
+*Fichero perdido:* srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN={{_source.url.original}}
+*Mensaje de Log completo:* {{_source.message}}
+ 
+ 
+{{/context.hits}}
+```
+Además Slack puede configurarse para que envíe emails automáticamente según la siguiente configuración:
+![image](https://user-images.githubusercontent.com/23584277/188202858-d4ab34ce-6799-45a6-97ba-16185023b517.png)
+
+
 
 <a name="item11"></a> [Volver a Índice](#indice)
  ### 11. ACTIVACIÓN DE ACCIÓN 
@@ -952,19 +1141,26 @@ Cada vez que se detenga y vuelva a arrancar la máquina virtual, antes de los pa
 
 [Abrir primero la instancia de VM en GCP](https://console.cloud.google.com/compute/instances?project=proyecto-tfm-enriqueprieto)
 
-
+![image](https://user-images.githubusercontent.com/23584277/188203537-014717b6-b055-4d10-8a7d-d658e23e846a.png)
 ```shell
 Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia =>
 =>Tras la última columna "menú hamburguesa" => Iniciar/REanudar
 ```
 
+![image](https://user-images.githubusercontent.com/23584277/188203631-5e9c2e0c-7abc-4e2a-bb5e-e46251310b02.png)
+![image](https://user-images.githubusercontent.com/23584277/188203732-1dd29867-139c-451d-a5ee-a2f571895650.png)
+![image](https://user-images.githubusercontent.com/23584277/188203751-ecb3bd4c-b0f7-4f69-af25-256915b44f9e.png)
+
 _(Atención, a partir de aquí el sisetema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")_
 
 Anotar el dato de la columna "ip externa" 
+![image](https://user-images.githubusercontent.com/23584277/188203782-a6fcc5a3-19f2-4af4-af3f-079ead4a9166.png)
 
 ```shell
 Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador".
 ```
+![image](https://user-images.githubusercontent.com/23584277/188203844-97af998f-bfa4-455e-9297-129e7455d86f.png)
+![image](https://user-images.githubusercontent.com/23584277/188203958-f3aa98bf-376c-4376-8a9b-eb2dc22e7b0f.png)
 
 Escribir a continuación en la ventana recien abierta con conexión SSH lo siguiente:
 
@@ -995,14 +1191,17 @@ Continuar en la misma ventana:
 
 ```shell
 sudo sysctl -w vm.max_map_count=262144
+```
+
+Opcional: Comentar la línea de pipeline con # para que ingeste primeramente desde el fichero de log.
+Una vez que se cree una pipeline desde Kibana, ya se podrá descomentar para usarla.
+```shell
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 vim filebeat.yml
 ```
 
-Comentar la línea de pipeline con # para que ingeste primeramente desde el fichero de log.
-Una vez que se cree una pipeline desde Kibana, ya se podrá descomentar para usarla.
-Salir de vim guardando con
+(Salir de vim guardando con)
 
 ```shell
 Esc+ :wq!
@@ -1030,6 +1229,7 @@ docker start elasticsearch
 docker stop kibana
 docker start kibana
 ```
+(+ Enter)
 
 Comprobar elasticsearch:
 
@@ -1053,8 +1253,8 @@ docker logs -f filebeat
 ```
 
 Ctrl+c
-Comprobar acceso a puerto 80, al no dar error la ejecución de la siguiente instrucción:
-(Esperar un rato y repetir si dice "curl: (56) Recv failure: Connection reset by peer" )
+Comprobar acceso a puerto 80, ejecutando sin error la siguiente instrucción:
+(Esperar un rato y repetir su ejecución en caso de obtener el error "curl: (56) Recv failure: Connection reset by peer" )
 ```shell
 curl localhost
 ```
