@@ -969,6 +969,7 @@ Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador".
 Escribir a continuación en la ventana recien abierta con conexión SSH lo siguiente:
 
 ```shell
+sudo firewall-cmd --reload
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
@@ -1015,13 +1016,20 @@ cd $pwd
 cd tfm_bigdata_viu_enriqueprieto
 ```
 
-_Nota: Si se desea conservar los logs anteriores, eliminar -v al final de la siguiente línea)._
+_Nota: Si se desea borrar los logs anteriores, añadir -v al final de la siguiente línea), separanod con espacion tras "down"._
 
 ```shell
-docker-compose down -v
+docker-compose down
 docker-compose up -d --remove-orphans
 ```
 (Esto último puede durar varios minutos)
+
+```shell
+docker stop elasticsearch
+docker start elasticsearch
+docker stop kibana
+docker start kibana
+```
 
 Comprobar elasticsearch:
 
@@ -1046,7 +1054,7 @@ docker logs -f filebeat
 
 Ctrl+c
 Comprobar acceso a puerto 80, al no dar error la ejecución de la siguiente instrucción:
-
+(Esperar un rato y repetir si dice "curl: (56) Recv failure: Connection reset by peer" )
 ```shell
 curl localhost
 ```
@@ -1058,6 +1066,9 @@ http://xxx.xxx.xxx:80/
 - Usuario: elastic
 - Password: changeme
 ```
+
+Columna izquierda + Discover
+Filtro visualización últimos 3 años
 
 ---
 [^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/index.html
