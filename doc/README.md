@@ -993,9 +993,11 @@ xpack.actions.customHostSettings:
    actionTypeId: .slack
    secrets:
      webhookUrl: 'https://hooks.slack.com/services/abcd/efgh/ijklmnopqrstuvwxyz'
-https://hooks.slack.com/services/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
+https://hooks.slack.com/services/T0409BY02T1/B040M1LGB1B/xxxxxx
 ```
-
+ (Sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B )
+ 
+ 
 Crada API key de nombre alerta01 para usuario elastic 
 b01kVzhJSUI4bFdzVGNvVVZjZFo6QXZnXzl1SXVSWnlybUoyX3VGSDhjUQ==
 Stack Management + Rules + Create Rule
@@ -1003,7 +1005,12 @@ Stack Management + Rules + Create Rule
 
 
 Prueba desde línea de comandos (https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B?added=1) :
-curl -X POST --data-urlencode "payload={\"channel\": \"#tfm-enrique-prieto\", \"username\": \"Robot de alertas desde curl\", \"text\": \"Alerta publicada con curl en el canal Slack #tfm-enrique-prieto procedente del robot webhookbot. <https://i.pinimg.com/564x/1c/aa/f2/1caaf2b3e6ab9b2b4bd1b62a85fec8f9.jpg|* info>    \", \"icon_emoji\": \":warning:\" }" https://hooks.slack.com/services/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
+
+```shell
+curl -X POST --data-urlencode "payload={\"channel\": \"#tfm-enrique-prieto\", \"username\": \"Robot de alertas desde curl\", \"text\": \"Alerta publicada con curl en el canal Slack #tfm-enrique-prieto procedente del robot webhookbot. <https://i.pinimg.com/564x/1c/aa/f2/1caaf2b3e6ab9b2b4bd1b62a85fec8f9.jpg|* info>    \", \"icon_emoji\": \":warning:\" }" https://hooks.slack.com/services/T0409BY02T1/B040M1LGB1B/xxxxxxxx
+```
+
+ (Sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B 
 
 ---
 
