@@ -16,3 +16,9 @@ discovery.type: single-node
 xpack.license.self_generated.type: trial
 xpack.security.enabled: true
 xpack.monitoring.collection.enabled: true
+
+xpack.security.authc.api_key.enabled: true
+xpack.security.authc.api_key.hashing.algorithm: pbkdf2
+xpack.security.authc.api_key.cache.ttl: 1d
+xpack.security.authc.api_key.cache.max_keys: 10000
+xpack.security.authc.api_key.cache.hash_algo: ssha256
