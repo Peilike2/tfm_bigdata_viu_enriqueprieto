@@ -14,10 +14,10 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 
 En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana[^nota2] mediante Docker Compose.
 
-OBJETIVO GENERAL
+OBJETIVO GENERAL:
 Mejora de condiciones de servicio del centro de cálculo de datos mediante la temprana detección, procesado y comunicación de los errores de procesamiento que tuvieran lugar.
 
-OBJETIVO ESPECÍFICO
+OBJETIVO ESPECÍFICO:
 Se analizará la estructura de los logs recibidos a través de un fichero, ingestados por una pipeline de filebeat que enviará a elasticsearch.
 Mediante reglas de kibana, se detectarán entre las líneas de mensaje, las que correspondan a mensajes de error y se agregarán por servidor de origen, obteniendo la ubicación del fichero perdido y el tipo de fallo indicado por el log.
 Se programará, como acción activada por alerta de kibana, el envío de mensaje pertinente al operador mediante un canal de mensajería Slack.
