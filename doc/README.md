@@ -14,6 +14,14 @@ Trabajo Final de Máster de Big Data/Data Science de Enrique Prieto Catalán en 
 
 En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacidades básicas del Stack Elastic[^nota1] para ingesta de logs que permitan la observabilidad de un grupo de servidores gracias a kibana[^nota2] mediante Docker Compose.
 
+OBJETIVO GENERAL
+Mejora de condiciones de servicio del centro de cálculo de datos mediante la temprana detección, procesado y comunicación de los errores de procesamiento que tuvieran lugar.
+
+OBJETIVO ESPECÍFICO
+Se analizará la estructura de los logs recibidos a través de un fichero, ingestados por una pipeline de filebeat que enviará a elasticsearch.
+Mediante reglas de kibana, se detectarán entre las líneas de mensaje, las que correspondan a mensajes de error y se agregarán por servidor de origen, obteniendo la ubicación del fichero perdido y el tipo de fallo indicado por el log.
+Se programará, como acción activada por alerta de kibana, el envío de mensaje pertinente al operador mediante un canal de mensajería Slack.
+
 ---
  
 <a name="indice"></a>
@@ -1174,7 +1182,16 @@ _" {{context.conditions}}"_
 {{/context.hits}}
 ```
 
-Cuando se activa la regla, ya asociada al conector slack-tfm y a la acción de envío del mensjae de Slack, el promer mensaje que se recibirá es de este tipo:
+Para obtener la ubicación del fichero de error, en el mensaje se ha añadido el prefijo
+
+```
+srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
+```
+
+al campo ECS "url.original", resultado del procesado del log por elasticsearch.
+
+
+Cuando se activa la regla, ya asociada al conector slack-tfm y a la acción de envío del mensjae de Slack, el primer mensaje que se recibirá es de este tipo:
 
 ![image](https://user-images.githubusercontent.com/23584277/188257148-6afeb0df-65b6-4ec1-9d68-e596bb84239d.png)
 
@@ -1183,38 +1200,17 @@ Y los siguientes, al no haber novedades en este prototipo, por ser un fiecho de 
 ![image](https://user-images.githubusercontent.com/23584277/188257177-db04294a-4ea5-4dbe-977c-4ee653f6b908.png)
 
 
-
-
-
-
-<a name="item11"></a> [Volver a Índice](#indice)
- ### 11. ACTIVACIÓN DE ACCIÓN 
-   - Se emitirán órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
-Para ello se precisa modelar, es decir conocer la **estructura** de nuestros logs, e indicársela a Elasticsearch.
-COn dicho fin, se aplicarán las siguientes operaciones:
-1. Seleccionar las líneas que contengan "unavailable"
-2. Seleccionar las líneas que contengan "root" en la dirección url del mensaje
-3. Extraer dicha url de cada mensaje, aladirle el prefijo "srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=" y que dicha concatenación esa el valor de un nuevo campo
-```
-srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
-```
-4. Eliminar filas duplicadas
-
-Así se podrán agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
-
-
-   - 
-   - 
-   - 
-   - 
-
 ---
 
 <a name="item15"></a> [Volver a Índice](#indice)
  ### 15.  SIGUIENTES PASOS
 
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-    
+
+Lo realizado, mediante procesos posteriores, permitirá agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
+Seguidamente, tras el etiquetado supervisado de la causa de numerosos mensajes de error en el historial, se podrá aplicar el teorema de Bayes inverso para periodos determinados, esto es, calcular la probabilidad de que un determinado mensaje de error tenga una determinada causa, teniendo en cuenta su repetición, origen y otros factores que se estimen causales.
+
+Por último se aplicaría machine learning y se escalaría a otros centros similares.
 ---
 
 <a name="item16"></a> [Volver a Índice](#indice) 
