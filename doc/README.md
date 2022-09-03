@@ -66,13 +66,14 @@ Se programará, como acción activada por alerta de kibana, el envío de mensaje
   ```
 - Instalación de Docker Compose. Se ha probado con  docker-compose 1.27.4
   En el caso que se describe, desde Google Cloud Platform, se indica más adelante cómo se realiza. En cambio, para el caso de instalación local directa sería de la siguiente forma:
-  - Usuarios de Windows y Mac users tendrán Compose instalado automáticamente con Docker para [Windows](https://docs.docker.com/docker-for-windows/install/)/[Mac](https://docs.docker.com/docker-for-mac/install/).
-  - Los usuarios de Linux ejecutarán la siguiente instrucción para instalar vía `pip`, pudiendo seguir las [instrucciones de instalación](https://docs.docker.com/compose/install/#install-compose):
+  - Usuarios de Windows y Mac users tendrán Compose instalado automáticamente con Docker para Windows [^nota3]/Mac [^nota4].
+  - Los usuarios de Linux ejecutarán la siguiente instrucción para instalar vía `pip`, pudiendo seguir las instrucciones de instalación [^nota5]
+  
     ```shell
     pip install docker-compose
     ```
 
-- Un mínimo de 4GB de RAM [memoria virtual](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/vm-max-map-count.html) para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su máquina virtual Docker para disponer de ese mínimo de la siguiente manera:
+- Un mínimo de 4GB de RAM memoria virtual [^nota6] para contenedores. En este caso, desde Google Cloud Platform, se indican más adelante los pasos. En caso de que se hubiera instalado directamente en local, los usuarios de Mac y Windows deberían configurar su máquina virtual Docker para disponer de ese mínimo de la siguiente manera:
 
     ![Docker VM memory settings](./img/docker-vm-memory-settings.png)
 
@@ -99,7 +100,7 @@ Por último, para iniciar el Stack, es necesario que no haya ningún servicio ar
 
 <a name="item2"></a> [Volver a Índice](#indice) 
 ### 2. ENTORNO DE DESARROLLO ELK EN GCP  
-La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado (https://cloud.google.com/free). Se pueden utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud de los que se disponga acceso, o con máquina virtual en local como VirtualBox, que se ha descartado por la excesiva capacidad de memoria que requiere.
+La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante 90 dias, 400$ en caso de tener cuenta con dominio propio registrado[^nota7]. Se pueden utilizar distintas cuentas para extender las pruebas. Alternativamente se puede instalar en otros entornos cloud de los que se disponga acceso, o con máquina virtual en local como VirtualBox, que se ha descartado por la excesiva capacidad de memoria que requiere.
 
 1.	Arrir navegador y ejecutar la dirección https://console.cloud.google.com/
 2.	Cliquear en "Crear Proyecto" => *Compute engine* + *Instancias de VM* + *Crear Proyecto* + *Nombre:"TFM Elastic CERN UAM" Organización:"sin organización"* + *Crear* + *Habilitar Engine API* + *Crear Instancia*
@@ -108,18 +109,14 @@ La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante
     ![Crear Instancia en GCP](./img/01_CrearInstanciaEnGCP.png)
 4.	Se selecciona "Centos 8" por mayor conveniencia de uso (Disco de arranque: *cambiar* + Versión: *CentOS Stream 8*.
 5.	Elección de "Disco persistente equilibrado" y fijado de memoria a 100GB. 
-
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
     ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
 6.	Permitir http y https
-
-    ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+7.	
+![image](https://user-images.githubusercontent.com/23584277/188262328-bc080d3c-4838-4a08-a7e5-ca9a2e5799e6.png)
     
 7. Clik en *Crear*
 - Esto luego se puede ejecutar aquí mismo con esta línea de comando Gcloud ejecutable en Cloud Shell (hay que tener instalado el Cloud Shell, cliente de Windows gratuito para todos los usuarios, máximo 50 horas semanales)(Una alternativa es CON EL ICONO SUPERIOR DERECHO “>=” ).
-
-(AQUÍ IMAGEN cloud shell)):
 
 ```shell
 gcloud compute instances create tfm-enrique-prieto-instancia-vm-01 --project=proyecto-tfm-enriqueprieto --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=4836494966-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=tfm-enrique-prieto-instancia-vm-01,image=projects/centos-cloud/global/images/centos-stream-8-v20220822,mode=rw,size=100,type=projects/proyecto-tfm-enriqueprieto/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
@@ -212,6 +209,7 @@ POST https://www.googleapis.com/compute/v1/projects/proyecto-tfm-enriqueprieto/z
 
 
 Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o detener (menú hamburguesa a la derecha de SSH, "Detener"), en función del uso, procurando minimizar su coste:
+
  ```shell
  NAME: enriqueprieto-centos8-2
  ZONE: europe-southwest1-a
@@ -223,25 +221,13 @@ Se obtiene entonces la siguiente instancia creada, que habrá que ejecutar o det
  enrique@cloudshell:~ (tfm-elastic-cern-uam)$
   ```
 
-   ![Instancia creada](./img/03_ArrancarInstancia.png)
+![image](https://user-images.githubusercontent.com/23584277/188262380-5781c36c-a38a-4550-b38a-77b06a2b4c60.png)
    
 8. A continuación se crea una regla de firewall que permita entrada de puerto 80. Anotar la IP externa de la instancia, y pulsar los tres puntos a la derecha de la instancia + *Ver detalles de red* + Columna izquiera *Firewall* + *Crear regla de Firewall* + Nombre:xxx + *Continuar* + *Agegar regla* + Prioridad: 1000 + Dirección del tráfico: *Entrada* + Destinos: *Todas las instancias* + Filtro de origen: *Rangoas de IPv4* +Rangos de IPv4 de destino: poner la ip de la instancia "34.175.112.47 " + Protocolos y puertos: *Protocolos y puertos especificados* + TCP: *80* (puede que valga "all") + *crear* + *continuar* + *asociar* + seleccionar la red default + *asociado* + *Continuar* + *crear*
 
-(AQUÍ IMAGEN Ver detalles de la red para el firewall)
-
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+![image](https://user-images.githubusercontent.com/23584277/188262410-5d427e07-a157-488f-b072-78b43e7c46d2.png)
     
-
-(AQUÍ IMAGEN CONFIGURACIÓN FIREWALL1)
-
-
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-    
-
-(AQUÍ IMAGEN CONFIGURACIÓN FIREWALL2)
-
-
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+![image](https://user-images.githubusercontent.com/23584277/188262428-e78db0fd-d331-4eba-98ea-ff915b143ba5.png)
     
 
 Commando REST equivalente:
@@ -301,19 +287,21 @@ Esta es la respuesta REST:
 <a name="item3"></a> [Volver a Índice](#indice) 
 ### 3. CONEXIÓN POR SSH. INSTALACIÓN DE DNF Y DOCKER 
 Para conectarse a la instancia de Máquina Virtual a través de conexión segura SSH:
-9. Volver a la instancia (oplumna izquierda + Compute Engine + Instancias de VM) + En la columna “Conectar” de la instancia,  se cliquea:
+
+9. Volver a la instancia (columna izquierda + Compute Engine + Instancias de VM) + En la columna “Conectar” de la instancia,  se cliquea:
 
  ```shell 
 SSH => abrir en otra ventana del navegador 
  ```
+ 
+ ![image](https://user-images.githubusercontent.com/23584277/188262468-401ed3c0-5146-44e9-9168-a3eb71db0191.png)
+
 Esto puede guardarse como un grupo de comandos de gcloud  para conectarse directamente a la máquina (se ejecuta desde cliente CLI de Windows, o directamente desde la interfaz de GCP arriba a la derecha, el Cloud Shell de Google cloud, con 50 horas iniciales gratuitas):
  ```shell
 gcloud compute ssh --zone "europe-southwest1-a" "enriqueprieto-centos8-2"  --project "tfm-elastic-cern-uam"
  ```
 
 Crea automáticamente los directorios, y el usuario de SSH (en este caso auaenrique), en la máquina enriqueprieto.centos8-2 pidiendo contraseña que se deberá dejar en blanco.
-
-![AbrirSSH](./img/04_AbrirSSH.png)
 
 10. Se pueden ejecutar a continuación los siguientes comandos para comprobar su correcto funcionamiento:
  ```shell
@@ -441,9 +429,9 @@ For more examples and ideas, visit:
 
 <a name="item5"></a> [Volver a Índice](#indice) 
 ### 5. INSTALACIÓN DE GIT
-A continuación se instalan Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web https://serverspace.io/support/help/how-to-install-docker-on-centos-8/ (o https://docs.docker.com/engine/install/centos/)
+A continuación se instalan Git y Docker como superusuario (poniendo SUDO delante), usando la instrucción de la Web [^nota8]  o [^nota9]
 
-22.	Instalar git, por tener los contenedores subidos y compartidos en Github (más información en https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7 )
+22.	Instalar git, por tener los contenedores subidos y compartidos en Github [^nota10]
 
 ```shell
 sudo yum install git -y
@@ -477,7 +465,7 @@ git clone https://github.com/Peilike2/tfm_bigdata_viu_enriqueprieto.git
 
 Lo cual habrá que ejecutar cada vez que se reinicie la instancia tras una parada.
 
-A modo informativo, se usarán comandos docker basicos descritos en https://dockerlabs.collabnix.com/docker/cheatsheet/ además de los comandos de docker-compose detalados en https://devhints.io/docker-compose y como editor de texto se utiliza vim.
+A modo informativo, se usarán comandos docker basicos [^nota11] además de los comandos de docker-compose[^nota12]  y como editor de texto se utiliza vim.
  
 ---
 
@@ -485,12 +473,12 @@ A modo informativo, se usarán comandos docker basicos descritos en https://dock
 ### 6. INSTALACIÓN DEL STACK ELASTIC
 En este apartado se instalan los servicios necesarios para lograr la siguiente estructura de ejecución: 
 
-![Elastic Stack](./img/enri_elastic-stack.png)
+![image](https://user-images.githubusercontent.com/23584277/188262622-83947047-2c99-4236-9ac3-b1a7dec73a72.png)
 
 Para ello se efectuarán las siguentes acciones:
- - Instalar un conjunto de contenedores en los que se encuentra elasticsearch, kibana y filebeat
+ - Instalar el conjunto de contenedores elasticsearch, kibana y filebeat
  - Arrancar dichos servicios, comprobando que funcionan correctamente
- - Probar explorando [Discover](https://www.elastic.co/guide/en/kibana/7.17/discover.html) en Kibana.
+ - Probar explorando Discover[^nota13] en Kibana.
 
 26. Personalización de docker-compose.yml
  - En dicho fichero de configuración del mencionado git, se ha limpiado toda referencia a contenedores no usados, dejando exclusivamente elasticsearch, filebeat y kibana
@@ -515,6 +503,15 @@ docker-compose up -d --remove-orphans
 ```
 (+ Enter)
 (Puede tardar unos minutos)
+
+```shell
+docker stop elasticsearch
+docker start elasticsearch
+docker stop kibana
+docker start kibana
+```
+
+(+ Enter)
 
 A título informativo, se indican las distintas formas de detener y eliminar:
 ```shell
@@ -542,6 +539,7 @@ Docker rm filebeat
 
 ```
 **COMPROBACIONES**
+
 29. Para comprobar que los tres contenedores se encuentran en estado saludable o "healthy" (filebeat, kibana, elasticsearch), se ejecuta:
 
 ```shell
@@ -592,9 +590,9 @@ curl localhost:80
  
 Se confirma que no da error como resultado, y a continuación desde cualquier navegador se utiliza la ip que proporciona la plataforma, y dicho puerto 80:
 
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+![image](https://user-images.githubusercontent.com/23584277/188262727-065c5332-773b-42b0-b839-67a797d01933.png)
     
-33. A continuación, se abre en un navegador la URL de Kibana (ver [supported browsers](https://www.elastic.co/es/support/matrix#matrix_browsers)).
+33. A continuación, se abre en un navegador la URL de Kibana [^nota14].
 Si se estuviera trabajando en local sería:
 
 ```shell
@@ -609,16 +607,13 @@ http://xxx.xxx.xxx:80/
 - Password: changeme
 ```
 
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-    
-
-34. Para visualizar los logs se debe primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.17/index-patterns.html). Los index patterns permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos almacenados en estos índices.
+34. Para visualizar los logs se debe primero crear un Index Pattern [^nota15]. Los index patterns permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos almacenados en estos índices.
 
 Si no se indica lo contrario en la configuración de filebeat para envío a elasticsearch, los índices que se crearán con el nombre `filebeat-*`.
 
 ![Index Patterns](./img/index-pattern.png)
 
-Por lo tanto, en la sección de Management de Kibana, se debe seleccionar `Index Patterns` en el grupo `Kibana`.
+Por lo tanto, en la sección de Management de Kibana[^nota15], se debe seleccionar `Index Patterns` en el grupo `Kibana`.
 
 ![Index Patterns](./img/kibana-index-patterns-management.png)
 
@@ -648,7 +643,7 @@ Y en el selector de filtros, persiana desplaegable de la izquierda, se escoge el
 
 Acto seguido, Se selecciona arriba a la derecha el rango de fechas y horas que permita ver los datos ingestados. Por ejemplo desde `2 years ago` hasta `now`
 
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+![image](https://user-images.githubusercontent.com/23584277/188262817-d248291d-a176-4709-b2d1-345fffc5d4a7.png)
    
 ---
 
@@ -683,21 +678,16 @@ Y la intención es que Elastic lo acabe guardando como:
         }
 ```
 
-Dado que el mensaje final de error que interesa obtener es de tipo:
-```
-"srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
-```
-Para realizar esta transformación, se recurre a las [pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/pipeline.html) de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/ingest.html).
+Para realizar esta estructuración, se recurre a las pipelines[^nota16] de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/ingest.html).
 
 Dado que se parte de un clúster elasticsearch con un solo nodo, este nodo realizará todos los roles (master, data, ingest, etc.).
-(Más información sobre roles de los nodos en la [documentación](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/modules-node.html).
+(Más información sobre roles de los nodos en la documentación[^nota17][^nota18].
 
-Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, se pueden analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de [procesadores](https://www.elastic.co/guide/en/elasticsearch/reference/717/ingest-processors.html) que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
+Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, se pueden analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de procesadores[^nota19] que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
 
 ![Ingest pipeline](./img/ingest-pipeline.png)
 
-
-En primer lugar, se procede a crear una simple pipeline de ingesta, basada en un procesador de tipo [dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/dissect-processor.html), que parseará el campo `message` de entrada generando los diversos campos que se precisan a la salida (`process_name`, `process_id`, `host_name`, etc).
+En primer lugar, se procede a crear una simple pipeline de ingesta, basada en un procesador de tipo dissect[^nota20], que parseará el campo `message` de entrada generando los diversos campos que se precisan a la salida (`process_name`, `process_id`, `host_name`, etc).
 se selecciona en el menú de la izquierda Management:`Dev Tools`.
 
 ![Dev Tools](./img/devtools-icon.png)
@@ -817,10 +807,10 @@ Al ejecutar esta petición, se puede comprobar si el JSON resultante es el esper
 }
 ```
 
-Esta petición [simula](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/simulate-pipeline-api.html) una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, se dispone de un JSON con los procesadores de la pipeline:
+Esta petición simula[^nota21] una pipeline, usando el endpoint del API REST de elasticsearch `_ingest/pipeline/_simulate`. En el contenido del cuerpo, se dispone de un JSON con los procesadores de la pipeline:
 
-- [**dissect**](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/dissect-processor.html): Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
-- [**remove**](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/remove-processor.html): eliminará el campo `message` ya que, una vez modelado, no interesa guardar esta información redundante.
+- [**dissect**][^nota22]: Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
+- [**remove**][^nota23]: eliminará el campo `message` ya que, una vez modelado, no interesa guardar esta información redundante.
    
 ---
 
@@ -875,7 +865,7 @@ De lo cual se obtendrá la respuesta de confirmación:
 
 Creando la pipeline de ingesta **logs-pipeline**, que se usará  en el próximo apartado.
 
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
+![image](https://user-images.githubusercontent.com/23584277/188262915-db77bf79-afcd-447b-aef6-c03a7854e353.png)
    
 ---
 
@@ -927,11 +917,7 @@ Se comprueba que está creada la pipeline "logs-pipeline" en Stack Management + 
 
 Nuevamente en Kibana, a través del navegador, se usa la barra de búsqueda para filtrar los datos proporcionados. Se procede a filtrar por `enri_campo12: "Unavailable" and not enri_campo09: "*root"`
 
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-
-El lenguage usado para filtrar las búsquedas es [Kibana Query Language (KQL)](https://www.elastic.co/guide/en/kibana/7.17/kuery-query.html).
+El lenguage usado para filtrar las búsquedas es Kibana Query Language (KQL[^nota24].
 
 
 Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el nombre `[Filebeat] Host/Process`
@@ -946,28 +932,33 @@ Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el n
 <a name="item11"></a> [Volver a Índice](#indice)
  ### 11. PREPARACIÓN EN SLACK PARA REGLAS Y ALERTAS DE KIBANA
  
- CREACIÓN CANAL DE MENSAJERÍA SLACK
- https://www.elastic.co/guide/en/kibana/current/slack-action-type.html#slack-connector-configuration
+ CREACIÓN CANAL DE MENSAJERÍA SLACK[^nota25]
  
- slack.com
+  Priemramente, navegar a la dirección de Internet slack.com
  Una vez registrado un usuario, se procede a la creación de un Espacio de Trabajo
+ 
  ![image](https://user-images.githubusercontent.com/23584277/188259398-a4511a30-e659-40d2-9f37-6a386af88a68.png)
+ 
 ![image](https://user-images.githubusercontent.com/23584277/188259433-3425f391-a6f8-4708-83cf-5db7a9b38609.png)
 
 Dar nombre al espacio de trabajo 
+
 ![image](https://user-images.githubusercontent.com/23584277/188259476-3682d97d-aa06-47d1-96ed-fa27305275fd.png)
+
 Añadir colaboradores o copiar enlace de invitación.
-Ir a https://my.slack.com/services/new/incoming-webhook
-Elegir el espacio de trabajo y el canal
+Después se debe ir a https://my.slack.com/services/new/incoming-webhook
+Elegir el espacio de trabajo y el canal.
 Pulsar ```Añadir Integración con Webhooks entrantes```
 Copiar la URL de Webhook, similar a https://hooks.slack.com/services/T040V6MNRFF/B0410KFHV6Y/xxxxxx
 Más abajo, en la misma página, e pueden definir más detalles:
+
 ![image](https://user-images.githubusercontent.com/23584277/188260038-8391d31c-f1ad-4cd3-b94d-32aab494aea1.png)
 
 Y por último, se guardan los ajustes.
 
 
 Además Slack puede configurarse para que envíe emails automáticamente según la siguiente configuración:
+
 ![image](https://user-images.githubusercontent.com/23584277/188202858-d4ab34ce-6799-45a6-97ba-16185023b517.png)
 
 ---
@@ -1056,9 +1047,9 @@ Se puede realizar la siguiente prueba de funcionamiento desde línea de comandos
 curl -X POST --data-urlencode "payload={\"channel\": \"#tfm-enrique-prieto\", \"username\": \"Robot de alertas desde curl\", \"text\": \"Alerta publicada con curl en el canal Slack #tfm-enrique-prieto procedente del robot webhookbot. <https://i.pinimg.com/564x/1c/aa/f2/1caaf2b3e6ab9b2b4bd1b62a85fec8f9.jpg|* info>    \", \"icon_emoji\": \":warning:\" }" https://hooks.slack.com/services/T0409BY02T1/B040M1LGB1B/xxxxxxxx
 ```
 
-(Por seguridad, se debe sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B )
+(De nuevo, por seguridad, se debe sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B )
 
-Atítulo informativo, para conectar con terceras aplicaciones se puede crear una clave API en columna iquierda + Stack Management + Security + API Keys + Create API Key.
+A título informativo, para conectar con terceras aplicaciones se puede crear una clave API en columna iquierda + Stack Management + Security + API Keys + Create API Key.
 En este caso,  API key de nombre alerta01 para usuario elastic 
 b01kVzhJSUI4bFdzVGNvVVZjZFo6QXZnXzl1SXVSWnlybUoyX3VGSDhjUQ==
 
@@ -1067,19 +1058,20 @@ b01kVzhJSUI4bFdzVGNvVVZjZFo6QXZnXzl1SXVSWnlybUoyX3VGSDhjUQ==
 <a name="item13"></a> [Volver a Índice](#indice)
  ### 13. CREACIÓN DE REGLA EN KIBANA
 
-Ver documentación sobre lo tratado en este apartado en:
-https://www.elastic.co/guide/en/kibana/7.17/alert-action-settings-kb.html#action-settings
-https://www.elastic.co/guide/en/kibana/7.17/action-types.html
-https://www.elastic.co/guide/en/kibana/7.17/create-and-manage-rules.html#defining-rules-actions-details
+Ver documentación sobre lo tratado en este apartado[^nota26][^nota27][^nota28]
 
 Tras acceder, a través de la columna izquierda de kbana en el navegador de internet: Stack Management + Alerts & Insights + Rules and Connectors + Create Rule
 
 ![image](https://user-images.githubusercontent.com/23584277/188261564-facda6b9-cb6f-403c-ab21-1083e012cdb9.png)
 
 Se selecciona:
-Name
+
+Name: Nombre a elegir
+
 Check every : Seleción de periodo de 1 minuto
+
 Notify: ```Only on status change``` (Solo manda mensaje cuando hay nueva alerta)
+
 Notify:```Eveytime alert is active```: Envía mensajes periódicos, aunque sea informando de  0 concurrencias una vez que ya ha informado de las anteriores.
 
 En este caso se seleccionará según se muesta en la imagen:
@@ -1090,14 +1082,16 @@ En este caso se seleccionará según se muesta en la imagen:
 
 
 Select index ```filebeat-*```
+
 Size 100
 
 Timestamp ```@timestamp```
 
-Se indica la creación de  una consulta que localice los documentos que contengan en el campo ```mensaje``` el texto ```Pinning failed for``` en los dos últimos años y los agrege por servidor, y dentro de este por ubicación del fichero perdido indicado en el log:
+Se indica la creación de  una consulta que localice los documentos que contengan en el campo ```mensaje``` el texto ```Pinning failed for``` en los dos últimos años y los agrege por servidor, y dentro de este por ubicación del fichero perdido indicado en el log.
 
 Se debe indicar la consulta en ```Define the Elasticsearch query```
 Query alert:
+
 ```json 
 {
   "query": {
@@ -1134,27 +1128,26 @@ Query alert:
   }
 ```
 
-
 ---
 
 <a name="item14"></a> [Volver a Índice](#indice)
  ### 14. CREACIÓN en KIBANA DE CONECTOR CON SLACK Y ACCIÓN QUE LO EJECUTA 
 
-https://www.elastic.co/guide/en/kibana/7.17/slack-action-type.html
 
 
-Más información sobre formatos de mensajes con Slack-Markdown, etc:
-https://app.slack.com/block-kit-builder
-https://api.slack.com/reference/surfaces/formatting#visual-styles
+Ver información sobre la conexión de Slac para acciones de alerta de kibana[^nota29]
+Ver  información sobre formatos de mensajes con Slack-Markdown, etc[^nota30][^nota31]
 
 Se define la condición de cumplimiento de una regla para la que se activará la acción.
-En este caso, la condición es la cumplan mil logs o menos en los últimos 27 años (aproximadamente 10000 días):
-En Rules aand Connector seleccionamos y editamos la regla creada
+En este caso, la condición es que la cumplan mil logs o menos en los últimos 27 años (aproximadamente 10000 días):
+En ```Rules and Connector``` seleccionamos y editamos la regla creada.
 
 Tipo de regla a seleccionar: STACK RULES + Elasticsearch query
 
 Y los siguientes parámetros:
+
 Run when Query matched
+
 Stack connector: tfm-slack
 
 When number of matches:
@@ -1226,11 +1219,16 @@ Seguido de "Add action" y "Save"
 Para obtener la ubicación del fichero de error, en el mensaje se ha añadido el prefijo
 
 ```
-srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
+srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=
 ```
 
 al campo ECS "url.original", resultado del procesado del log por elasticsearch.
 
+Por lo tanto la ubicación del fichero perdido queda indicado de la siguiente manera:
+
+```
+srm://xxxxxxx.xx.xxx.xx:xx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1
+```
 
 Cuando se activa la regla, ya asociada al conector slack-tfm y a la acción de envío del mensjae de Slack, el primer mensaje que se recibirá es de este tipo:
 
@@ -1246,12 +1244,11 @@ Y los siguientes, al no haber novedades en este prototipo, por ser un fiecho de 
 <a name="item15"></a> [Volver a Índice](#indice)
  ### 15.  SIGUIENTES PASOS
 
-  ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
-
 Lo realizado, mediante procesos posteriores, permitirá agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
 Seguidamente, tras el etiquetado supervisado de la causa de numerosos mensajes de error en el historial, se podrá aplicar el teorema de Bayes inverso para periodos determinados, esto es, calcular la probabilidad de que un determinado mensaje de error tenga una determinada causa, teniendo en cuenta su repetición, origen y otros factores que se estimen causales.
 
-Por último se aplicaría machine learning y se escalaría a otros centros similares.
+Por último se aplicaría machine learning y se escalaría a otros centros similares de nivrl TER2 que realizan similares cálculos con el mismo sistema de indicación de mensajes de error.
+
 ---
 
 <a name="item16"></a> [Volver a Índice](#indice) 
@@ -1411,15 +1408,36 @@ Filtrar la visualización últimos 3 años
 ### ANEXO II: DOCUMENTACIÓN DE REFERENCIA
 
 [^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/index.html
-
 [^nota2]: https://www.elastic.co/guide/en/kibana/7.17/index.html
-
-[^nota5]: (Borrar esta prueba de nota a pie de página) Cada línea extrade estas notas empicezan con doble espacio.  
-  Esta línea empezó con doble espacio.
-  
-[^nota3]: vista de [Discover](https://www.elastic.co/guide/en/kibana/7.17/discover.html) en Kibana
-
-[^nota4]: Prueba
+[^nota3]: https://docs.docker.com/docker-for-windows/install/
+[^nota4]: https://docs.docker.com/docker-for-mac/install/
+[^nota5]: https://docs.docker.com/compose/install/#install-compose
+[^nota6]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/vm-max-map-count.html
+[^nota7]: https://cloud.google.com/free
+[^nota8]: https://serverspace.io/support/help/how-to-install-docker-on-centos-8/
+[^nota9]: https://docs.docker.com/engine/install/centos/
+[^nota10]: https://www.digitalocean.com/community/tutorials/how-to-install-git-on-centos-7
+[^nota11]: https://dockerlabs.collabnix.com/docker/cheatsheet/
+[^nota12]: https://devhints.io/docker-compose
+[^nota13]: https://www.elastic.co/guide/en/kibana/7.17/discover.html
+[^nota14]: https://www.elastic.co/es/support/matrix#matrix_browsers
+[^nota15]: https://www.elastic.co/guide/en/kibana/7.17/index-patterns.html
+[^nota16]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/pipeline.html
+[^nota17]: https://www.elastic.co/guide/en/kibana/7.17/discover.html en Kibana
+[^nota18]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/modules-node.html
+[^nota19]: https://www.elastic.co/guide/en/elasticsearch/reference/717/ingest-processors.html
+[^nota20]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/dissect-processor.html
+[^nota21]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/simulate-pipeline-api.html
+[^nota22]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/dissect-processor.html
+[^nota23]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/remove-processor.html
+[^nota24]: https://www.elastic.co/guide/en/kibana/7.17/kuery-query.html
+[^nota25]: https://www.elastic.co/guide/en/kibana/current/slack-action-type.html#slack-connector-configuration
+[^nota26]: https://www.elastic.co/guide/en/kibana/7.17/alert-action-settings-kb.html#action-settings
+[^nota27]: https://www.elastic.co/guide/en/kibana/7.17/action-types.html
+[^nota28]: https://www.elastic.co/guide/en/kibana/7.17/create-and-manage-rules.html#defining-rules-actions-details
+[^nota29]: https://www.elastic.co/guide/en/kibana/7.17/slack-action-type.html
+[^nota30]: https://app.slack.com/block-kit-builder
+[^nota31]: https://api.slack.com/reference/surfaces/formatting#visual-styles
 
 [Subir](#top)
 
