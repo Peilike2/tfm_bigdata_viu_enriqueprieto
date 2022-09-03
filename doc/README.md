@@ -1050,13 +1050,6 @@ https://hooks.slack.com/services/T0409BY02T1/B040M1LGB1B/xxxxxx
 
 (Por seguridad, se debe sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B )
  
-¿¿?¿DÓNDE PONER ESTO????
-Creada API key de nombre alerta01 para usuario elastic 
-b01kVzhJSUI4bFdzVGNvVVZjZFo6QXZnXzl1SXVSWnlybUoyX3VGSDhjUQ==
-Stack Management + Rules + Create Rule
-
-
-
 Se puede realizar la siguiente prueba de funcionamiento desde línea de comandos: (https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B)
 
 ```shell
@@ -1064,6 +1057,10 @@ curl -X POST --data-urlencode "payload={\"channel\": \"#tfm-enrique-prieto\", \"
 ```
 
 (Por seguridad, se debe sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B )
+
+Atítulo informativo, para conectar con terceras aplicaciones se puede crear una clave API en columna iquierda + Stack Management + Security + API Keys + Create API Key.
+En este caso,  API key de nombre alerta01 para usuario elastic 
+b01kVzhJSUI4bFdzVGNvVVZjZFo6QXZnXzl1SXVSWnlybUoyX3VGSDhjUQ==
 
 ---
 
@@ -1075,18 +1072,31 @@ https://www.elastic.co/guide/en/kibana/7.17/alert-action-settings-kb.html#action
 https://www.elastic.co/guide/en/kibana/7.17/action-types.html
 https://www.elastic.co/guide/en/kibana/7.17/create-and-manage-rules.html#defining-rules-actions-details
 
-Stack Management + Rules + Create Rule
+Tras acceder, a través de la columna izquierda de kbana en el navegador de internet: Stack Management + Alerts & Insights + Rules and Connectors + Create Rule
+
+![image](https://user-images.githubusercontent.com/23584277/188261564-facda6b9-cb6f-403c-ab21-1083e012cdb9.png)
+
 Se selecciona:
-```Only on status change```: Solo manda mensaje cuando hay nueva alerta
-```Eveytime alert is active```: Envía mensajes periódicos, aunque sea informando de  0 concurrencias una vez que ya ha informado de las anteriores.
+Name
+Check every : Seleción de periodo de 1 minuto
+Notify: ```Only on status change``` (Solo manda mensaje cuando hay nueva alerta)
+Notify:```Eveytime alert is active```: Envía mensajes periódicos, aunque sea informando de  0 concurrencias una vez que ya ha informado de las anteriores.
+
+En este caso se seleccionará según se muesta en la imagen:
+
+![image](https://user-images.githubusercontent.com/23584277/188261638-6bfb5c0d-85b5-4c6f-a376-9b325fbfa1a8.png)
+
 
 
 
 Select index ```filebeat-*```
+Size 100
+
 Timestamp ```@timestamp```
 
 Se indica la creación de  una consulta que localice los documentos que contengan en el campo ```mensaje``` el texto ```Pinning failed for``` en los dos últimos años y los agrege por servidor, y dentro de este por ubicación del fichero perdido indicado en el log:
 
+Se debe indicar la consulta en ```Define the Elasticsearch query```
 Query alert:
 ```json 
 {
@@ -1139,8 +1149,20 @@ https://api.slack.com/reference/surfaces/formatting#visual-styles
 
 Se define la condición de cumplimiento de una regla para la que se activará la acción.
 En este caso, la condición es la cumplan mil logs o menos en los últimos 27 años (aproximadamente 10000 días):
+En Rules aand Connector seleccionamos y editamos la regla creada
+
+Tipo de regla a seleccionar: STACK RULES + Elasticsearch query
+
+Y los siguientes parámetros:
+Run when Query matched
+Stack connector: tfm-slack
 
 When number of matches:
+Is ```below or equals```  ```1000```
+
+FOR ```THE LAST``` ```10000``` ```days```
+
+
 Is ```below or equals```  ```1000```
 
 FOR ```THE LAST``` ```10000``` ```days```
@@ -1174,7 +1196,7 @@ En este caso:
 {{/context.hits}}
 ```
 
-Quedano por tanto el código para el mensaje:
+Quedando por tanto el código para el mensaje:
 
 ```shell
 :warning:       :red_circle::red_circle::white_circle::white_circle::white_circle: 
@@ -1199,6 +1221,7 @@ _" {{context.conditions}}"_
  
 {{/context.hits}}
 ```
+Seguido de "Add action" y "Save"
 
 Para obtener la ubicación del fichero de error, en el mensaje se ha añadido el prefijo
 
@@ -1238,24 +1261,30 @@ Cada vez que se detenga y vuelva a arrancar la máquina virtual, antes de los pa
 [Abrir primero la instancia de VM en GCP](https://console.cloud.google.com/compute/instances?project=proyecto-tfm-enriqueprieto)
 
 ![image](https://user-images.githubusercontent.com/23584277/188203537-014717b6-b055-4d10-8a7d-d658e23e846a.png)
+
 ```shell
 Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la instancia =>
 =>Tras la última columna "menú hamburguesa" => Iniciar/REanudar
 ```
 
 ![image](https://user-images.githubusercontent.com/23584277/188203631-5e9c2e0c-7abc-4e2a-bb5e-e46251310b02.png)
+
 ![image](https://user-images.githubusercontent.com/23584277/188203732-1dd29867-139c-451d-a5ee-a2f571895650.png)
+
 ![image](https://user-images.githubusercontent.com/23584277/188203751-ecb3bd4c-b0f7-4f69-af25-256915b44f9e.png)
 
 _(Atención, a partir de aquí el sistema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")_
 
 Anotar el dato de la columna "ip externa": 
+
 ![image](https://user-images.githubusercontent.com/23584277/188203782-a6fcc5a3-19f2-4af4-af3f-079ead4a9166.png)
 
 ```shell
 Columna "SSH" seleccionar del desplegable "Abrir en otra ventana del navegador".
 ```
+
 ![image](https://user-images.githubusercontent.com/23584277/188203844-97af998f-bfa4-455e-9297-129e7455d86f.png)
+
 ![image](https://user-images.githubusercontent.com/23584277/188203958-f3aa98bf-376c-4376-8a9b-eb2dc22e7b0f.png)
 
 Escribir a continuación en la ventana recien abierta con conexión SSH lo siguiente:
@@ -1309,16 +1338,18 @@ Se continúa en la ventana SSH:
 
 ```shell
 chmod go-w filebeat.yml
-cd $pwd
-cd tfm_bigdata_viu_enriqueprieto
 ```
 
 _Nota: Si se desea borrar los logs anteriores, añadir -v al final de la siguiente línea), separando con espacion tras "down"._
 
 ```shell
+cd $pwd
+cd tfm_bigdata_viu_enriqueprieto
 docker-compose down
 docker-compose up -d --remove-orphans
 ```
+
+(+ Enter)
 (Esto último puede durar varios minutos)
 
 ```shell
@@ -1327,6 +1358,7 @@ docker start elasticsearch
 docker stop kibana
 docker start kibana
 ```
+
 (+ Enter)
 
 Comprobación de elasticsearch:
@@ -1356,7 +1388,7 @@ Ctrl+c
 
 
 Comprobación del acceso a puerto 80, ejecutando sin error la siguiente instrucción:
-(Esperar un rato y repetir su ejecución en caso de obtener el error "curl: (56) Recv failure: Connection reset by peer" )
+(Esperar un rato y repetir su ejecución en caso de obtener el error "curl: (56) Recv failure: Connection reset by peer" o el error "Kibana server is not ready yet")
 
 ```shell
 curl localhost
