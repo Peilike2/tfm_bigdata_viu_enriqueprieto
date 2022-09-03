@@ -29,12 +29,12 @@ Se programará, como acción activada por alerta de kibana, el envío de mensaje
 
 ## Índice de contenidos
 1. [ REQUISITOS Y ASUNCIONES](#item1)
-2. [ ENTORNO DE DESARROLLO ELK EN GCP](#item2)
+2. [ ENTORNO DE DESARROLLO ELK EN GOOGLE CLOUD PLATFORM](#item2)
 3. [ CONEXIÓN POR SSH. INSTALACIÓN DE DNF Y DOCKER](#item3)
 4. [ INSTALACIÓN DE DOCKER-COMPOSE](#item4)
 5. [ INSTALACIÓN DE GIT](#item5)
 6. [ INSTALACIÓN DEL STACK ELASTIC](#item6)
-7. [ VISUALIZACIÓN CON KIBANA. CREACIÓN DE INDEX PATTERN](#item7)
+7. [ VISUALIZACIÓN CON KIBANA. CREACIÓN DEL INDEX PATTERN](#item7)
 8. [ SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS](#item8)
    - Modelado de los campos para la pipeline, y comprobación de salidas en entorno de prueba.
 9. [ ALTA DE LA PIPELINE DE PROCESADO DE LOGS](#item9)
@@ -43,7 +43,7 @@ Se programará, como acción activada por alerta de kibana, el envío de mensaje
    -  Direccionamiento desde filebeat, de los datos hacia los procesos de la pipeline.
 11. [ PREPARACIÓN EN SLACK PARA REGLAS Y ALERTAS DE KIBANA](#item11)
 12. [ PREPARACIÓN EN ELASTIC PARA REGLAS Y ALERTAS DE KIBANA](#item12)
-13. [ CREACIÓN DE REGLA EN KIBANA](#item13)
+13. [ CREACIÓN DE REGLAS EN KIBANA](#item13)
 14. [CREACIÓN DE CONECTOR CON SLACK Y DE ACCIÓN QUE LO EJECUTA](#item14) 
    - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
 15. [ SIGUIENTES PASOS](#item15)
@@ -946,8 +946,26 @@ Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el n
 <a name="item11"></a> [Volver a Índice](#indice)
  ### 11. PREPARACIÓN EN SLACK PARA REGLAS Y ALERTAS DE KIBANA
  
- CREACIÓN DE CUENTA Y CANAL
+ CREACIÓN CANAL DE MENSAJERÍA SLACK
+ https://www.elastic.co/guide/en/kibana/current/slack-action-type.html#slack-connector-configuration
  
+ slack.com
+ Una vez registrado un usuario, se procede a la creación de un Espacio de Trabajo
+ ![image](https://user-images.githubusercontent.com/23584277/188259398-a4511a30-e659-40d2-9f37-6a386af88a68.png)
+![image](https://user-images.githubusercontent.com/23584277/188259433-3425f391-a6f8-4708-83cf-5db7a9b38609.png)
+
+Dar nombre al espacio de trabajo 
+![image](https://user-images.githubusercontent.com/23584277/188259476-3682d97d-aa06-47d1-96ed-fa27305275fd.png)
+Añadir colaboradores o copiar enlace de invitación.
+Ir a https://my.slack.com/services/new/incoming-webhook
+Elegir el espacio de trabajo y el canal
+Pulsar ```Añadir Integración con Webhooks entrantes```
+Copiar la URL de Webhook, similar a https://hooks.slack.com/services/T040V6MNRFF/B0410KFHV6Y/xxxxxx
+Más abajo, en la misma página, e pueden definir más detalles:
+![image](https://user-images.githubusercontent.com/23584277/188260038-8391d31c-f1ad-4cd3-b94d-32aab494aea1.png)
+
+Y por último, se guardan los ajustes.
+
 
 Además Slack puede configurarse para que envíe emails automáticamente según la siguiente configuración:
 ![image](https://user-images.githubusercontent.com/23584277/188202858-d4ab34ce-6799-45a6-97ba-16185023b517.png)
@@ -1039,7 +1057,7 @@ Stack Management + Rules + Create Rule
 
 
 
-Se puede realizar la siguiente prueba de funcionamiento desde línea de comandos: (https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B?added=1)
+Se puede realizar la siguiente prueba de funcionamiento desde línea de comandos: (https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B)
 
 ```shell
 curl -X POST --data-urlencode "payload={\"channel\": \"#tfm-enrique-prieto\", \"username\": \"Robot de alertas desde curl\", \"text\": \"Alerta publicada con curl en el canal Slack #tfm-enrique-prieto procedente del robot webhookbot. <https://i.pinimg.com/564x/1c/aa/f2/1caaf2b3e6ab9b2b4bd1b62a85fec8f9.jpg|* info>    \", \"icon_emoji\": \":warning:\" }" https://hooks.slack.com/services/T0409BY02T1/B040M1LGB1B/xxxxxxxx
