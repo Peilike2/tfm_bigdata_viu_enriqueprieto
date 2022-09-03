@@ -50,6 +50,7 @@ Se programará, como acción activada por alerta de kibana, el envío de mensaje
 
 [ ANEXO I:   REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item16)
    - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
+
 [ ANEXO II:  DOCUMENTACIÓN DE REFERENCIA](#item17)
 
 ---
@@ -112,7 +113,7 @@ La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante
     
     ![Configurar instancia creada](./img/02_ConfigurarInstanciaCreada.png)
 6.	Permitir http y https
-7.	
+
 ![image](https://user-images.githubusercontent.com/23584277/188262328-bc080d3c-4838-4a08-a7e5-ca9a2e5799e6.png)
     
 7. Clik en *Crear*
