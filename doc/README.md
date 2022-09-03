@@ -72,12 +72,19 @@ En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacida
 ```
 sysctl -w vm.max_map_count=262144
 ```
-Sin embargo, se indica más adelante cómo proceder para el caso de este proyecto, desde GCP.
-- Sistema operativo probado CentOS 8
-- Git version 1.8.3.1
+Sin embargo, se indica más adelante cómo se procede en el caso de este proyecto, desde GCP.
+
+El software utilizado en la Google Cloud Platform ha sido:
+
+- Sistema operativo CentOS 8
+- Dnf y dnf-plugins-core
+- Git 1.8.3.1
+- Docker ce para Centos 8
 - Docker-compose 1.27.4
-- Elastic y Kibana 7.17.5
-- Por último, para iniciar el Stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
+- Elasticsearch, filebeat y Kibana 7.17.5
+- Navegador de Internet Google Chrome 105.0.5195.54 64 bit
+
+Por último, para iniciar el Stack, es necesario que no haya ningún servicio arrancado en los puertos 9200, 9300 (elasticsearch), 5601 (kibana).
 
 ---
 
@@ -108,7 +115,7 @@ La plataforma permite actualmente su uso gratuito hasta un coste de 300$ durante
 ```shell
 gcloud compute instances create tfm-enrique-prieto-instancia-vm-01 --project=proyecto-tfm-enriqueprieto --zone=europe-southwest1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=4836494966-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=tfm-enrique-prieto-instancia-vm-01,image=projects/centos-cloud/global/images/centos-stream-8-v20220822,mode=rw,size=100,type=projects/proyecto-tfm-enriqueprieto/zones/europe-southwest1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
 ```
-o con esta solicutud de REST equivalente:
+o con esta solicitud de REST equivalente:
 
 ```json
 POST https://www.googleapis.com/compute/v1/projects/proyecto-tfm-enriqueprieto/zones/europe-southwest1-a/instances
@@ -596,7 +603,7 @@ http://xxx.xxx.xxx:80/
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 
-34. Para visualizar los logs debemos primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.17/index-patterns.html). Los index patterns nos permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos que tenemos almacenados en estos índices.
+34. Para visualizar los logs se debe primero crear un [Index Pattern](https://www.elastic.co/guide/en/kibana/7.17/index-patterns.html). Los index patterns permiten acceder desde Kibana a los índices en elasticsearch, y, por lo tanto, a los documentos almacenados en estos índices.
 
 Si no se indica lo contrario en la configuración de filebeat para envío a elasticsearch, los índices que se crearán con el nombre `filebeat-*`.
 
@@ -612,23 +619,23 @@ A continuación se pulsa el botón azul `Create Index Pattern` y se da de alta u
 
 Seguidamente, en la misma ventana se selecciona el 'Timestamp field', que es el campo a usar para mostrar la serie temporal de datos en Discover.
 
-En este caso indicamos`@timestamp`.
+En este caso se indica `@timestamp`.
 
 ![Index Patterns](./img/index-pattern-create-2.png)
 
-Y pulsamos `Create Index Pattern`.
+Y se pulsa `Create Index Pattern`.
 
-Comprobamos que queda el Indx Pattern "Filebeat-*" creado en Stack Management + Index Patterns:
+Se comprueba que queda el Indx Pattern "Filebeat-*" creado en Stack Management + Index Patterns:
 
 ![image](https://user-images.githubusercontent.com/23584277/188205896-aaafbc48-1c1a-4ecb-abd8-1982bb4d20ea.png)
 
-Por último, Seleccionamos en el "menú hamburguesa" de la izquierda, en Kibana, `Discover`.
+Por último, se selecciona en el "menú hamburguesa" de la izquierda, en Kibana, `Discover`.
 
-Hacemos clic en `New` en el menú superior derecho, para limpiar cualquier filtro que tuviéramos en la búsqueda.
+Se cliquea `New` en el menú superior derecho, para limpiar cualquier filtro que hubiera en la búsqueda.
     
   ![Discover Filebeat](./img/discover-filebeat.png)
  
-Y en el selector de filtros, persiana desplaegable de la izquierda, escogemos el `index pattern` que acabamos de crear, `filebeat-*`.
+Y en el selector de filtros, persiana desplaegable de la izquierda, se escoge el `index pattern` que se acaba de crear, `filebeat-*`.
 
 Acto seguido, Se selecciona arriba a la derecha el rango de fechas y horas que permita ver los datos ingestados. Por ejemplo desde `2 years ago` hasta `now`
 
@@ -929,17 +936,15 @@ Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el n
 
 <a name="item11"></a> [Volver a Índice](#indice)
  ### 11. [ CONFIGURACIÓN PARA REGLAS Y ALERTAS]
- En kibana:
-xpack.security.encryptionKey: "abcdefghijklmnopqrstuvwxyz012345"
-xpack.encryptedSavedObjects.encryptionKey: "abcdefghijklmnopqrstuvwxyz012345" 
+
+
+Se deberá editar el archivo de configuración elasticsearch.yml añadiendo al final las líneas que se indican (ya incluido en el fichero del repositorio):
 
 ```shell
 cd $pwd
-cd tfm_bigdata_viu_enriqueprieto/elasticsearch/config/
-vim filebeat.yml
+cd tfm_bigdata_viu_enriqueprieto/elasticsearch/config
+vim elasticsearch.yml
 ```
-
-En elasticcsearch.yml se añadeqa!al final (ya incluido en el fichero del repositorio):
 
 ```shell
 xpack.security.authc.api_key.enabled: true
@@ -954,7 +959,12 @@ A continuación se sale guardando con "Esc" +
 ```shell
 :wq!
 ```
-(Salir sin guardar con :qa!)
+
+En caso de querer salir sin guardar:
+
+```shell
+:qa!
+```
 
 Quedando así el fichero:
 ![image](https://user-images.githubusercontent.com/23584277/188206700-82237ccf-a02f-4045-899f-a9171cbac9d0.png)
@@ -978,13 +988,18 @@ A continuación se sale guardando con "Esc" +
 ```shell
 :wq!
 ```
-(Salir sin guardar con :qa!)
+
+En caso de querer salir sin guardar:
+
+```shell
+:qa!
+```
 
 Quedando así el fichero:
 
 ![image](https://user-images.githubusercontent.com/23584277/188209274-0ab73f26-1382-4362-a143-583bbf007b61.png)
 
-(Opcional) Se podría dejar preconfigurado el conector de slack con las siguientes líneas, aunque en este caso se documenta su configuración desde kibana:
+(Opcional) Se podría dejar preconfigurado el conector de slack con las siguientes líneas, aunque en este caso se procederá a su configuración desde kibana:
 
 ```shell
 xpack.actions.customHostSettings:
@@ -995,37 +1010,45 @@ xpack.actions.customHostSettings:
      webhookUrl: 'https://hooks.slack.com/services/abcd/efgh/ijklmnopqrstuvwxyz'
 https://hooks.slack.com/services/T0409BY02T1/B040M1LGB1B/xxxxxx
 ```
- (Sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B )
+
+(Por seguridad, se debe sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B )
  
- 
-Crada API key de nombre alerta01 para usuario elastic 
+¿¿?¿DÓNDE PONER ESTO????
+Creada API key de nombre alerta01 para usuario elastic 
 b01kVzhJSUI4bFdzVGNvVVZjZFo6QXZnXzl1SXVSWnlybUoyX3VGSDhjUQ==
 Stack Management + Rules + Create Rule
 
 
 
-Prueba desde línea de comandos (https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B?added=1) :
+Se puede realizar la siguiente prueba de funcionamiento desde línea de comandos: (https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B?added=1)
 
 ```shell
 curl -X POST --data-urlencode "payload={\"channel\": \"#tfm-enrique-prieto\", \"username\": \"Robot de alertas desde curl\", \"text\": \"Alerta publicada con curl en el canal Slack #tfm-enrique-prieto procedente del robot webhookbot. <https://i.pinimg.com/564x/1c/aa/f2/1caaf2b3e6ab9b2b4bd1b62a85fec8f9.jpg|* info>    \", \"icon_emoji\": \":warning:\" }" https://hooks.slack.com/services/T0409BY02T1/B040M1LGB1B/xxxxxxxx
 ```
 
- (Sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B 
+(Por seguridad, se debe sustituir la última dirección por la indicada en https://cernatlasciaffalertas.slack.com/services/B040M1LGB1B )
 
 ---
 
 <a name="item12"></a> [Volver a Índice](#indice)
  ### 12. [ CREACIÓN DE REGLA](#item12)
+
+Ver documentación sobre lo tratado en este apartado en:
 https://www.elastic.co/guide/en/kibana/7.17/alert-action-settings-kb.html#action-settings
 https://www.elastic.co/guide/en/kibana/7.17/action-types.html
-https://www.elastic.co/guide/en/kibana/7.15/create-and-manage-rules.html#defining-rules-actions-details
-When number of matches:
-Is below or equals 1000
-FOR THE LAST 10000 days
+https://www.elastic.co/guide/en/kibana/7.17/create-and-manage-rules.html#defining-rules-actions-details
 
-Select index filebeat-*
-Timestamp @timestamp
+Stack Management + Rules + Create Rule
+Se selecciona:
+```Only on status change```: Solo manda mensaje cuando hay nueva alerta
+```Eveytime alert is active```: Envía mensajes periódicos, aunque sea informando de  0 concurrencias una vez que ya ha informado de las anteriores.
 
+
+
+Select index ```filebeat-*```
+Timestamp ```@timestamp```
+
+Se indica la creación de  una consulta que localice los documentos que contengan en el campo ```mensaje``` el texto ```Pinning failed for``` en los dos últimos años y los agrege por servidor, y dentro de este por ubicación del fichero perdido indicado en el log:
 
 Query alert:
 ```json 
@@ -1064,6 +1087,7 @@ Query alert:
   }
 ```
 
+
 ---
 
 <a name="item13"></a> [Volver a Índice](#indice)
@@ -1073,16 +1097,53 @@ Query alert:
 ---
 
 <a name="item14"></a> [Volver a Índice](#indice)
- ### 14. [CREACIÓN DE CONECTOR CON SLACK](#item14) 
+ ### 14. [CREACIÓN en KIBANA DE CONECTOR CON SLACK](#item14) 
 
 https://www.elastic.co/guide/en/kibana/7.17/slack-action-type.html
 
-Only on status change: solo manda mensaje cuando hay nueva alerta
-Eveytime alert is active: envía mensajes periódicos aunque sea informando de  0 concurrencias
 
-Más info sobre formatos de mensajes con Slack-Markdown, etc:
+Más información sobre formatos de mensajes con Slack-Markdown, etc:
 https://app.slack.com/block-kit-builder
 https://api.slack.com/reference/surfaces/formatting#visual-styles
+
+Se define la condición de cumplimiento de una regla para la que se activará la acción.
+En este caso, la condición es la cumplan mil logs o menos en los últimos 27 años (aproximadamente 10000 días):
+
+When number of matches:
+Is ```below or equals```  ```1000```
+
+FOR ```THE LAST``` ```10000``` ```days```
+
+A continuación se define el mensaje que se enviará al canal de Slack cuando se cumpla la condición.
+El cuadro de inserción de texto admite formato directo de salto de línea y código Slack-Markdown.
+Además, se pueden referenciar los campos. En este caso, se han utilizado:
+
+```shell
+{{context.date}}
+{{alertName}}
+{{params.timeWindowSize}}
+{{params.timeWindowUnit}}
+{{context.value}}
+{{context.conditions}}
+```
+
+Por último, admite referencias a cada uno de los documentos resultantes de la consulta, entre los indicadores:
+{{#context.hits}} y {{/context.hits}}
+
+En este caso:
+
+```shell
+{{#context.hits}}
+
+{{_source.@timestamp}}
+{{_source.host.name}}
+{{_source.url.original}}
+{{_source.message}}
+
+{{/context.hits}}
+```
+
+Quedano por tanto el código para el mensaje:
 
 ```shell
 :warning:       :red_circle::red_circle::white_circle::white_circle::white_circle: 
@@ -1107,6 +1168,10 @@ _" {{context.conditions}}"_
  
 {{/context.hits}}
 ```
+
+
+
+LLEVAR ESTO A CREACIÓN DEL CANAL SLACK!!!!
 Además Slack puede configurarse para que envíe emails automáticamente según la siguiente configuración:
 ![image](https://user-images.githubusercontent.com/23584277/188202858-d4ab34ce-6799-45a6-97ba-16185023b517.png)
 
@@ -1160,7 +1225,7 @@ Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la insta
 
 _(Atención, a partir de aquí el sisetema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")_
 
-Anotar el dato de la columna "ip externa" 
+Anotar el dato de la columna "ip externa": 
 ![image](https://user-images.githubusercontent.com/23584277/188203782-a6fcc5a3-19f2-4af4-af3f-079ead4a9166.png)
 
 ```shell
@@ -1200,21 +1265,23 @@ Continuar en la misma ventana:
 sudo sysctl -w vm.max_map_count=262144
 ```
 
-Opcional: Comentar la línea de pipeline con # para que ingeste primeramente desde el fichero de log.
-Una vez que se cree una pipeline desde Kibana, ya se podrá descomentar para usarla.
+Este procedimiento se utilizó para la primera instalación, pero ya no es necesario de nuevo en el rearrancado: 
+
+_Comentar la línea de pipeline con # para que ingeste primeramente desde el fichero de log.
+Una vez que se cree una pipeline desde Kibana, ya se podrá descomentar para usarla._
 ```shell
 cd $pwd
 cd tfm_bigdata_viu_enriqueprieto/filebeat/config/
 vim filebeat.yml
 ```
 
-(Salir de vim guardando con)
+_Salir de vim guardando con:_
 
 ```shell
 Esc+ :wq!
 ```
 
-Continuar en la ventana SSH:
+Se continúa en la ventana SSH:
 
 ```shell
 chmod go-w filebeat.yml
@@ -1222,7 +1289,7 @@ cd $pwd
 cd tfm_bigdata_viu_enriqueprieto
 ```
 
-_Nota: Si se desea borrar los logs anteriores, añadir -v al final de la siguiente línea), separanod con espacion tras "down"._
+_Nota: Si se desea borrar los logs anteriores, añadir -v al final de la siguiente línea), separando con espacion tras "down"._
 
 ```shell
 docker-compose down
@@ -1238,7 +1305,7 @@ docker start kibana
 ```
 (+ Enter)
 
-Comprobar elasticsearch:
+Comprobación de elasticsearch:
 
 ```shell
 docker ps
@@ -1246,27 +1313,32 @@ docker logs -f elasticsearch
 ```
 
 Ctrl+c
-Comprobar kibana:
+
+Comprobación de kibana:
 
 ```shell
 docker logs -f kibana
 ```
 
 Ctrl+c
-Comprobar filebeat:
+
+Comprobación de filebeat:
 
 ```shell
 docker logs -f filebeat
 ```
 
 Ctrl+c
-Comprobar acceso a puerto 80, ejecutando sin error la siguiente instrucción:
+
+
+Comprobación del acceso a puerto 80, ejecutando sin error la siguiente instrucción:
 (Esperar un rato y repetir su ejecución en caso de obtener el error "curl: (56) Recv failure: Connection reset by peer" )
+
 ```shell
 curl localhost
 ```
 
-Ir a navegador, sustituyendo xxx por la ip externa anteriormente anotada, específica de la instancia:
+En el navegador de Internet se sustituye xxx por la ip externa anteriormente anotada, específica de la instancia:
 
 ```shell
 http://xxx.xxx.xxx:80/
@@ -1275,7 +1347,7 @@ http://xxx.xxx.xxx:80/
 ```
 
 Columna izquierda + Discover
-Filtro visualización últimos 3 años
+Filtrar la visualización últimos 3 años
 
 ---
 [^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/index.html
