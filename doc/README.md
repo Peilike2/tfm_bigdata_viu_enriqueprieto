@@ -29,19 +29,20 @@ En este TFM se realizará la prueba de concepto (PoC) que mostrará las capacida
 7. [ VISUALIZACIÓN CON KIBANA. CREACIÓN DE INDEX PATTERN](#item7)
 8. [ SIMULACIÓN DE PIPELINE DE PROCESADO DE LOGS](#item8)
    - Modelado de los campos para la pipeline, y comprobación de salidas en entorno de prueba.
-9. [ ALTA DE LA PIPELINE DE PROCESADO DE LOGS](#item8)
+9. [ ALTA DE LA PIPELINE DE PROCESADO DE LOGS](#item9)
    -  Creación de la pipeline de procesos. Alta en Elastic.
 10. [ PROGRAMACIÓN DE EJECUCIÓN DE LA PIPELINE DE PROCESADO DE LOGS](#item10)
    -  Direccionamiento desde filebeat, de los datos hacia los procesos de la pipeline.
-11. [ CONFIGURACIÓN PARA REGLAS Y ALERTAS](#item11)
-12. [ CREACIÓN DE REGLA](#item12)
-13. [CREACIÓN DE CUENTA Y CANAL DE SLACK](#item13)
-14. [CREACIÓN DE CONECTOR CON SLACK](#item14) 
+11. [ PREPARACIÓN EN SLACK PARA REGLAS Y ALERTAS DE KIBANA](#item11)
+12. [ PREPARACIÓN EN ELASTIC PARA REGLAS Y ALERTAS DE KIBANA](#item12)
+13. [ CREACIÓN DE REGLA EN KIBANA](#item13)
+14. [CREACIÓN DE CONECTOR CON SLACK Y DE ACCIÓN QUE LO EJECUTA](#item14) 
    - Emisión de órdenes de activación a partir de algunos resultados, comenzando por el envío de un mensaje al operador. 
-15. [ SIGUIENTES PASOS](#item12)
+15. [ SIGUIENTES PASOS](#item15)
 
-[ ANEXO:   REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item13)
+[ ANEXO I:   REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)](#item16)
    - Pasos a realizar de nuevo cada vez que se detenga y vuelva a arrancar la instancia de Máquina Virtual (MV).
+[ ANEXO II:  DOCUMENTACIÓN DE REFERENCIA](#item17)
 
 ---
 
@@ -935,8 +936,18 @@ Se pulsa el botón `Save` en la barra superior y se guarda la búsqueda con el n
 ---
 
 <a name="item11"></a> [Volver a Índice](#indice)
- ### 11. [ CONFIGURACIÓN PARA REGLAS Y ALERTAS]
+ ### 11. PREPARACIÓN EN SLACK PARA REGLAS Y ALERTAS DE KIBANA
+ 
+ CREACIÓN DE CUENTA Y CANAL
+ 
 
+Además Slack puede configurarse para que envíe emails automáticamente según la siguiente configuración:
+![image](https://user-images.githubusercontent.com/23584277/188202858-d4ab34ce-6799-45a6-97ba-16185023b517.png)
+
+---
+
+<a name="item12"></a> [Volver a Índice](#indice)
+ ### 12. PREPARACIÓN EN ELASTIC PARA REGLAS Y ALERTAS DE KIBANA
 
 Se deberá editar el archivo de configuración elasticsearch.yml añadiendo al final las líneas que se indican (ya incluido en el fichero del repositorio):
 
@@ -1030,8 +1041,8 @@ curl -X POST --data-urlencode "payload={\"channel\": \"#tfm-enrique-prieto\", \"
 
 ---
 
-<a name="item12"></a> [Volver a Índice](#indice)
- ### 12. [ CREACIÓN DE REGLA](#item12)
+<a name="item13"></a> [Volver a Índice](#indice)
+ ### 13. CREACIÓN DE REGLA EN KIBANA
 
 Ver documentación sobre lo tratado en este apartado en:
 https://www.elastic.co/guide/en/kibana/7.17/alert-action-settings-kb.html#action-settings
@@ -1090,14 +1101,8 @@ Query alert:
 
 ---
 
-<a name="item13"></a> [Volver a Índice](#indice)
- ### 13. [CREACIÓN DE CUENTA Y CANAL DE SLACK](#item13)
- 
-
----
-
 <a name="item14"></a> [Volver a Índice](#indice)
- ### 14. [CREACIÓN en KIBANA DE CONECTOR CON SLACK](#item14) 
+ ### 14. CREACIÓN en KIBANA DE CONECTOR CON SLACK Y ACCIÓN QUE LO EJECUTA 
 
 https://www.elastic.co/guide/en/kibana/7.17/slack-action-type.html
 
@@ -1169,11 +1174,16 @@ _" {{context.conditions}}"_
 {{/context.hits}}
 ```
 
+Cuando se activa la regla, ya asociada al conector slack-tfm y a la acción de envío del mensjae de Slack, el promer mensaje que se recibirá es de este tipo:
+
+![image](https://user-images.githubusercontent.com/23584277/188257148-6afeb0df-65b6-4ec1-9d68-e596bb84239d.png)
+
+Y los siguientes, al no haber novedades en este prototipo, por ser un fiecho de logs que no cambiamos, será de esta forma con menos detalle, al no haber detalles que mostrar:
+
+![image](https://user-images.githubusercontent.com/23584277/188257177-db04294a-4ea5-4dbe-977c-4ee653f6b908.png)
 
 
-LLEVAR ESTO A CREACIÓN DEL CANAL SLACK!!!!
-Además Slack puede configurarse para que envíe emails automáticamente según la siguiente configuración:
-![image](https://user-images.githubusercontent.com/23584277/188202858-d4ab34ce-6799-45a6-97ba-16185023b517.png)
+
 
 
 
@@ -1200,15 +1210,15 @@ Así se podrán agrupar valores similares, visualizarlos, y explotar toda la pot
 
 ---
 
-<a name="item12"></a> [Volver a Índice](#indice)
- ### 12.  Siguientes pasos
+<a name="item15"></a> [Volver a Índice](#indice)
+ ### 15.  SIGUIENTES PASOS
 
   ![Cambiar imagen](./img/00_cambiar_imagen.jpg)
     
 ---
 
-<a name="item13"></a> [Volver a Índice](#indice) 
-### ANEXO: REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
+<a name="item16"></a> [Volver a Índice](#indice) 
+### ANEXO I: REINICIO DE LA INSTANCIA DE MÁQUINA VIRTUAL (VM)
 Cada vez que se detenga y vuelva a arrancar la máquina virtual, antes de los pasos siguientes habrá que volver a realizar los siguientes pasos descritos anteriormente:
 
 [Abrir primero la instancia de VM en GCP](https://console.cloud.google.com/compute/instances?project=proyecto-tfm-enriqueprieto)
@@ -1223,7 +1233,7 @@ Google Cloud Platform => Computer Engine => Instancias de VM => Fila de la insta
 ![image](https://user-images.githubusercontent.com/23584277/188203732-1dd29867-139c-451d-a5ee-a2f571895650.png)
 ![image](https://user-images.githubusercontent.com/23584277/188203751-ecb3bd4c-b0f7-4f69-af25-256915b44f9e.png)
 
-_(Atención, a partir de aquí el sisetema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")_
+_(Atención, a partir de aquí el sistema empieza a costar dinero hasta que se haga lo mismo pero acabando en "Detener")_
 
 Anotar el dato de la columna "ip externa": 
 ![image](https://user-images.githubusercontent.com/23584277/188203782-a6fcc5a3-19f2-4af4-af3f-079ead4a9166.png)
@@ -1350,6 +1360,10 @@ Columna izquierda + Discover
 Filtrar la visualización últimos 3 años
 
 ---
+
+<a name="item17"></a> [Volver a Índice](#indice) 
+### ANEXO II: DOCUMENTACIÓN DE REFERENCIA
+
 [^nota1]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/index.html
 
 [^nota2]: https://www.elastic.co/guide/en/kibana/7.17/index.html
