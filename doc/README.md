@@ -1008,6 +1008,7 @@ En caso de querer salir sin guardar:
 ```
 
 Quedando así el fichero:
+
 ![image](https://user-images.githubusercontent.com/23584277/188206700-82237ccf-a02f-4045-899f-a9171cbac9d0.png)
 
 Seguidamente, se procede a la edición del fichero de configuración de kibana:
