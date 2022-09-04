@@ -816,7 +816,7 @@ Esta petición simula[^nota21] una pipeline, usando el endpoint del API REST de 
 
 - [**dissect**][^nota22]: Se encarga de separar el texto que viene en el campo message a partir de los espacios en blanco, y crea distintos campos (timestamp, host_name, process_name, etc.) con los valores que extrae del campo message de entrada.
 - [**remove**][^nota23]: eliminará el campo que, una vez modelado, no interesa guardar por ser información redundante.
-- [**date**]: Aplica un formato determinado de facha y hora al campo `fecha` y aplicar el resultado al campo ECS "@timestamp". Importante: Actualmente la hora saldrá en UTC, independientemente de la hora local configurada en kibana, pendiente de próxima revisión que lo corrija.
+- [**date**]: Aplica un formato determinado de facha y hora al campo `fecha` y aplicar el resultado al campo ECS "@timestamp".
  
 ---
 
@@ -1238,7 +1238,7 @@ Y los siguientes, al no haber novedades en este prototipo, por ser un fiecho de 
 
 ![image](https://user-images.githubusercontent.com/23584277/188257177-db04294a-4ea5-4dbe-977c-4ee653f6b908.png)
 
-Debe tenerse en cuenta que necesariamente, tal y como se indicó anteriormente, la hora saldrá en UTC, independientemente de la hora local configurada en kibana.
+ Importante: Actualmente la hora del mensaje de alerta saldrá en UTC, independientemente de la hora local configurada en kibana, pendiente de próxima revisión que lo corrija.
 
 ---
 
