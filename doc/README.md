@@ -954,10 +954,15 @@ Dar nombre al espacio de trabajo
 ![image](https://user-images.githubusercontent.com/23584277/188259476-3682d97d-aa06-47d1-96ed-fa27305275fd.png)
 
 Se puede en ese punto añadir colaboradores o copiar enlace de invitación.
+
 Después se debe ir a https://my.slack.com/services/new/incoming-webhook
+
 A continuación, elegir el espacio de trabajo y el canal.
+
 Pulsar ```Añadir Integración con Webhooks entrantes```
+
 Copiar la URL de Webhook, similar a https://hooks.slack.com/services/T040V6MNRFF/B0410KFHV6Y/xxxxxx
+
 Más abajo, en la misma página, se pueden definir más detalles:
 
 ![image](https://user-images.githubusercontent.com/23584277/188260038-8391d31c-f1ad-4cd3-b94d-32aab494aea1.png)
