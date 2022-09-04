@@ -1415,7 +1415,7 @@ Filtrar la visualización últimos 3 años
 [^nota14]: https://www.elastic.co/es/support/matrix#matrix_browsers
 [^nota15]: https://www.elastic.co/guide/en/kibana/7.17/index-patterns.html
 [^nota16]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/pipeline.html
-[^nota17]: https://www.elastic.co/guide/en/kibana/7.17/discover.html en Kibana
+[^nota17]: https://www.elastic.co/guide/en/kibana/7.17/discover.html
 [^nota18]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/modules-node.html
 [^nota19]: https://www.elastic.co/guide/en/elasticsearch/reference/717/ingest-processors.html
 [^nota20]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/dissect-processor.html
