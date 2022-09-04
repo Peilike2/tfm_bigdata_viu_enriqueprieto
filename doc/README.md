@@ -1074,7 +1074,7 @@ b01kVzhJSUI4bFdzVGNvVVZjZFo6QXZnXzl1SXVSWnlybUoyX3VGSDhjUQ==
 
 Ver documentación sobre lo tratado en este apartado[^nota26][^nota27][^nota28]
 
-Tras acceder, a través de la columna izquierda de kbana en el navegador de internet: Stack Management + Alerts & Insights + Rules and Connectors + Create Rule
+Tras acceder, a través de la columna izquierda de kibana en el navegador de internet: Stack Management + Alerts & Insights + Rules and Connectors + Create Rule
 
 ![image](https://user-images.githubusercontent.com/23584277/188261564-facda6b9-cb6f-403c-ab21-1083e012cdb9.png)
 
