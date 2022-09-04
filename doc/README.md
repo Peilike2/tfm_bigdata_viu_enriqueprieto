@@ -685,17 +685,17 @@ Y la intención es que Elastic lo acabe guardando como:
           }
 ```
 
-Para realizar esta estructuración, se recurre a las cadenas de procesos o pipelines[^nota16] de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/ingest.html).
+Para realizar esta estructuración, se recurre a las cadenas de procesos o pipelines[^nota16] de ingesta de elasticsearch, que se ejecutarán en los nodos llamados de ingesta[^nota33].
 
 Dado que se parte de un clúster elasticsearch con un solo nodo, este nodo realizará todos los roles (master, data, ingest, etc.).[^nota17][^nota18].
 
 Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar previamente los documentos antes de almacenarlos. Con una pipeline, se pueden analizar sintácticamente, transformar y enriquecer los datos de entrada a través de un conjunto de procesadores[^nota19] que se aplican de forma secuencial a los documentos de entrada, para generar el documento definitivo que almacenará elasticsearch.
 
-![Ingest pipeline](./img/ingest-pipeline.png)
+![image](https://user-images.githubusercontent.com/23584277/188305998-8ee2ba3d-8ba9-4d83-ba5b-268fc8718450.png)
 
 En primer lugar, se procede a crear una simple pipeline de ingesta, basada en un procesador de tipo dissect[^nota20], que parseará el campo `message` de entrada generando los diversos campos que se precisan a la salida (`fecha`, `url.original`, `host.name`, etc).
 En segundo lugar se indica el formato de fecha y hora que debe aplicar al campo `fecha` con el proceso "date" y su resultado se aplica al campo "@timestamp".
-A continuación se elimina el campo `fecha` dado que "@timestamp" lo sustutuye en formato inteligible.
+A continuación se elimina el campo `fecha` dado que "@timestamp" lo sustituye en formato inteligible.
 
 Para ello se selecciona en el menú de la izquierda Management:`Dev Tools`.
 
@@ -1431,6 +1431,7 @@ Filtrar la visualización últimos 3 años
 [^nota30]: https://app.slack.com/block-kit-builder
 [^nota31]: https://api.slack.com/reference/surfaces/formatting#visual-styles
 [^nota32]: https://newbedev.com/javascript-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket-at-unix-var-run-docker-sock-get-http-2fvar-2frun-2fdocker-sock-v1-24-containers-json-all-1-dial-unix-var-run-docker-sock-connect-permission-denied-a-code-example
+[^nota33]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/ingest.html
 
 [Subir](#top)
 
