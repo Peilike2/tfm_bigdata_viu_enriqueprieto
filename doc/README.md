@@ -658,25 +658,21 @@ El documento que llega a Elastic tiene líneas de log con este aspecto:
 Y la intención es que Elastic lo acabe guardando como:
 
 ```json
-      "doc" : {
+ "doc" : {
         "_index" : "_index",
         "_type" : "_doc",
         "_id" : "_id",
         "_source" : {
-          "hash2" : "k6A:2394036:srm2:prepareToGet",
-          "@timestamp" : "2020-12-27T03:09:29.000+01:00",
-          "hash1" : "k6A:2394036:srm2:prepareToGet:-1093710432:-1093710431",
+          "@timestamp" : "2020-12-30T06:33:29.000+01:00",
+          "method1" : "3Bs:10796:srm2:prepareToGet:-1093074894:-1093074893",
+          "method2" : "3Bs:10796:srm2:prepareToGet",
           "host" : {
             "name" : "SRM-grid002"
           },
-          "error" : {
-            "message" : "(File is unavailable.)"
-          },
+          "message" : "Pinning failed for /zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input (File is unavailable.)",
           "url" : {
-            "original" : "/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1",
-            "full" : "srm://xxxxxxx.xx.xxx.xx:xxxx/srm/managerv2?SFN=/xxxx/xx.xxx.xx/data/atlas/xxxxxxxxxxxx/rucio/mc16_13TeV/ce/13/EVNT.23114463._000856.pool.root.1"
+            "original" : "/zzzz/zz.zzz.zz/data/ops/nagios-argo-mon.egi.cro-ngi.hr/arcce/srm-input"
           }
-        }
 ```
 
 Para realizar esta estructuración, se recurre a las pipelines[^nota16] de ingesta de elasticsearch, que se ejecutarán en los [nodos llamados de ingesta](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/ingest.html).
@@ -688,16 +684,15 @@ Las pipelines de ingesta proporcionan a elasticsearch un mecanismo para procesar
 
 ![Ingest pipeline](./img/ingest-pipeline.png)
 
-En primer lugar, se procede a crear una simple pipeline de ingesta, basada en un procesador de tipo dissect[^nota20], que parseará el campo `message` de entrada generando los diversos campos que se precisan a la salida (`process_name`, `process_id`, `host_name`, etc).
-se selecciona en el menú de la izquierda Management:`Dev Tools`.
+En primer lugar, se procede a crear una simple pipeline de ingesta, basada en un procesador de tipo dissect[^nota20], que parseará el campo `message` de entrada generando los diversos campos que se precisan a la salida (`fecha`, `url.original`, `host.name`, etc).
+En segundo lugar se indica el formato de fecha y hora que debe aplicar al campo `fecha` con el proceso "date" y su resultado se aplica al campo "@timestamp".
+A continuación se elimina el campo `fecha` dado que "@timestamp" lo sustutuye, pero en formato inteligible.
+
+Para ello se selecciona en el menú de la izquierda Management:`Dev Tools`.
 
 ![Dev Tools](./img/devtools-icon.png)
 
-Y se copia y pega lo siguiente en la consola:
-
-
-
-
+Y se copia y pega lo siguiente en la consola, a modo de simulación de prueba de los procesadores:
 
 ```json
 POST _ingest/pipeline/_simulate
@@ -817,7 +812,7 @@ Esta petición simula[^nota21] una pipeline, usando el endpoint del API REST de 
 
 <a name="item9"></a> [Volver a Índice](#indice) 
 ### 9. ALTA DE LA PIPELINE DE PROCESADO DE LOGS (VM)
-Una vez se comprueba que la pipeline de ingesta funciona según lo deseado, se da de alta en elasticsearch para poder usarla. Para ello, en la misma consola de Dev Tools, de debe ejecutar:
+Una vez se comprueba que la pipeline de ingesta funciona según lo deseado, se da de alta en elasticsearch para poder usarla con el nombre "logs-pipeline", según se indica en el primer argumento del método PUT, coincidente con el nombre de pipeline que se da en el fichero de configuración filebeat.yml, según se explica más adelante. Para ello, en la misma consola de Dev Tools, de debe ejecutar:
 
 ```json
 PUT _ingest/pipeline/logs-pipeline
