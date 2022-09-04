@@ -1240,7 +1240,7 @@ Y los siguientes, al no haber novedades en este prototipo, por ser un fiecho de 
 Lo realizado, mediante procesos posteriores, permitirá agrupar valores similares, visualizarlos, y explotar toda la potencia de los logs recibidos. Esto permitirá averiguar cuáles son los errores más habituales, cuánta es su repetición, en qué momentos se producen, etc.
 Seguidamente, tras el etiquetado supervisado de la causa de numerosos mensajes de error en el historial, se podrá aplicar el teorema de Bayes inverso para periodos determinados, esto es, calcular la probabilidad de que un determinado mensaje de error tenga una determinada causa, teniendo en cuenta su repetición, origen y otros factores que se estimen causales.
 
-Por último se aplicaría machine learning y se escalaría a otros centros similares de nivrl TER2 que realizan similares cálculos con el mismo sistema de indicación de mensajes de error.
+Por último se aplicaría machine learning y se escalaría a otros centros similares de nivel TER2 que realizan similares cálculos con el mismo sistema de indicación de mensajes de error.
 
 ---
 
